@@ -1,4 +1,5 @@
 import { type RouteObject } from "react-router";
+import { T } from "../components/T";
 import { Layout } from "./Layout";
 import { RouteError } from "./RouteError";
 
@@ -10,21 +11,21 @@ export const routes: RouteObject[] = [
     children: [
       {
         index: true,
-        element: <div>Hello from Skardela!</div>,
+        element: <T k="home.greeting" />,
       },
       {
         path: "1",
-        element: <div>Hello from 1!</div>,
+        element: <T k="pages.one" />,
       },
     ],
   },
   {
     path: "/2",
-    element: <div>Hello from 2!</div>,
-    errorElement: <div>page 2 found</div>,
+    element: <T k="pages.two" />,
+    errorElement: <T k="errors.pageTwoError" />,
   },
   {
     path: "*",
-    element: <div>Global Page not found</div>,
+    element: <T k="errors.notFound" />,
   },
 ];

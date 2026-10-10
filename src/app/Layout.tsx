@@ -1,4 +1,5 @@
 import { Link, Outlet } from "react-router";
+import { LanguageSwitcher } from "../components/LanguageSwitcher";
 import { text } from "../text/en";
 import styles from "./Layout.module.css";
 
@@ -15,6 +16,7 @@ export function Layout() {
         <nav aria-label={text.nav.label} className={styles.nav}>
           <Link to="/">{text.nav.home}</Link>
         </nav>
+        <LanguageSwitcher />
       </header>
       <main id="main" className={styles.main} tabIndex={-1}>
         <Outlet />
