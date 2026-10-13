@@ -1,0 +1,62 @@
+[
+  {
+    "id": "numpuz-0000",
+    "type": "numpuz",
+    "difficulty": "easy",
+    "author": "Usiwoma2006",
+    "license": "CC-BY-4.0",
+    "numbers": [6, 3, 2],
+    "target": 7,
+    "answer": ["+", "-"]
+  },
+  {
+    "id": "numpuz-0001",
+    "type": "numpuz",
+    "difficulty": "easy",
+    "author": "Usiwoma2006",
+    "license": "CC-BY-4.0",
+    "numbers": [8, 4, 2],
+    "target": 4,
+    "answer": ["÷", "×"]
+  },
+  {
+    "id": "numpuz-0002",
+    "type": "numpuz",
+    "difficulty": "medium",
+    "author": "Usiwoma2006",
+    "license": "CC-BY-4.0",
+    "numbers": [9, 3, 2, 4],
+    "target": 11,
+    "answer": ["÷", "+", "×"]
+  },
+  {
+    "id": "numpuz-0003",
+    "type": "numpuz",
+    "difficulty": "medium",
+    "author": "Usiwoma2006",
+    "license": "CC-BY-4.0",
+    "numbers": [7, 2, 6, 3],
+    "target": 12,
+    "answer": ["×", "-", "÷"]
+  },
+  {
+    "id": "numpuz-0004",
+    "type": "numpuz",
+    "difficulty": "hard",
+    "author": "Usiwoma2006",
+    "license": "CC-BY-4.0",
+    "numbers": [8, 2, 3, 6, 4],
+    "target": 18,
+    "answer": ["÷", "+", "×", "-"]
+  },
+  {
+    "id": "numpuz-0005",
+    "type": "numpuz",
+    "difficulty": "hard",
+    "author": "Usiwoma2006",
+    "license": "CC-BY-4.0",
+    "numbers": [5, 4, 3, 2, 6],
+    "target": 19,
+    "answer": ["×", "-", "×", "÷"]
+  }
+]
