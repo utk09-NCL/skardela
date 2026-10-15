@@ -5,10 +5,7 @@ export const operators: readonly Operator[] = ["+", "-", "×", "÷"];
 export type CheckResult = "incomplete" | "correct" | "wrong";
 
 /** Works out the answer. Returns null if it cannot be worked out. */
-export function evaluate(
-  numbers: readonly number[],
-  ops: readonly Operator[],
-): number | null {
+export function evaluate(numbers: readonly number[], ops: readonly Operator[]): number | null {
   const first = numbers[0];
   if (first === undefined || ops.length !== numbers.length - 1) return null;
 

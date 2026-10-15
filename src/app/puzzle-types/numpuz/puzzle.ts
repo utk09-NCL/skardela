@@ -2,7 +2,7 @@ import type { Difficulty } from "../../../shared/difficulty";
 import type { PuzzleBase } from "../../../shared/puzzle";
 
 type Operator = "+" | "-" | "×" | "÷";
-const operators: readonly Operator[] = ["+", "-", "×", "÷"];
+const operators: ReadonlySet<Operator> = new Set(["+", "-", "×", "÷"]);
 
 function evaluate(numbers: readonly number[], answer: readonly Operator[]): number | null {
   if (numbers.length === 0 || answer.length !== numbers.length - 1) return null;
@@ -16,7 +16,7 @@ function evaluate(numbers: readonly number[], answer: readonly Operator[]): numb
 
     if (operator === undefined || number === undefined) return null;
 
-    const currentTerm = terms[terms.length - 1];
+    const currentTerm = terms.at(-1);
     if (currentTerm === undefined) return null;
 
     if (operator === "×") {
@@ -61,7 +61,7 @@ export function findPuzzleProblems(puzzle: NumpuzPuzzle): string[] {
   if (puzzle.answer.length !== puzzle.numbers.length - 1) {
     problems.push('"answer" must have one operator between each pair of numbers.');
   }
-  if (puzzle.answer.some((op) => !operators.includes(op))) {
+  if (puzzle.answer.some((op) => !operators.has(op))) {
     problems.push('"answer" must have only "+", "-", "×" and "÷".');
   }
 

@@ -145,7 +145,7 @@ export const text = {
         `You solved the puzzle. ${mode}, ${mistakeCount(mistakes)}.`,
     },
   },
-    numpuz: {
+  numpuz: {
     name: "Numpuz",
     summary: "Fill each blank with + − × or ÷ to reach the target number.",
     rules: [

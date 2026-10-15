@@ -1,0 +1,104 @@
+/* The base of the board, the status box and the buttons are in "src/shared/Board.module.css".
+   This file sets only what is special to Numpuz: the equation row, the blanks and the operator keys. */
+
+/* The equation is one row. It wraps on a narrow screen, so the board never scrolls sideways. */
+.equation {
+  --cell: clamp(2.5rem, 10vw, 3.5rem);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.25rem, 1.2vw, 0.5rem);
+}
+
+.number {
+  min-width: 1.5ch;
+  color: var(--text-h);
+  font-size: clamp(1.5rem, 6vw, 2.25rem);
+  font-weight: 700;
+  text-align: center;
+}
+
+/* A blank is a square button, like a square in the other puzzle types.
+   An empty blank has a dashed edge. A filled blank has a solid edge. */
+.blank {
+  display: grid;
+  place-items: center;
+  inline-size: var(--cell);
+  block-size: var(--cell);
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-md);
+  background-color: var(--surface);
+  color: var(--text-h);
+  font-size: clamp(1.25rem, 5vw, 1.75rem);
+  font-weight: 600;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+.blank[data-filled="true"] {
+  border-style: solid;
+  background-color: var(--surface-muted);
+}
+
+/* The selected blank and the keyboard focus use the same ring as the squares in the other puzzle types. */
+.blank:focus-visible,
+.blank[data-selected="true"] {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.blank[aria-disabled="false"]:hover {
+  border-color: var(--ring);
+}
+
+.blank[aria-disabled="true"] {
+  cursor: default;
+}
+
+/* The target is under the equation. */
+.target {
+  margin: 1rem 0 0;
+  color: var(--text-h);
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* The four operator keys are in one row. */
+.keys {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  inline-size: min(100%, 20rem);
+  margin-inline: auto;
+}
+
+/* The ".keys >" part makes this rule stronger than the shared "button" rule, in any order of the files. */
+.keys > .key {
+  justify-self: stretch;
+  font-size: 1.5rem;
+}
+
+.key:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* A key with no selected blank uses "aria-disabled", not "disabled". So the shared hover rule still works,
+   and this rule turns it off. */
+.keys > .key[aria-disabled="true"]:hover:enabled {
+  border-color: var(--line);
+  background-color: var(--surface);
+}
+
+.key[aria-disabled="true"] {
+  cursor: default;
+  opacity: 0.6;
+}
+
+/* The status box has a red edge after a wrong check. The text says it too, so colour is not the only signal. */
+.status[data-wrong="true"] {
+  border-color: var(--red-edge);
+}

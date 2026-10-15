@@ -30,7 +30,8 @@ export const puzzleTypes: { [Type in PuzzleType]: PuzzleTypeEntry<PuzzleMap[Type
       (await import("../../../puzzles/guzzle.json")).default as GuzzlePuzzle[],
   },
   numpuz: {
-    loadPuzzles: async (): Promise<readonly NumpuzPuzzle[]> => [],
+    loadPuzzles: async () =>
+      (await import("../../../puzzles/numpuz.json")).default as NumpuzPuzzle[],
   },
 };
 
