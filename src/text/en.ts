@@ -145,6 +145,31 @@ export const text = {
         `You solved the puzzle. ${mode}, ${mistakeCount(mistakes)}.`,
     },
   },
+  numpuz: {
+    name: "Numpuz",
+    summary: "Fill each blank with + − × or ÷ to reach the target number.",
+    rules: [
+      "Fill each blank between the numbers with + − × or ÷.",
+      "The equation must be equal to the target number.",
+      "× and ÷ are worked out before + and −.",
+      "Each blank takes one operator.",
+    ],
+    boardLabel: "Numpuz board",
+    target: (target: number) => `Target: ${target}`,
+    // The minus sign has two forms: "-" in the puzzle data and "−" on the screen.
+    operatorSymbols: { "+": "+", "-": "−", "×": "×", "÷": "÷" },
+    operatorNames: { "+": "plus", "-": "minus", "×": "times", "÷": "divided by" },
+    blank: (blank: { position: number; operator: string }) =>
+      `Blank ${blank.position}, ${blank.operator === "" ? "empty" : blank.operator}`,
+    key: (name: string) => `Put ${name} in the selected blank`,
+    checkButton: "Check",
+    status: {
+      start: "Select a blank. Then choose an operator.",
+      incomplete: "Fill every blank before you check.",
+      wrong: "Not yet. The equation is not equal to the target. Try again.",
+      solved: "You solved the puzzle. The equation is equal to the target.",
+    },
+  },
   notFound: {
     title: "Page Not Found",
     body: "The page you are looking for does not exist.",
