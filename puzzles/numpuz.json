@@ -28,5 +28,35 @@
     "numbers": [6, 2, 3, 4, 5],
     "target": 10,
     "answer": ["÷", "+", "×", "-"]
+  },
+  {
+    "type": "numpuz",
+    "id": "numpuz-0004",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "numbers": [8, 6, 3],
+    "target": 6,
+    "answer": ["-", "÷"]
+  },
+  {
+    "type": "numpuz",
+    "id": "numpuz-0005",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "numbers": [7, 5, 3, 8],
+    "target": 26,
+    "answer": ["-", "+", "×"]
+  },
+  {
+    "type": "numpuz",
+    "id": "numpuz-0006",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "numbers": [6, 7, 4, 2, 3],
+    "target": 17,
+    "answer": ["+", "×", "÷", "-"]
   }
 ]

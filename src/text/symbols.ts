@@ -45,12 +45,9 @@ export const symbols = {
     dark: "🌙",
   },
   numpuz: {
-    // The four operators a blank can take.
-    add: "+",
-    subtract: "−",
-    multiply: "×",
-    divide: "÷",
+    // The four operators that a blank can take. Each key is the operator in the puzzle data.
+    operators: { "+": "+", "-": "−", "×": "×", "÷": "÷" },
     // A blank that has no operator yet.
-    empty: "",
+    empty: "?",
   },
 } as const;

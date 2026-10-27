@@ -9,6 +9,9 @@ Fill each blank between the numbers with + − × or ÷ so the equation equals t
 - Each blank takes exactly one operator.
 - × and ÷ are worked out before + and −, like in normal maths.
 - Every blank must be filled before the answer can be checked.
+- A check with a wrong answer is one mistake. The mistakes are the score, so keep them low.
+- Change an operator before you check again.
+- With a keyboard, type +, -, * or / on a blank. * gives × and / gives ÷.
 
 ## Example
 

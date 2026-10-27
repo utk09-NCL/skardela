@@ -16,7 +16,8 @@ export type PuzzleRef = {
 };
 
 // One solve of one puzzle. "day" is the local date of the solve, for example "2026-10-24".
-// "mistakes" is the score to keep low: the mistakes in Guzzle, the misses in Latics and the hints in Colour Binary.
+// "mistakes" is the score to keep low: the mistakes in Guzzle, the misses in Latics, the hints in Colour Binary
+// and the wrong checks in Numpuz.
 // Solves from before this field do not have it.
 export type SolveResult = {
   readonly puzzleId: string;

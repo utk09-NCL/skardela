@@ -34,7 +34,7 @@ export function decodeText(code: string, id: string): string {
   return new TextDecoder().decode(xorWithKey(bytes, id));
 }
 
-// The answer rows have only letters and ".", thus "/" can join them into one text.
+// The answer rows have only letters, "." and the Numpuz operators (+ - × ÷), thus "/" can join them into one text.
 const rowBreak = "/";
 
 type WithAnswer = { readonly id: string; readonly answer: readonly string[] };

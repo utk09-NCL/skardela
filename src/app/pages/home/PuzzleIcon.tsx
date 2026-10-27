@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { PuzzleType } from "../../puzzle-types/registry";
+import { symbols } from "../../../text/symbols";
 import styles from "./HomePage.module.css";
 
 type Tile = "red" | "blue" | "muted";
@@ -71,7 +72,8 @@ function LaticsIcon() {
 
 // Numpuz: a short equation with an operator in the middle, "8 ÷ 2".
 // The characters are decoration, thus a screen reader does not read them (the icon has "aria-hidden").
-const equationParts = ["8", "\u00F7", "2"];
+// The operator symbol comes from "src/text/symbols.ts", as on the Numpuz board.
+const equationParts = ["8", symbols.numpuz.operators["\u00F7"], "2"];
 
 function NumpuzIcon() {
   return (
