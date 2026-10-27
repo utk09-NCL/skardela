@@ -1,0 +1,10 @@
+{
+  "id": "numpuz-0000",
+  "type": "numpuz",
+  "difficulty": "easy",
+  "author": "Usiwoma2006",
+  "license": "CC-BY-4.0",
+  "numbers": [6, 3, 2],
+  "target": 7,
+  "answer": ["+", "-"]
+}

@@ -44,4 +44,13 @@ export const symbols = {
     light: "☀️",
     dark: "🌙",
   },
+  numpuz: {
+    // The four operators a blank can take.
+    add: "+",
+    subtract: "−",
+    multiply: "×",
+    divide: "÷",
+    // A blank that has no operator yet.
+    empty: "",
+  },
 } as const;

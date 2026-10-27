@@ -1,0 +1,32 @@
+[
+  {
+    "type": "numpuz",
+    "id": "numpuz-0001",
+    "difficulty": "easy",
+    "author": "Wisdom Usiwoma",
+    "license": "CC-BY-4.0",
+    "numbers": [2, 3, 4],
+    "target": 14,
+    "answer": ["+", "×"]
+  },
+  {
+    "type": "numpuz",
+    "id": "numpuz-0002",
+    "difficulty": "medium",
+    "author": "Wisdom Usiwoma",
+    "license": "CC-BY-4.0",
+    "numbers": [8, 2, 3, 4],
+    "target": 16,
+    "answer": ["÷", "×", "+"]
+  },
+  {
+    "type": "numpuz",
+    "id": "numpuz-0003",
+    "difficulty": "hard",
+    "author": "Wisdom Usiwoma",
+    "license": "CC-BY-4.0",
+    "numbers": [6, 2, 3, 4, 5],
+    "target": 10,
+    "answer": ["÷", "+", "×", "-"]
+  }
+]

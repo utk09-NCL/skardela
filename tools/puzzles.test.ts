@@ -13,6 +13,8 @@ import { findPuzzleProblems as findLaticsProblems } from "../src/app/puzzle-type
 import { findSolutionProblems as findLaticsSolutionProblems } from "../src/app/puzzle-types/latics/solver";
 import { puzzleTypes, type PuzzleMap, type PuzzleType } from "../src/app/puzzle-types/registry";
 import { levels } from "../src/shared/difficulty";
+import numpuzExample from "../src/app/puzzle-types/numpuz/examples/numpuz-0000.json";
+import { findPuzzleProblems as findNumpuzProblems } from "../src/app/puzzle-types/numpuz/puzzle";
 
 // These checks run on each puzzle file in CI.
 // They stop broken puzzle data before it gets to a player.
@@ -45,6 +47,7 @@ const checks: {
       return problems.length > 0 ? problems : findLaticsSolutionProblems(puzzle);
     },
   },
+  numpuz: { example: numpuzExample, findProblems: findNumpuzProblems },
 };
 
 // This check finds problems that are the same for all puzzle types.

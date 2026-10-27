@@ -58,7 +58,7 @@ describe("home page stats", () => {
     expect(within(calendar).getByText(stats.calendar.day(today, 2))).toBeInTheDocument();
     const table = screen.getByRole("table", { name: stats.bests.heading });
     // One row for each puzzle type, and one column for each level.
-    expect(within(table).getAllByRole("row")).toHaveLength(4);
+    expect(within(table).getAllByRole("row")).toHaveLength(5);
     const row = within(table).getByRole("row", { name: /^Guzzle/u });
     expect(
       within(row)

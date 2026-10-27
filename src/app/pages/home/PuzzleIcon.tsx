@@ -69,12 +69,35 @@ function LaticsIcon() {
   );
 }
 
+// Numpuz: a short equation with an operator in the middle, "8 ÷ 2".
+// The characters are decoration, thus a screen reader does not read them (the icon has "aria-hidden").
+const equationParts = ["8", "\u00F7", "2"];
+
+function NumpuzIcon() {
+  return (
+    <div className={styles.iconGrid} data-columns={3}>
+      {equationParts.map((part, index) => (
+        <span
+          // oxlint-disable-next-line react/no-array-index-key -- the tiles never move in the list.
+          key={index}
+          className={styles.letterTile}
+          data-center={index === 1}
+          data-empty={false}
+        >
+          {part}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 // A small picture of each puzzle type. Each type has a different kind of picture, so the cards are easy to tell
 // apart. It is only decoration. TypeScript makes sure that each puzzle type has an icon.
 const icons: { [Type in PuzzleType]: () => ReactNode } = {
   "colour-binary": ColourBinaryIcon,
   guzzle: GuzzleIcon,
   latics: LaticsIcon,
+  numpuz: NumpuzIcon,
 };
 
 export function PuzzleIcon({ type }: { type: PuzzleType }) {

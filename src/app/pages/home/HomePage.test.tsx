@@ -42,9 +42,9 @@ describe("home page hero", () => {
     expect(await renderHome()).toHaveTextContent(home.hero.title);
     expect(screen.getByRole("link", { name: home.hero.play })).toHaveAttribute("href", "#today");
     const progress = screen.getByRole("list", { name: home.hero.progressLabel });
-    expect(within(progress).getAllByRole("listitem")).toHaveLength(9);
+    expect(within(progress).getAllByRole("listitem")).toHaveLength(12);
     expect(
-      screen.getByText(new RegExp(`^${home.hero.progress(0, 9)} · `, "u")),
+      screen.getByText(new RegExp(`^${home.hero.progress(0, 12)} · `, "u")),
     ).toBeInTheDocument();
   });
 
@@ -64,7 +64,7 @@ describe("home page hero", () => {
     solveToday(cards, 42);
     const id = todayId(cards, "guzzle", "easy");
     useAppStore.getState().openPuzzle({ puzzleId: id, type: "guzzle", difficulty: "easy" });
-    expect(await renderHome()).toHaveTextContent(home.hero.solvedSome(1, 9));
+    expect(await renderHome()).toHaveTextContent(home.hero.solvedSome(1, 12));
     expect(screen.queryByRole("link", { name: /^Continue/u })).toBeNull();
     expect(
       screen.getByText(home.hero.segment(text.guzzle.name, text.levels.easy, true)),
@@ -127,7 +127,7 @@ describe("home page time to new puzzles", () => {
 
   it("shows the time with its units next to the progress", async () => {
     await renderHome();
-    const line = screen.getByText(new RegExp(`^${home.hero.progress(0, 9)} · `, "u"));
+    const line = screen.getByText(new RegExp(`^${home.hero.progress(0, 12)} · `, "u"));
     expect(line.textContent).toMatch(/new puzzles in (\d+ h ?)?(\d+ min)?/u);
     expect(line.querySelector("time")?.getAttribute("datetime")).toMatch(/^PT\d+H\d+M$/u);
   });

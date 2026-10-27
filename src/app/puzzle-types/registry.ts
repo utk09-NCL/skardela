@@ -2,6 +2,7 @@ import type { ColourBinaryPuzzle } from "./colour-binary/puzzle";
 import type { GuzzlePuzzle } from "./guzzle/puzzle";
 import type { LaticsPuzzle } from "./latics/puzzle";
 import { decipherPuzzles } from "../../shared/cipher";
+import type { NumpuzPuzzle } from "./numpuz/puzzle";
 
 // This file is the list of all puzzle types and their puzzle files.
 // To add a puzzle type, add its puzzle type to "PuzzleMap" and add one entry to "puzzleTypes".
@@ -14,6 +15,7 @@ export type PuzzleMap = {
   "colour-binary": ColourBinaryPuzzle;
   guzzle: GuzzlePuzzle;
   latics: LaticsPuzzle;
+  numpuz: NumpuzPuzzle;
 };
 
 export type PuzzleType = keyof PuzzleMap;
@@ -37,6 +39,10 @@ export const puzzleTypes: { [Type in PuzzleType]: PuzzleTypeEntry<PuzzleMap[Type
   latics: {
     loadPuzzles: async () =>
       (await import("../../../puzzles/latics.json")).default as LaticsPuzzle[],
+  },
+  numpuz: {
+    loadPuzzles: async () =>
+      decipherPuzzles<NumpuzPuzzle>((await import("../../../puzzles/numpuz.json")).default),
   },
 };
 
