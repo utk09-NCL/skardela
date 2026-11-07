@@ -9,7 +9,7 @@ You check a new puzzle type in a real browser. The prompt gives you the type nam
 
 In this file, `<type>` is the type name, `<dir>` is `src/app/puzzle-types/<type>` and `<url>` is the URL of the dev server.
 
-Use the Chrome DevTools MCP tools, for example `new_page`, `navigate_page`, `take_snapshot`, `click`, `press_key`, `take_screenshot`, `resize_page`, `evaluate_script` and `list_console_messages`. If these tools are not available, stop and write this in your report.
+Use the Chrome DevTools MCP tools, for example `new_page`, `navigate_page`, `take_snapshot`, `click`, `press_key`, `take_screenshot`, `emulate`, `evaluate_script` and `list_console_messages`. If these tools are not available, stop and write this in your report.
 
 You do not change files. You do not fix problems. You only report.
 
@@ -36,7 +36,7 @@ Do each check. Compare the result with `rules.md` and with the text file.
 3. Mouse play: make one wrong step on purpose. The status text and the score agree with `rules.md`. Then solve the puzzle. The result card shows the correct score.
 4. Keyboard play: open the medium puzzle. Use only the keyboard. Solve the puzzle with the keys in `rules.md`. Each control with the focus has a visible focus ring. Use a screenshot to make sure.
 5. Restart: select Restart. The board goes back to the start state.
-6. Phone width: set the page size to 375 × 812 with `resize_page`. Take a screenshot. Run `() => document.documentElement.scrollWidth <= document.documentElement.clientWidth`. The result must be `true`. Then set the page size back to 1280 × 800.
+6. Phone width: set the viewport to `320x640x2,mobile,touch` with `emulate`. Take a screenshot. Run `() => [window.innerWidth, document.documentElement.scrollWidth <= document.documentElement.clientWidth]`. The result must be `[320, true]`. Then set the viewport back to `1280x800x1`.
 7. Dark theme: select the dark theme with the theme switcher. Take a screenshot. The text and the board must be easy to read.
 8. Hard puzzle: open the hard puzzle. Make sure that it loads and that you can solve it.
 9. Home page: open `<url>/`. The new type has a card and an icon.

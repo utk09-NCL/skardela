@@ -46,8 +46,10 @@ When the main session sends you the answers, fix the code and the tests so that 
 
 ## Checks
 
-1. Run `npx vitest run --project unit <dir>`.
-2. When all tests pass, run `npm run fix && npm run check`.
+1. Run `npm run test -- <dir>`.
+2. Run `npm run typecheck`.
+
+The main session runs all checks after your report.
 
 ## Report
 

@@ -1,40 +1,92 @@
 # AGENTS.md
 
-Rules for AI agents working in the Skardela project.
+Rules for AI agents that work in the Skardela project. Skardela is a puzzle website. It has no server, no accounts and no database. All code runs in the browser.
+
+In this file and in the files in `.claude/`, "the author" is the person who gives you the task.
 
 ## Core rules
 
-- Always talk in ASD-STE100 Simplified Technical English.
-- Always document your changes with comments. Use Simplified Technical English in code comments.
-- Work only on the task assigned to you.
-- Keep changes small, clear and relevant.
-- Do not weaken tests or skip validation to make a task pass.
-- Do not add server code, backend logic, auth, or database changes. This is a UI only project.
-- Ask before breaking existing functionality, making large changes, broad refactors or unclear work.
+- Write in ASD-STE100 Simplified Technical English: your messages, code comments, `rules.md` files, commit messages and PR text. See "Simplified Technical English" below.
+- Work only on the task. If you find a different problem, tell the author. Do not fix it.
+- Keep each change small, clear and related to the task.
+- Ask the author before you:
+  - break current behaviour,
+  - make a large change or a broad refactor,
+  - add an npm package,
+  - start work that is not clear.
+- Do not add server code, backend logic, auth or database changes. This is a UI only project.
+- Do not weaken, skip or delete tests to make a check pass.
+- Do not tell the author that a task is complete before all checks pass. Give the result of each check.
+- If 3 different fixes do not make a check pass, stop. Tell the author what you tried and what you found.
 
-## Project expectations
+## Commands
 
-- Follow the current project structure in `src/`.
-- Keep the puzzle logic browser-safe and pure.
-- Keep UI text simple and accessible.
-- Put all UI text in the `src/text/en/` folder and all emoji symbols in `src/text/symbols.ts`.
+Use the npm scripts. Do not use `npx`. To run a script on some files only, put the paths after `--`.
+
+| Command                         | What it does                                                                                      |
+| ------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `npm run dev`                   | Starts the app at `http://localhost:5173`.                                                        |
+| `npm run fix`                   | Formats all files and fixes the lint problems that a tool can fix.                                |
+| `npm run check`                 | Runs all checks: format, lint, types, build, unit tests and puzzle data. CI runs the same checks. |
+| `npm run test -- <path>`        | Runs the unit tests in one file or folder, for example `npm run test -- src/shared`.              |
+| `npm run typecheck`             | Checks the types of all files.                                                                    |
+| `npm run lint:check -- <files>` | Finds the lint problems in some files.                                                            |
+| `npm run format:fix -- <files>` | Formats some files.                                                                               |
+| `npm run validate`              | Checks all puzzle files in `puzzles/`.                                                            |
+
+## Project rules
+
+- Use the structure in "Project structure" in `CONTRIBUTING.md`.
+- Put all UI text in `src/text/en/`. Put all emoji symbols in `src/text/symbols.ts`. Do not put words in CSS `content`.
+- Keep UI text short, simple and accessible.
 - Use the shared code in `src/shared/` before you write new code.
-- Prefer the existing stack and patterns over new abstractions.
+- Keep the puzzle logic pure. `rules-check.ts`, `machine.ts` and `solver.ts` have no React, no DOM and no side effects.
+- Make each control work with a keyboard and a screen reader. Do not use colour as the only signal.
+- Use strict TypeScript. Do not use `any` or `@ts-ignore`. The lint check refuses `any`.
+- To turn off a lint rule, turn it off for one line and give the reason: `// oxlint-disable-next-line <rule> -- <reason>`. Turn off a rule for a full file only when the rule is about the full file, for example `max-lines`.
+- Use the logger in `src/shared/logger.ts`. The lint check refuses `console`.
+- The files in `puzzles/` keep each answer as readable rows. The build ciphers the answers. Do not cipher them yourself.
+- Use British spelling, as the project does: "colour", "behaviour" and "grey". Code keeps the spelling of its API, for example the CSS property `color`.
 
-## Adding a new puzzle type
+## Simple code
 
-- Create a new folder in `src/app/puzzle-types/` with the puzzle type name.
-- Read the `rules.md` file explaining the rules of the puzzle.
-- Add an example puzzle file in the `examples/` folder.
-- Implement the puzzle logic in a TypeScript file within the puzzle type folder.
-- Ensure the UI components follow the existing patterns and are accessible.
-- Register the puzzle type in `src/app/puzzle-types/registry.ts`. Then follow the TypeScript errors.
-- Follow all steps in "Add a new puzzle type" in `CONTRIBUTING.md`.
-- To make a puzzle type from the rules of the author with AI agents, use "Puzzle workflow" below.
+Write the simplest code that does the task correctly. Simple code is easy to read, easy to test and easy to delete.
 
-## Puzzle workflow (rules first)
+- Before you write code, read the code near your change. Use its patterns.
+- Do not add an abstraction, an option or a file for a possible future use. Add it when a second real use occurs.
+- Do not keep the same data in two places. Calculate a value from the state when you can.
+- Use HTML and CSS before JavaScript when they can do the job, for example `<dialog>`, `<details>`, `:focus-within`, `:has()` and media queries. Before you write CSS, read `.claude/skills/modern-css/SKILL.md`.
+- React Compiler is on. Do not add `useMemo`, `useCallback` or `memo`.
+- Do not use `useEffect` to calculate data or to respond to an event. Use it only to connect to a system outside React.
+- Give new code a comment that tells why it is there. Do not write comments about the change, for example "fixed" or "was X before". Git keeps the history.
+- Before you finish, remove dead code, unused exports and debug code.
 
-Use this workflow to make a new puzzle type from the rules of the author. In Claude Code, run `/new-puzzle <type>`, `/review-puzzle <type>` and `/verify-puzzle <type>`. The skills are in `.claude/skills/`. The agents are in `.claude/agents/`.
+## Simplified Technical English
+
+- Write one instruction in each sentence. Write an instruction as a command: "Run the tests."
+- Use the active voice.
+- Keep each sentence short: 20 words or fewer. Keep each paragraph to 6 sentences or fewer.
+- Use only the simple tenses: present, past and future. Do not use the "-ing" form of a verb.
+- Do not use contractions or phrasal verbs. Write "do not", not "don't".
+- Use one word for one meaning. Use the words of the project, for example "puzzle type", "level", "board", "square" and "mistake".
+- Use simple words: "make sure", not "ensure". "Occur", not "happen". "Use", not "utilize". "Before", not "prior to".
+
+## Workflows
+
+Each workflow is a skill in `.claude/skills/<name>/SKILL.md`. In Claude Code, type the command. In a different tool, read the `SKILL.md` file and do its steps. The skills use the agents in `.claude/agents/`.
+
+| Task                                             | Command                                                                        |
+| ------------------------------------------------ | ------------------------------------------------------------------------------ |
+| Fix a bug                                        | `/fix-bug [issue number or description]`                                       |
+| Add a feature, change behaviour or refactor code | `/write-code [task]`                                                           |
+| Change the look or the layout of a page          | `/design-ui [task]`                                                            |
+| Review a change as a senior developer            | `/review-code [PR number or branch]`                                           |
+| Make a new puzzle type                           | `/new-puzzle [type]`, then `/review-puzzle [type]` and `/verify-puzzle [type]` |
+| Commit the change and open a pull request        | `/open-pr [issue number]`                                                      |
+
+## Puzzle workflow
+
+`/new-puzzle` makes a new puzzle type from the rules of the author. Without AI agents, follow "Add a new puzzle type" in `CONTRIBUTING.md`.
 
 1. The author writes `src/app/puzzle-types/<type>/rules.md`.
 2. Spec: the main session checks the rules with the author and updates `rules.md`. Then it writes the contract.
@@ -46,31 +98,24 @@ Use this workflow to make a new puzzle type from the rules of the author. In Cla
 
 Rules for each step:
 
-- `rules.md` is the source of truth. The code and the tests follow it.
+- `rules.md` is the source of truth. The code and the tests obey it.
 - If `rules.md` does not tell what to do, do not guess. Ask the author, or write the question in your report.
 - Change `rules.md` only after the author answers a question.
 - The contract is the exported types and function signatures in `puzzle.ts`, `rules-check.ts`, `machine.ts` and, if the type needs a search, `solver.ts`. Only the spec step writes it. Change it only after the author agrees.
 - The rule tests are `rules-check.test.ts`, `machine.test.ts` and, if `solver.ts` exists, `solver.test.ts`.
-- Change only the files of your step:
-  - Coder: the files of the new type, the shared files that "Add a new puzzle type" in `CONTRIBUTING.md` names, and a generator in `tools/` if `rules.md` asks for one. Not `rules.md`, `examples/`, the contract or the rule tests.
-  - Test writer: the rule tests only.
-  - Reviewer: the code or a test, only after it finds the rule that the other side does not obey.
-  - Browser checker: no files.
 - The coder does not read the rule tests. The test writer does not read the code of the new type. Two independent readings of `rules.md` find more mistakes.
-- The coder and the test writer do not run the rule tests. The author runs them.
-- The reviewer can change a test only when the test disagrees with `rules.md`. It must quote the rule. This change does not make the test weaker.
-
-## Code quality
-
-- Use strict TypeScript.
-- Do not use `any` or `@ts-ignore` without a clear reason.
+- Only the author and `/review-puzzle` run the rule tests.
+- Each agent changes only the files that its agent file names.
+- The reviewer can change a test only when the test disagrees with `rules.md`. It must quote the rule. The change must not make the test weaker.
 
 ## Validation
 
-Before you finish, run: `npm run fix && npm run check`. A task is not complete until it passes all checks.
-In the puzzle workflow, only the last step must pass all checks. See "Puzzle workflow".
+Before you finish, run `npm run fix && npm run check`. A task is complete only when all checks pass.
+
+In the puzzle workflow, the test writer does not run the tests. It runs only the checks in its agent file. `/review-puzzle` runs all checks at the end.
 
 ## Git and pull requests
 
-- Use Conventional Commits for commit messages.
-- In the PR text, state what changed, why, how it was tested and which AI tool was used.
+- Commit and push only when the author asks.
+- Use Conventional Commits, for example `fix(tilt): stop the ball at a full hole`.
+- In the PR text, fill in `.github/pull_request_template.md`: what changed, why, how it was tested and which AI tool was used.

@@ -58,8 +58,8 @@ Do not guess. Write `it.todo("<the question>")` for that case. Write the questio
 
 Run these commands. Correct each error in your test files before you finish.
 
-1. `npx oxfmt <your test files>`
-2. `npx oxlint --deny-warnings <your test files>`
+1. `npm run format:fix -- <your test files>`
+2. `npm run lint:check -- <your test files>`
 3. `npm run typecheck`
 
 ## Report

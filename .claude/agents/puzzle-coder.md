@@ -21,13 +21,15 @@ In this file, `<type>` is the type name and `<dir>` is `src/app/puzzle-types/<ty
 2. All of `CONTRIBUTING.md`. The most important section is "Add a new puzzle type".
 3. `<dir>/rules.md`, `<dir>/examples/` and the contract files.
 4. `src/app/puzzle-types/numpuz/`. It is the reference puzzle type. Use the same structure and the same patterns.
+5. If the type has a solver or a generator, read `src/app/puzzle-types/tilt/` too.
+6. Before you write CSS, read `.claude/skills/modern-css/SKILL.md`.
 
 ## Do
 
 1. Replace each `export declare function` with a function that has a body. Keep the name, the parameters, the result type and the doc comment.
-2. Do steps 2 to 8 of "Add a new puzzle type" in `CONTRIBUTING.md`. These steps include the registry, the board, the text, the icon, the data check and the puzzle data in `puzzles/<type>.json`.
-3. Make sure that each puzzle in `puzzles/<type>.json` obeys `rules.md` and has a solution. If the rules permit only one answer, make sure that each puzzle has only one answer.
-4. Write tests for the parts that are not rules: `Board.test.tsx`, `useGame.test.ts` and, if you make one, `keys.test.ts`.
+2. Do steps 2 to 7 of "Add a new puzzle type" in `CONTRIBUTING.md`. These steps include the puzzle data in `puzzles/<type>.json`, the registry, the board, the text, the icon and the data check.
+3. Make the number of puzzles that "## Puzzles" in `rules.md` gives. Make sure that each puzzle in `puzzles/<type>.json` obeys `rules.md` and has a solution. If the rules permit only one answer, make sure that each puzzle has only one answer.
+4. For step 8 of "Add a new puzzle type", write only the tests that are not rule tests: `Board.test.tsx`, `useGame.test.ts` and, if you make one, `keys.test.ts`.
 5. Make the board work with only the keyboard. Give each control an accessible name. Do not use colour as the only sign of a state.
 6. Write comments in Simplified Technical English.
 
@@ -35,10 +37,10 @@ In this file, `<type>` is the type name and `<dir>` is `src/app/puzzle-types/<ty
 
 Do this part only if `rules.md` asks for a generator tool.
 
-1. Use the Latics generator as the model: `tools/latics-generator.ts`, `tools/latics-generator.test.ts` and `tools/generate-latics.gen.ts`.
+1. Use the Tilt generator as the model: `tools/tilt-generator.ts`, `tools/tilt-generator.test.ts` and `tools/generate-tilt.gen.ts`.
 2. Use `makeRandom` from `src/shared/random.ts`. Then the same seed always gives the same puzzles.
-3. Keep only the boards that pass `findPuzzleProblems`.
-4. The project "generate" in `vite.config.ts` runs each `tools/*.gen.ts` file. Thus give each generate script its own file, for example `"generate:<type>": "vitest run --project generate tools/generate-<type>.gen.ts"`. Change `generate:latics` in the same way, so that it does not run your generator.
+3. Keep only the boards that pass all data checks: `findPuzzleProblems` and, if it exists, `findSolutionProblems`.
+4. Add the script `"generate:<type>": "vitest run --project generate tools/generate-<type>.gen.ts"` to `package.json`. Add the script and the generator to "Scripts" and "Project structure" in `CONTRIBUTING.md`.
 5. Use your generator to make the puzzles in `puzzles/<type>.json`.
 
 ## Do not
@@ -55,14 +57,9 @@ Do this part only if `rules.md` asks for a generator tool.
 
 ## Checks
 
-Run these commands. Correct each error before you finish.
+Run `npm run fix && npm run check`. Correct each error before you finish.
 
-1. `npm run fix`
-2. `npm run typecheck`
-3. `npm run lint:check`
-4. `npm run build`
-5. `npm run validate`
-6. `npx vitest run --project unit --exclude "<dir>/rules-check.test.ts" --exclude "<dir>/machine.test.ts" --exclude "<dir>/solver.test.ts"`
+The rule tests do not exist yet, so all checks must pass. If a rule test of `<type>` exists, stop. Do not read it and do not run it. Tell this in your report.
 
 ## Report
 

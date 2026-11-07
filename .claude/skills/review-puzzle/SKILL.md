@@ -1,7 +1,7 @@
 ---
 name: review-puzzle
 description: When a test of a new puzzle type fails, or the browser check finds a problem, start the reviewer agent. It finds the wrong side, the code or the test, and fixes it. It asks the author when a rule is not clear.
-argument-hint: <type>
+argument-hint: "[type]"
 disable-model-invocation: true
 ---
 
@@ -13,13 +13,13 @@ The first argument is the puzzle type name. If there is no type name, ask the au
 
 In this file, `<type>` is the type name and `<dir>` is `src/app/puzzle-types/<type>`.
 
-Read "Puzzle workflow" in `AGENTS.md` before you start. Obey it in all steps.
+Obey "Puzzle workflow" in `AGENTS.md` in all steps.
 
 ## Step 1: Collect the problems
 
-1. Run `npm test`. Keep the output of each failed test.
+1. Run `npm run test`. Keep the output of each failed test.
 2. Look for a report of the `puzzle-browser-checker` agent in this conversation. Keep each finding with the result "Fail".
-3. If no test fails and there are no findings, go to step 4.
+3. If no test fails and there are no findings, go to step 3.
 
 ## Step 2: Start the reviewer
 
@@ -32,13 +32,12 @@ Read "Puzzle workflow" in `AGENTS.md` before you start. Obey it in all steps.
 
 Do not fix the code or the tests yourself.
 
-## Step 3: Test again
+## Step 3: Run all checks
 
-1. Run `npm test`. Show the author the result.
+1. Run `npm run fix && npm run check`. Show the author the result.
 2. If a test fails, do step 2 again. After 3 rounds, stop and ask the author what to do.
+3. If a different check fails, show the author the error. Ask the author if the reviewer must fix it.
 
-## Step 4: Final check
+## Step 4: Summary
 
-1. Run `npm run fix && npm run check`.
-2. If a check fails, show the author the error. Ask the author if the reviewer must fix it.
-3. Show the author a summary: each problem, its verdict (code, test or rule) and its fix.
+Show the author a summary: each problem, its verdict (code, test or rule) and its fix.

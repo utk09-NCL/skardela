@@ -1,7 +1,7 @@
 ---
 name: new-puzzle
 description: Make a new puzzle type from the rules.md of the author. Checks the rules with the author, writes the contract, then starts the coder agent and after it the test writer agent.
-argument-hint: <type>
+argument-hint: "[type]"
 disable-model-invocation: true
 ---
 
@@ -13,14 +13,14 @@ The first argument is the puzzle type name, for example `tilt`. Use only lowerca
 
 In this file, `<type>` is the type name and `<dir>` is `src/app/puzzle-types/<type>`.
 
-Read "Puzzle workflow" in `AGENTS.md` before you start. Obey it in all steps.
+Obey "Puzzle workflow" in `AGENTS.md` in all steps.
 
 You do steps 1 and 2, because they need the author. Agents do steps 3 and 4. Do not do the work of an agent yourself.
 
 ## Step 1: Check the rules with the author
 
 1. Read `<dir>/rules.md`. If the file does not exist, tell the author to copy `.claude/skills/new-puzzle/rules-template.md` to `<dir>/rules.md`. Then stop.
-2. Read `src/app/puzzle-types/numpuz/rules.md`, `src/app/puzzle-types/latics/rules.md` and `src/app/puzzle-types/guzzle/rules.md` for the style.
+2. Read `src/app/puzzle-types/tilt/rules.md`. It is the model for the style and the sections. This workflow made it.
 3. Examine the rules with the checklist below. Find the gaps, the contradictions and the words that a test cannot check, for example "near", "some" or "usually".
 4. Ask the author about each problem with the AskUserQuestion tool. Ask at most 4 questions at one time. Give 2 to 4 options for each question. Put your recommended option first and mark it (recommended).
 5. After each answer, update `rules.md` immediately. Put the rules for the player in "## Rules". Put the details that only the code and the tests need in "## Edge cases". Show the author the changed lines.
@@ -44,7 +44,9 @@ Write `rules.md` in ASD-STE100 Simplified Technical English. Keep each rule shor
 - Look: Can the player see the difference between each kind of item without colour? For example, a ball and its hole. What does the board show when two items are on one square?
 - Accessibility: Can the player play with only the keyboard? What does a screen reader say for each item, and after each move?
 - Edge cases: An empty input, the same action two times, an action that is not possible, Restart.
+- Puzzle data: How does `puzzles/<type>.json` keep one puzzle? For example, one character for each square. Does each puzzle have an `answer`, or does the game check each move with the rules?
 - Data check: Which puzzle data does the check refuse? For example, unknown characters, rows of different lengths, extra items and items without their pair.
+- Puzzles: How many puzzles does each level get? Does the author, the coder or a generator make them? The app shows one puzzle of each level each day, so a small number repeats soon.
 - First draft: Does each sentence of the first draft still agree with the final design? Change or remove each sentence that is not true now.
 - Example: Is there a small example with all its steps? Does it have one wrong step?
 
@@ -58,11 +60,11 @@ The contract is the set of exported types and function signatures. The coder and
    - `<dir>/puzzle.ts`: the puzzle data type (`PuzzleBase & { readonly type: "<type>"; ... }`) and `findPuzzleProblems`.
    - `<dir>/rules-check.ts`: the types and the pure functions of the rules.
    - `<dir>/machine.ts`: `GameState`, `GameEvent`, `Move`, `initialState`, `transition` and the query functions, for example `isSolved`.
-   - `<dir>/solver.ts`, only if the data check or a generator needs a search. Use `latics/solver.ts` as the model. If the puzzle has no `answer` field, the search gives the steps of one best solution, not only their number. The browser checker plays these steps.
+   - `<dir>/solver.ts`, only if the data check or a generator needs a search. Use `tilt/solver.ts` as the model. If the puzzle has no `answer` field, the search gives the steps of one best solution, not only their number. The browser checker plays these steps.
 4. Write each function as `export declare function name(...): Type;`, with no body. The coder adds the bodies. A constant that the rules fix, for example the board size for each level, can have its value.
 5. Give each type and each function a comment in Simplified Technical English. The comment tells what the function does, its result for each case, and the rule from `rules.md` that it applies.
 6. Run `npm run typecheck`. Correct each error in the contract.
-7. Save a copy of the contract files as they are now. Use your scratchpad directory if you have one. You give this copy to the test writer in step 4.
+7. Copy the contract files to your scratchpad directory. The coder adds the bodies to these files in step 3. The test writer gets this copy in step 4, so it does not see the code.
 8. Show the author a short list of the contract: the types and the function names. Ask the author to approve it.
 
 Do not write function bodies, React components, puzzle data or tests in this step.
