@@ -1,0 +1,8 @@
+{
+  "id": "tilt-0000",
+  "type": "tilt",
+  "difficulty": "medium",
+  "author": "skardela",
+  "license": "CC-BY-4.0",
+  "board": ["......", "#B#..#", ".r.#..", "......", ".....R", "...b.."]
+}

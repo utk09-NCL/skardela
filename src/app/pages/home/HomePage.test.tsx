@@ -1,3 +1,4 @@
+/* oxlint-disable import/max-dependencies -- the count of puzzle types comes from the registry. */
 import { render, screen, within } from "@testing-library/react";
 import { createMemoryRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
@@ -7,9 +8,14 @@ import { dayKey } from "../../../shared/progress";
 import { useAppStore } from "../../../shared/store";
 import { text } from "../../../text/en";
 import { homeLoader, type TodayCard } from "../../puzzles";
+import { puzzleTypes } from "../../puzzle-types/registry";
 import { routes } from "../../routes";
 
 const home = text.home;
+
+// Each day has one puzzle of each level for each puzzle type.
+// The count comes from the registry, thus a new puzzle type does not need a change here.
+const todayCount = Object.keys(puzzleTypes).length * levels.length;
 
 // The tests play as a returning player of the analytics notice, so the notice does not show.
 function renderHome() {
@@ -42,9 +48,9 @@ describe("home page hero", () => {
     expect(await renderHome()).toHaveTextContent(home.hero.title);
     expect(screen.getByRole("link", { name: home.hero.play })).toHaveAttribute("href", "#today");
     const progress = screen.getByRole("list", { name: home.hero.progressLabel });
-    expect(within(progress).getAllByRole("listitem")).toHaveLength(12);
+    expect(within(progress).getAllByRole("listitem")).toHaveLength(todayCount);
     expect(
-      screen.getByText(new RegExp(`^${home.hero.progress(0, 12)} · `, "u")),
+      screen.getByText(new RegExp(`^${home.hero.progress(0, todayCount)} · `, "u")),
     ).toBeInTheDocument();
   });
 
@@ -64,7 +70,7 @@ describe("home page hero", () => {
     solveToday(cards, 42);
     const id = todayId(cards, "guzzle", "easy");
     useAppStore.getState().openPuzzle({ puzzleId: id, type: "guzzle", difficulty: "easy" });
-    expect(await renderHome()).toHaveTextContent(home.hero.solvedSome(1, 12));
+    expect(await renderHome()).toHaveTextContent(home.hero.solvedSome(1, todayCount));
     expect(screen.queryByRole("link", { name: /^Continue/u })).toBeNull();
     expect(
       screen.getByText(home.hero.segment(text.guzzle.name, text.levels.easy, true)),
@@ -127,7 +133,7 @@ describe("home page time to new puzzles", () => {
 
   it("shows the time with its units next to the progress", async () => {
     await renderHome();
-    const line = screen.getByText(new RegExp(`^${home.hero.progress(0, 12)} · `, "u"));
+    const line = screen.getByText(new RegExp(`^${home.hero.progress(0, todayCount)} · `, "u"));
     expect(line.textContent).toMatch(/new puzzles in (\d+ h ?)?(\d+ min)?/u);
     expect(line.querySelector("time")?.getAttribute("datetime")).toMatch(/^PT\d+H\d+M$/u);
   });

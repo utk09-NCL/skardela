@@ -1,0 +1,226 @@
+/* The base of the board, the squares, the status box and the buttons are in "src/shared/Board.module.css".
+   This file sets what is special to Tilt: the walls, the holes, the balls, the slide and the arrow buttons.
+   The board uses both "grid" classes and both "square" classes. */
+
+/* "--gap" is the same gap as in the shared grid. The balls use it to find their squares. */
+.grid {
+  --gap: clamp(0.25rem, 1.2vw, 0.4rem);
+  --grey: light-dark(#6f6a64, #8c857d);
+  position: relative;
+  gap: var(--gap);
+  border-radius: var(--radius-md);
+  /* A swipe on the board tilts it, thus the page does not scroll or zoom during a touch on the board. */
+  touch-action: none;
+}
+
+/* The board takes the focus for the arrow keys. The ring is the same as on the squares of the other boards. */
+.grid:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 6px;
+}
+
+/* The key hint above the board. It tells a mouse player to click the board before the arrow keys.
+   A touch screen with no mouse does not show it. The negative margin puts it near the tilts. */
+.keyHint {
+  display: none;
+  justify-self: center;
+  margin-block-start: -0.5rem;
+  padding: 0.25rem 0.75rem;
+  border: 1px dashed var(--line);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.keyHintActive {
+  display: none;
+}
+
+/* The board or an arrow button has the focus: the hint shows its "active" text with the colour of the ring.
+   They are the only items in ".game" that can get the focus. */
+.game:focus-within .keyHint {
+  border-style: solid;
+  border-color: var(--ring);
+  color: var(--text-h);
+}
+
+.game:focus-within .keyHintIdle {
+  display: none;
+}
+
+.game:focus-within .keyHintActive {
+  display: inline;
+}
+
+/* With a mouse, the hint shows, and a click on the board shows the ring too. Without this rule,
+   the ring shows only after a key, thus the player does not see that the click gave the focus to the board. */
+@media (hover: hover) and (pointer: fine) {
+  .keyHint {
+    display: block;
+  }
+
+  .grid:focus {
+    outline: 3px solid var(--ring);
+    outline-offset: 6px;
+  }
+
+  .grid:not(:focus) {
+    cursor: pointer;
+  }
+}
+
+/* A wall has a pattern of lines, so the colour is not the only signal. It is the same as a Latics wall. */
+.square[data-wall="true"] {
+  --fill: var(--surface-muted);
+  --fill-edge: var(--line);
+  background-image: repeating-linear-gradient(45deg, var(--line) 0 2px, transparent 2px 8px);
+}
+
+/* The colours of the holes and the balls. "--ink" is the colour of a hole outline and its icon.
+   "--on-ball" is the colour of the icon on a ball. Each ball and its hole show the same icon too. */
+.hole[data-colour="red"],
+.ball[data-colour="red"] {
+  --colour: var(--red);
+  --colour-edge: var(--red-edge);
+  --ink: var(--red);
+  --on-ball: var(--on-colour);
+}
+
+.hole[data-colour="blue"],
+.ball[data-colour="blue"] {
+  --colour: var(--blue);
+  --colour-edge: var(--blue-edge);
+  --ink: var(--blue);
+  --on-ball: var(--on-colour);
+}
+
+/* Yellow is light. The hole uses the dark edge colour on a light page, so it shows clearly. */
+.hole[data-colour="yellow"],
+.ball[data-colour="yellow"] {
+  --colour: var(--yellow);
+  --colour-edge: var(--yellow-edge);
+  --ink: light-dark(var(--yellow-edge), var(--yellow));
+  --on-ball: var(--on-yellow);
+}
+
+.ball[data-colour="grey"] {
+  --colour: var(--grey);
+  --colour-edge: color-mix(in srgb, var(--grey) 70%, #000000);
+  --on-ball: var(--on-colour);
+}
+
+/* A hole is the outline of a circle with the icon of its colour. */
+.hole {
+  display: grid;
+  place-items: center;
+  width: 84%;
+  aspect-ratio: 1;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  color: var(--ink);
+}
+
+/* A ball has the size of one square and sits on top of the squares. "--row" and "--column" put it on its square.
+   A move to a new square slides in "--slide". The ball does not catch clicks or touches. */
+.ball {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: calc((100% - (var(--size) - 1) * var(--gap)) / var(--size));
+  aspect-ratio: 1;
+  translate: calc(var(--column) * (100% + var(--gap))) calc(var(--row) * (100% + var(--gap)));
+  transition: translate var(--slide, 0ms) ease-out;
+  pointer-events: none;
+}
+
+/* The ball is a full circle. It is smaller than a hole, so a ball on a hole of a different colour shows inside
+   the outline of the hole. */
+.disc {
+  display: grid;
+  place-items: center;
+  width: 62%;
+  aspect-ratio: 1;
+  border: 2px solid var(--colour-edge);
+  border-radius: 50%;
+  background-color: var(--colour);
+  box-shadow: var(--shadow-sm);
+  color: var(--on-ball);
+  font-size: clamp(0.75rem, calc(32cqi / var(--size)), 1.4rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* A hole with its ball is a full circle with ✓. It fills the outline of the hole. */
+.ball[data-in-hole="true"] .disc {
+  width: 84%;
+  border-width: 3px;
+  box-shadow: none;
+}
+
+/* The tilts and the fewest tilts, above the board. */
+.counts {
+  justify-self: center;
+  color: var(--text-h);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+/* The four arrow buttons are in a cross: up on top, left and right in the middle, down at the bottom.
+   The buttons are in a fieldset, thus the first lines remove its default styles. */
+.arrows {
+  display: grid;
+  grid-template-columns: repeat(3, 3.5rem);
+  grid-template-areas:
+    ". up ."
+    "left . right"
+    ". down .";
+  gap: 0.375rem;
+  justify-content: center;
+  min-inline-size: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* The ".arrows >" part makes this rule stronger than the shared "button" rule, in any order of the files. */
+.arrows > .arrow {
+  justify-self: stretch;
+  padding: 0;
+  font-size: 1.5rem;
+}
+
+.arrow[data-direction="up"] {
+  grid-area: up;
+}
+
+.arrow[data-direction="down"] {
+  grid-area: down;
+}
+
+.arrow[data-direction="left"] {
+  grid-area: left;
+}
+
+.arrow[data-direction="right"] {
+  grid-area: right;
+}
+
+.arrow:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* After the solve, the buttons use "aria-disabled", not "disabled". So the shared hover rule still works,
+   and this rule turns it off. */
+.arrows > .arrow[aria-disabled="true"]:hover:enabled {
+  border-color: var(--border);
+  background-color: var(--surface);
+}
+
+.arrow[aria-disabled="true"] {
+  cursor: default;
+  opacity: 0.6;
+}

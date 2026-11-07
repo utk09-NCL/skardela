@@ -15,6 +15,9 @@ import { puzzleTypes, type PuzzleMap, type PuzzleType } from "../src/app/puzzle-
 import { levels } from "../src/shared/difficulty";
 import numpuzExample from "../src/app/puzzle-types/numpuz/examples/numpuz-0000.json";
 import { findPuzzleProblems as findNumpuzProblems } from "../src/app/puzzle-types/numpuz/puzzle";
+import tiltExample from "../src/app/puzzle-types/tilt/examples/tilt-0000.json";
+import { findPuzzleProblems as findTiltProblems } from "../src/app/puzzle-types/tilt/puzzle";
+import { findSolutionProblems as findTiltSolutionProblems } from "../src/app/puzzle-types/tilt/solver";
 
 // These checks run on each puzzle file in CI.
 // They stop broken puzzle data before it gets to a player.
@@ -48,6 +51,15 @@ const checks: {
     },
   },
   numpuz: { example: numpuzExample, findProblems: findNumpuzProblems },
+  tilt: {
+    example: tiltExample,
+    // A tilt puzzle must also have a solution with the fewest tilts of its level. On hard, it must need the grey ball.
+    // The search needs valid data, thus it runs only when the data has no problems.
+    findProblems: (puzzle) => {
+      const problems = findTiltProblems(puzzle);
+      return problems.length > 0 ? problems : findTiltSolutionProblems(puzzle);
+    },
+  },
 };
 
 // This check finds problems that are the same for all puzzle types.

@@ -10,4 +10,5 @@ export const boards: { [Type in PuzzleType]: ComponentType<{ puzzle: PuzzleMap[T
   guzzle: lazy(() => import("./guzzle/Board").then((module) => ({ default: module.Board }))),
   latics: lazy(() => import("./latics/Board").then((module) => ({ default: module.Board }))),
   numpuz: lazy(() => import("./numpuz/Board").then((module) => ({ default: module.Board }))),
+  tilt: lazy(() => import("./tilt/Board").then((module) => ({ default: module.Board }))),
 };

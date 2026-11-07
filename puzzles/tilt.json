@@ -1,0 +1,722 @@
+[
+  {
+    "id": "tilt-0001",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".....", ".#r#.", ".R..#", ".#...", "..#.."]
+  },
+  {
+    "id": "tilt-0002",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["....R", "....#", "#.#..", "..r..", "....."]
+  },
+  {
+    "id": "tilt-0003",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["r.#..", ".....", "...#R", "..###", "..#.."]
+  },
+  {
+    "id": "tilt-0004",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["R....", "....#", "#....", "r.#..", "....."]
+  },
+  {
+    "id": "tilt-0005",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".....", ".....", "...#R", "#..r#", "..#.#"]
+  },
+  {
+    "id": "tilt-0006",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["...#.", ".....", ".....", "#.#..", ".R#.r"]
+  },
+  {
+    "id": "tilt-0007",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["...#.", "....#", "..#R.", "#..#.", "r.#.."]
+  },
+  {
+    "id": "tilt-0008",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["....#", "R.#..", "..#.r", ".....", "..#.."]
+  },
+  {
+    "id": "tilt-0009",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["R....", ".#.##", ".....", "...#.", "..#r."]
+  },
+  {
+    "id": "tilt-0010",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["...#.", "....R", "#....", "r.#..", "..##."]
+  },
+  {
+    "id": "tilt-0011",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".....", "R....", "#....", "..r.#", "....#"]
+  },
+  {
+    "id": "tilt-0012",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["r.#..", "...##", "##...", "...R.", "....."]
+  },
+  {
+    "id": "tilt-0013",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["r#..#", "....#", "#..#R", ".....", "#...."]
+  },
+  {
+    "id": "tilt-0014",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["r...#", "##...", "..#..", ".#...", "..R#."]
+  },
+  {
+    "id": "tilt-0015",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["..r#.", "..#..", ".....", ".....", "##.R."]
+  },
+  {
+    "id": "tilt-0016",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".....", ".....", ".#...", "##r.#", "...R."]
+  },
+  {
+    "id": "tilt-0017",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".....", ".....", ".#.#.", "..r..", "R#..."]
+  },
+  {
+    "id": "tilt-0018",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["...r#", "#....", "R....", "#....", "....#"]
+  },
+  {
+    "id": "tilt-0019",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".....", ".#...", ".#.r.", "..#..", "R#..#"]
+  },
+  {
+    "id": "tilt-0020",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["#....", "r.#..", ".....", ".....", "#..R#"]
+  },
+  {
+    "id": "tilt-0021",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["..r.#", "#....", "R....", ".....", "#...."]
+  },
+  {
+    "id": "tilt-0022",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["#...#", ".....", "#..#r", ".#..#", "...R."]
+  },
+  {
+    "id": "tilt-0023",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["#....", ".....", "#.#.r", "##..#", "..R.."]
+  },
+  {
+    "id": "tilt-0024",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["##...", "R....", "##.#.", "r....", "...#."]
+  },
+  {
+    "id": "tilt-0025",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["#.r..", "..#.#", "...#.", "...#.", ".#.R."]
+  },
+  {
+    "id": "tilt-0026",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".#...", ".#r..", "#R#..", ".....", "...#."]
+  },
+  {
+    "id": "tilt-0027",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["#....", "r..#R", "....#", ".#.#.", "....#"]
+  },
+  {
+    "id": "tilt-0028",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["..#..", ".....", "...##", "R#r.#", "....."]
+  },
+  {
+    "id": "tilt-0029",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".##r.", "#R.#.", ".#...", ".....", "....."]
+  },
+  {
+    "id": "tilt-0030",
+    "type": "tilt",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["#..#.", "r....", ".#..R", "##...", ".#..."]
+  },
+  {
+    "id": "tilt-0031",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["...#..", ".BR.b.", ".....#", ".....#", ".r....", "..#..."]
+  },
+  {
+    "id": "tilt-0032",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["..#...", "....r#", "..R#..", ".#...B", "..b...", "...#.."]
+  },
+  {
+    "id": "tilt-0033",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["..B..#", "##....", "...#r.", "......", "..#...", "..R..b"]
+  },
+  {
+    "id": "tilt-0034",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".#.#B.", ".....r", "......", "....##", ".#.R..", ".b.#.."]
+  },
+  {
+    "id": "tilt-0035",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["...#.#", "....b.", ".....#", ".#r.B.", ".#.R.#", "#...#."]
+  },
+  {
+    "id": "tilt-0036",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".b....", "#.#B.#", "......", "#.R..#", "r...##", ".#...."]
+  },
+  {
+    "id": "tilt-0037",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["b..R#.", "...B..", "......", ".....#", "##....", ".#..r."]
+  },
+  {
+    "id": "tilt-0038",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["......", "r..#..", "......", "#..#..", "..B...", "..#R.b"]
+  },
+  {
+    "id": "tilt-0039",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["..#...", ".Rr#..", ".#..b.", "#..#..", ".B#...", "....##"]
+  },
+  {
+    "id": "tilt-0040",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".#....", "..#.#.", "#...R.", ".B#...", "..#..b", ".....r"]
+  },
+  {
+    "id": "tilt-0041",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["#...r.", ".....#", "...R..", ".#..b#", "......", "#....B"]
+  },
+  {
+    "id": "tilt-0042",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".BR...", "b..#..", "...##.", "...#..", "...r..", "#....."]
+  },
+  {
+    "id": "tilt-0043",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["R..b..", "......", ".....#", ".###..", "...#B.", "....#r"]
+  },
+  {
+    "id": "tilt-0044",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["#..#..", "B.#...", ".r....", ".#.#..", ".#...b", "#..R.#"]
+  },
+  {
+    "id": "tilt-0045",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["r....#", "B.#...", ".#b.R.", ".#....", "...#..", ".#..#."]
+  },
+  {
+    "id": "tilt-0046",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".....B", ".R....", "#.#...", "..#r.#", "###..#", "..b..."]
+  },
+  {
+    "id": "tilt-0047",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".#....", "#...r.", "b...##", ".B....", "......", "##.R.."]
+  },
+  {
+    "id": "tilt-0048",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["..b.r.", ".RB...", "...#..", "...#.#", "....##", "..#..."]
+  },
+  {
+    "id": "tilt-0049",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["......", "..#R..", ".....#", "...B.r", "....#.", "..b#.."]
+  },
+  {
+    "id": "tilt-0050",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["..#...", ".....R", "#.#B..", "....#r", "#...##", ".b#..."]
+  },
+  {
+    "id": "tilt-0051",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["##..#.", "R...b.", "B....#", "..#r..", "..#...", "..##.."]
+  },
+  {
+    "id": "tilt-0052",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["......", "b##.#.", "......", ".RB#..", "...##.", "..#.#r"]
+  },
+  {
+    "id": "tilt-0053",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["..##.r", "...#b#", ".....#", "..##..", "......", ".#.RB."]
+  },
+  {
+    "id": "tilt-0054",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".....b", "..#.r.", ".R.##.", "#.#...", "......", "B..#.."]
+  },
+  {
+    "id": "tilt-0055",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["....##", "......", ".#.#.#", "...#.R", "...rb.", ".B...."]
+  },
+  {
+    "id": "tilt-0056",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["......", ".R###.", ".B....", "b..#..", ".r.#..", ".#..#."]
+  },
+  {
+    "id": "tilt-0057",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".R....", "....B.", "b##...", "#..#..", ".....#", "...r#."]
+  },
+  {
+    "id": "tilt-0058",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".#....", ".r....", "....#.", "...#B.", ".#b...", "R....#"]
+  },
+  {
+    "id": "tilt-0059",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["#...#r", "..#.#.", "......", "...#..", "..#.B.", "..R..b"]
+  },
+  {
+    "id": "tilt-0060",
+    "type": "tilt",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["b..#.#", "...#r.", "....#.", ".#R...", "..#...", "#B...#"]
+  },
+  {
+    "id": "tilt-0061",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["..yB.r.", "...##.#", "#.#..#.", "......R", ".Y.#.G.", "#..b#..", "#......"]
+  },
+  {
+    "id": "tilt-0062",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["..G....", "#.ry##.", "Y......", "..B..#.", ".b#.R..", "##.....", "......."]
+  },
+  {
+    "id": "tilt-0063",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["....Y..", "#B.rG#.", ".....b.", "...#...", "y..#..R", "..#....", "....#.."]
+  },
+  {
+    "id": "tilt-0064",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".......", ".#Y.B..", "#.#....", "...r.GR", "#y...b.", "#......", "..##..."]
+  },
+  {
+    "id": "tilt-0065",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["...R##.", "....G..", "....##B", "...yY..", "....#..", "b.r..#.", ".....#."]
+  },
+  {
+    "id": "tilt-0066",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["...G...", "...#...", "..r...#", ".#.B..y", ".R#b.Y.", "...#.#.", "#...##."]
+  },
+  {
+    "id": "tilt-0067",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".....#.", "....##B", ".#....R", ".......", "...y.Y#", ".#..r..", "..#.b.G"]
+  },
+  {
+    "id": "tilt-0068",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["...r...", "#....y#", ".....#.", ".YG....", "...###B", "...R...", "b....#."]
+  },
+  {
+    "id": "tilt-0069",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".#.#...", "....#..", "..Y.#y.", "##..r.R", "Bb#....", "##...#G", "......."]
+  },
+  {
+    "id": "tilt-0070",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".r...Y.", ".#.by..", ".##....", "#..#.#B", ".....G#", "..#....", "..#..R."]
+  },
+  {
+    "id": "tilt-0071",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["G....#.", "...y.B.", ".b#....", "#R...#Y", "....#.#", "r.....#", ".##..#."]
+  },
+  {
+    "id": "tilt-0072",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["....Y.G", "#bB.#.#", ".......", "r..R...", ".......", ".#.#.#.", "..y..#."]
+  },
+  {
+    "id": "tilt-0073",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["......R", "..Y..G.", "....#..", ".y..br.", "..##...", ".###..B", "......."]
+  },
+  {
+    "id": "tilt-0074",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["...#B#.", "rG....Y", "...b.#.", ".R.....", ".y##.#.", "..#....", "...#..."]
+  },
+  {
+    "id": "tilt-0075",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".##...#", "..#y.#.", "Y......", "....#..", "....Rb.", "B..G#r.", "##.#..."]
+  },
+  {
+    "id": "tilt-0076",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["......y", ".b....#", ".....#.", ".G#...B", "..#.#..", "#....r.", ".Y....R"]
+  },
+  {
+    "id": "tilt-0077",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["....##.", ".#....Y", "...RG..", "....y.#", ".#...#.", "..r...b", "....#B."]
+  },
+  {
+    "id": "tilt-0078",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".G.Y...", "....r.#", "...y.b.", "##..#..", "#..#..#", "....R..", "#..B.##"]
+  },
+  {
+    "id": "tilt-0079",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["B..Y##.", "....##.", "r.#....", "..#y.G.", ".......", "..#..b.", ".#...R."]
+  },
+  {
+    "id": "tilt-0080",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".......", "..rR..y", "..b....", "#.#YG##", "...#.#B", "..##.#.", "......."]
+  },
+  {
+    "id": "tilt-0081",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".#.b...", ".r.#..y", ".Y#.#B.", "..#...#", ".R....#", "......G", "......."]
+  },
+  {
+    "id": "tilt-0082",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["#.....#", "###....", "...Y#.r", ".....#R", ".y..#..", "..G...b", ".B..#.."]
+  },
+  {
+    "id": "tilt-0083",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".....#.", ".#.r#y.", ".B.....", ".......", "#...#..", "b....#.", "R#.G#.Y"]
+  },
+  {
+    "id": "tilt-0084",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["...#...", "#.b#...", "#...#..", "..rR.yB", "...#...", "..#....", "G.#.Y.."]
+  },
+  {
+    "id": "tilt-0085",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["#.#....", ".Gy....", "#.#....", "......Y", ".#.B.b#", ".....r#", "..R...."]
+  },
+  {
+    "id": "tilt-0086",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": [".#.R.#.", ".r.Y..B", "....b.G", "...y...", ".##..#.", ".......", "....##."]
+  },
+  {
+    "id": "tilt-0087",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["b.#.##.", "....#G#", "#......", "y.#....", ".......", "r.Y.#..", "B..#R.#"]
+  },
+  {
+    "id": "tilt-0088",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["....R..", "#..B#.#", "#..#...", ".G..#..", ".#...y.", "b..#...", ".r#..Y."]
+  },
+  {
+    "id": "tilt-0089",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["...#..b", "r###..y", "B......", "....#.#", "...#...", "..GY.#.", "...#R.."]
+  },
+  {
+    "id": "tilt-0090",
+    "type": "tilt",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "board": ["...GB..", "...y..R", ".......", ".......", "#r..b#.", "#....#.", "...##Y."]
+  }
+]

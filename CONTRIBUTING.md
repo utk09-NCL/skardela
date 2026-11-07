@@ -21,6 +21,7 @@ Before you open a pull request, run `npm run fix && npm run check`. CI runs the 
 | `npm run test`            | Runs the unit tests in `src/`.                                                                       |
 | `npm run validate`        | Checks all puzzle files in `puzzles/`. See `tools/puzzles.test.ts`.                                  |
 | `npm run generate:latics` | Makes new Latics puzzles and adds them to `puzzles/latics.json`. See `tools/generate-latics.gen.ts`. |
+| `npm run generate:tilt`   | Makes new Tilt puzzles and adds them to `puzzles/tilt.json`. See `tools/generate-tilt.gen.ts`.       |
 
 ## Project structure
 
@@ -28,6 +29,7 @@ Before you open a pull request, run `npm run fix && npm run check`. CI runs the 
 puzzles/                     Puzzle data. One JSON file for each puzzle type. The build ciphers the answers.
 tools/puzzles.test.ts        Checks all puzzle data.
 tools/latics-generator.ts    Makes new Latics puzzles. "npm run generate:latics" runs it.
+tools/tilt-generator.ts      Makes new Tilt puzzles. "npm run generate:tilt" runs it.
 src/
   main.tsx                   Starts the app.
   index.css                  Global styles and colour values.
@@ -64,6 +66,12 @@ src/app/puzzle-types/<type>/
   examples/<type>-0000.json  The example from rules.md as puzzle data.
   puzzle.ts                  The puzzle data type and the data check "findPuzzleProblems".
   rules-check.ts             Pure rule logic. No React. Easy to test.
+  machine.ts                 The state machine: the game state, "transition" and the queries. Pure. No React.
+  solver.ts                  The search, for example for the fewest moves. Only when the type needs a search.
+  useGame.ts                 The hook that connects the state machine to React. It has no rules of its own.
+  status.ts                  The status text for each state of the game.
+  log.ts                     The logs, and the lifecycle hook that starts the timer and saves each solve.
+  keys.ts                    The keys that the board reads. Only when the type has its own keys.
   Board.tsx                  The board component.
   Board.module.css           Styles for this board only.
   *.test.ts(x)               Tests next to the code that they test.

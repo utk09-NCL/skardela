@@ -52,7 +52,8 @@ export default defineConfig({
           include: ["tools/**/*.test.ts"],
         },
       },
-      // The puzzle generators. They change the puzzle files, thus only "npm run generate:latics" runs them.
+      // The puzzle generators. They change the puzzle files, thus only the "generate:<type>" scripts run them.
+      // Each script gives the file of its generator, so one script does not run the generators of other types.
       {
         extends: true,
         test: {

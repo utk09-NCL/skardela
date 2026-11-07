@@ -15,7 +15,8 @@
     "test": "vitest run --project unit",
     "test:watch": "vitest --project unit",
     "validate": "vitest run --project validate",
-    "generate:latics": "vitest run --project generate",
+    "generate:latics": "vitest run --project generate tools/generate-latics.gen.ts",
+    "generate:tilt": "vitest run --project generate tools/generate-tilt.gen.ts",
     "fix": "npm run format:fix && npm run lint:fix",
     "check": "npm run format:check && npm run lint:check && npm run typecheck && npm run build && npm run test && npm run validate"
   },

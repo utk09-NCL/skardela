@@ -93,6 +93,18 @@ function NumpuzIcon() {
   );
 }
 
+// Tilt: a red ball rolls along a path to the outline of its hole. A wall is under the path.
+function TiltIcon() {
+  return (
+    <svg className={styles.tiltIcon} viewBox="0 0 32 32" width="34" height="34">
+      <rect className={styles.tiltWall} x="13" y="19" width="7" height="7" rx="1.5" />
+      <path className={styles.tiltPath} d="M12 11 H19" />
+      <circle className={styles.tiltHole} cx="25" cy="11" r="4.5" />
+      <circle className={styles.tiltBall} cx="7" cy="11" r="4.5" />
+    </svg>
+  );
+}
+
 // A small picture of each puzzle type. Each type has a different kind of picture, so the cards are easy to tell
 // apart. It is only decoration. TypeScript makes sure that each puzzle type has an icon.
 const icons: { [Type in PuzzleType]: () => ReactNode } = {
@@ -100,6 +112,7 @@ const icons: { [Type in PuzzleType]: () => ReactNode } = {
   guzzle: GuzzleIcon,
   latics: LaticsIcon,
   numpuz: NumpuzIcon,
+  tilt: TiltIcon,
 };
 
 export function PuzzleIcon({ type }: { type: PuzzleType }) {

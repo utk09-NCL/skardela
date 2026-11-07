@@ -1,3 +1,4 @@
+/* oxlint-disable import/max-dependencies -- the count of puzzle types comes from the registry. */
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryRouter } from "react-router";
@@ -7,6 +8,7 @@ import { addDays, dayKey } from "../../../shared/progress";
 import { reloadPage } from "../../../shared/reload";
 import { useAppStore } from "../../../shared/store";
 import { text } from "../../../text/en";
+import { puzzleTypes } from "../../puzzle-types/registry";
 import { routes } from "../../routes";
 
 // jsdom cannot load a page again, thus the test replaces "reloadPage".
@@ -57,8 +59,9 @@ describe("home page stats", () => {
     const calendar = screen.getByRole("list", { name: stats.calendar.heading });
     expect(within(calendar).getByText(stats.calendar.day(today, 2))).toBeInTheDocument();
     const table = screen.getByRole("table", { name: stats.bests.heading });
-    // One row for each puzzle type, and one column for each level.
-    expect(within(table).getAllByRole("row")).toHaveLength(5);
+    // One heading row, one row for each puzzle type, and one column for each level.
+    // The count comes from the registry, thus a new puzzle type does not need a change here.
+    expect(within(table).getAllByRole("row")).toHaveLength(Object.keys(puzzleTypes).length + 1);
     const row = within(table).getByRole("row", { name: /^Guzzle/u });
     expect(
       within(row)

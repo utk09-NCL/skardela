@@ -50,4 +50,15 @@ export const symbols = {
     // A blank that has no operator yet.
     empty: "?",
   },
+  tilt: {
+    // The icon of each ball colour. A ball and its hole show the same icon, so colour is not the only signal.
+    // The grey ball has no icon.
+    colours: { red: "▲", blue: "■", yellow: "★", grey: "" },
+    // A hole with its ball shows a full circle with this mark.
+    full: "✓",
+    // The four arrow buttons that tilt the board.
+    arrows: { up: "↑", down: "↓", left: "←", right: "→" },
+    // The key hint above the board starts with this mark.
+    keyboard: "⌨️",
+  },
 } as const;

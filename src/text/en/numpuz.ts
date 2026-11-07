@@ -13,7 +13,6 @@ const mistakeCount = (count: number) => `${count} ${mistakeWord(count)}`;
 export const numpuz = {
   name: "Numpuz",
   summary: `Fill each blank with ${add} ${subtract} ${multiply} or ${divide} to reach the target number.`,
-  tagline: "Fill in the operators",
   // The three short rules show at all times.
   rules: [
     `Fill each blank between the numbers with ${add} ${subtract} ${multiply} or ${divide}.`,
