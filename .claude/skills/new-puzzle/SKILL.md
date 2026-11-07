@@ -69,6 +69,22 @@ Do not write function bodies, React components, puzzle data or tests in this ste
 
 ## Step 3: Start the coder
 
+1. Start the `puzzle-coder` agent. Give it the type name. Tell it that the rules are locked and that the contract is in `puzzle.ts`, `rules-check.ts`, `machine.ts` and, if it exists, `solver.ts`.
+2. Wait for its report. Show the author a short summary.
+3. If the report has rule questions, ask the author. Update `rules.md` with the answers. Do not change the code. The tests and the reviewer find the code that disagrees.
+
 ## Step 4: Start the test writer
 
+1. Start the `puzzle-test-writer` agent. Give it the type name and the full text of the contract copy from step 2.
+2. Do not tell it about the code or about the report of the coder. It must use only `rules.md` and the contract.
+3. Wait for its report. Show the author a short summary: the tests for each rule, and the open questions.
+4. If the report has rule questions, ask the author and update `rules.md`. Then send the answers to the same test writer agent, so that it can update its tests.
+
 ## Step 5: Stop
+
+Do not run the rule tests. The author runs them. Tell the author the next steps:
+
+1. Run the tests: `npm run test`
+2. If a test fails, run `/review-puzzle <type>`.
+3. Check the puzzle in a browser with `/verify-puzzle <type>`.
+4. If everything passes, run `npm run fix && npm run check`.
