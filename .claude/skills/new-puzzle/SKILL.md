@@ -87,4 +87,3 @@ Do not run the rule tests. The author runs them. Tell the author the next steps:
 1. Run the tests: `npm run test`
 2. If a test fails, run `/review-puzzle <type>`.
 3. Check the puzzle in a browser with `/verify-puzzle <type>`.
-4. If everything passes, run `npm run fix && npm run check`.
