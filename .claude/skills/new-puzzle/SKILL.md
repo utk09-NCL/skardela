@@ -49,6 +49,23 @@ Write `rules.md` in ASD-STE100 Simplified Technical English. Keep each rule shor
 
 ## Step 2: Write the contract
 
+The contract is the set of exported types and function signatures. The coder and the test write both use it. Thus the tests and the code use the same names.
+
+1. Read `src/app/puzzle-types/numpuz/puzzle.ts`, `rules-checl.ts` and `machine.ts`. Use the same structure.
+2. Write `<dir>/examples/<type>-000.json`. It is the example from `rules.md` as puzzle data.
+3. Write the contract in these files:
+   - `<dir>/puzzle.ts`: the puzzle data type (`PuzzleBase & { readonly type: "<type>";... }`) and `findPuzzleProblems`.
+   - `<dir>/rules-check.ts`: the types and the pure functions of the rules.
+   - `<dir>/machine.ts`: `GameState`, `GameEvent`, `Move`, `initialState`, `transition` and the query functions, for example `isSolved`.
+   - `<dir>/solver.ts`, only if the data check or a generator needs a search. Use `latics/solver.ts` as a model. If the puzzle has no `answer` field, the search gives the steps of one best solution, not only their number. The browser checker plays these steps.
+4. Write each function as `export declare function name(...): Type;` with no body. The coder adds the bodies. A constant that the rules fix, for example the board size for each level, can have its value.
+5. Give each type and each function a comment in Simplified Technical English. The comment tells what the function does, its result for each case, and and the rule from `rules.md` that it applies.
+6. Run `npm run typecheck`. Correct each error in the contract.
+7. Save a copy of the contract files as they are now. Use your scratchpad directory if you have one. You give this copy to the test writer in step 4.
+8. Show the author a short list of the contract: the types and the function names. Ask the author to approve it.
+
+Do not write function bodies, React components, puzzle data or tests in this step.
+
 ## Step 3: Start the coder
 
 ## Step 4: Start the test writer
