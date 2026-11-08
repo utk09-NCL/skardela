@@ -191,7 +191,10 @@ describe("puzzle page rules", () => {
     expect(within(rules).getByRole("list", { name: page.keyLabel })).toBeInTheDocument();
     const more = within(rules).getByText(text.guzzle.moreRules.label).closest("details");
     expect(more).toHaveAttribute("open");
-    expect(useAppStore.getState().seenRules).toEqual(["guzzle"]);
+    // The effect in "PuzzleRules" saves the puzzle type after the render, thus the test waits for the store.
+    await waitFor(() => {
+      expect(useAppStore.getState().seenRules).toEqual(["guzzle"]);
+    });
   });
 
   it("closes More rules on the next visit of the same puzzle type", async () => {
