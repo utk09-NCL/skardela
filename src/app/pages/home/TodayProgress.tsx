@@ -1,4 +1,4 @@
-import { hoursAndMinutes, isoDuration, msUntilMidnight } from "../../../shared/progress";
+import { hoursAndMinutes, isoDuration, msUntilMidnight } from "../../../shared/state/progress";
 import { text } from "../../../text/en";
 import styles from "./HomePage.module.css";
 

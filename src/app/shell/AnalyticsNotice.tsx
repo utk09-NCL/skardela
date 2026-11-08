@@ -1,8 +1,8 @@
 import { useEffect, type SyntheticEvent } from "react";
-import { loadAnalytics } from "../shared/analytics";
-import { getLogger } from "../shared/logger";
-import { useAppStore } from "../shared/store";
-import { text } from "../text/en";
+import { loadAnalytics } from "../../shared/analytics";
+import { getLogger } from "../../shared/logger";
+import { useAppStore } from "../../shared/state/store";
+import { text } from "../../text/en";
 import styles from "./AnalyticsNotice.module.css";
 
 // This notice tells a new player that the site uses analytics. It shows on each page until the player selects OK.

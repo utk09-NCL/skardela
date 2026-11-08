@@ -1,12 +1,12 @@
 import { Fragment } from "react";
 import { Link } from "react-router";
 import shared from "../../../shared/Board.module.css";
-import { bestResult, formatDuration } from "../../../shared/progress";
-import type { SolveResult } from "../../../shared/saved-data";
+import { bestResult, formatDuration } from "../../../shared/state/progress";
+import type { SolveResult } from "../../../shared/state/saved-data";
 import { marksText, prefersShareMenu } from "../../../shared/share";
 import { ShareButton } from "../../../shared/ShareButton";
 import { text } from "../../../text/en";
-import type { LoadedPuzzle } from "../../puzzles";
+import { puzzleNumber, type LoadedPuzzle } from "../../puzzles";
 import styles from "./PuzzlePage.module.css";
 
 const words = text.puzzlePage.result;
@@ -34,7 +34,7 @@ function shareTextOf({ loaded, solve, results, solved, day }: ResultShareProps) 
   const shareText = text.share.puzzle({
     day: isToday ? day : undefined,
     typeName: text[type].name,
-    number: puzzle.id.slice(puzzle.id.lastIndexOf("-") + 1),
+    number: puzzleNumber(puzzle.id),
     level: text.levels[puzzle.difficulty],
     marks,
     time: formatDuration(solve.seconds),

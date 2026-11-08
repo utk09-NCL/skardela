@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { createMemoryRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import { describe, expect, it } from "vitest";
-import { useAppStore } from "../../../shared/store";
+import { useAppStore } from "../../../shared/state/store";
 import { text } from "../../../text/en";
 import { puzzleTypes } from "../../puzzle-types/registry";
 import { routes } from "../../routes";

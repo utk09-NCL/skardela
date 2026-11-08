@@ -10,7 +10,7 @@ import {
   type SavedData,
   type SolveResult,
 } from "./saved-data";
-import { parseStoredText, toStoredText } from "./storage-format";
+import { isNewerText, parseStoredText, toStoredText } from "./storage-format";
 import type { Theme } from "./theme";
 
 // The store of the app. It holds the saved data and the actions that change it.
@@ -33,7 +33,8 @@ export type AppState = SavedData & {
 
 // "unavailable": the browser blocks storage, for example in some private windows.
 // "full": the storage of the site is full, thus the browser refuses new data.
-export type StorageStatus = "ok" | "unavailable" | "full";
+// "outdated": a different tab saved data of a newer version of the app. This tab does not save until a reload.
+export type StorageStatus = "ok" | "unavailable" | "full" | "outdated";
 
 // The status of the storage. It is not saved. The storage notice in the layout shows it to the player.
 export const useStorageStatus = create<{ status: StorageStatus }>()(() => ({ status: "ok" }));
@@ -52,10 +53,12 @@ function setStatus(status: StorageStatus) {
 
 // The storage never throws. When the browser blocks storage or the storage is full, the data stays in the store
 // until the page closes, and the storage status tells the player. See "storage-format.ts" for the stored text.
+// This version cannot read all of the data of a newer version. A write would lose that data, thus it stops.
 const savedDataStorage: PersistStorage<SavedData> = {
   getItem: (name) => {
     try {
       const text = localStorage.getItem(name);
+      if (isNewerText(text)) setStatus("outdated");
       return text === null ? null : { state: parseStoredText(text) };
     } catch (error) {
       setStatus(statusOf(error));
@@ -64,6 +67,10 @@ const savedDataStorage: PersistStorage<SavedData> = {
   },
   setItem: (name, value) => {
     try {
+      if (isNewerText(localStorage.getItem(name))) {
+        setStatus("outdated");
+        return;
+      }
       localStorage.setItem(name, toStoredText(value.state));
       setStatus("ok");
     } catch (error) {

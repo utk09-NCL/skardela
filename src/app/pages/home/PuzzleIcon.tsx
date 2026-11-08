@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { PuzzleType } from "../../puzzle-types/registry";
 import { symbols } from "../../../text/symbols";
-import styles from "./HomePage.module.css";
+import styles from "./PuzzleIcon.module.css";
 
 type Tile = "red" | "blue" | "muted";
 

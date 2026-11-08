@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import { levels, type Difficulty } from "../../../shared/difficulty";
-import { bestOf, formatDuration } from "../../../shared/progress";
-import type { SolveResult } from "../../../shared/saved-data";
+import { bestOf, formatDuration } from "../../../shared/state/progress";
+import type { SolveResult } from "../../../shared/state/saved-data";
 import { text } from "../../../text/en";
 import type { PuzzleType } from "../../puzzle-types/registry";
 import styles from "./HomePage.module.css";

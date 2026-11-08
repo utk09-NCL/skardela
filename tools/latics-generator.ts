@@ -15,6 +15,7 @@ import {
 import { boardOf, findSolutionProblems, solve } from "../src/app/puzzle-types/latics/solver";
 import { levels, type Difficulty } from "../src/shared/difficulty";
 import { makeRandom } from "../src/shared/random";
+import { generatePuzzles, type GenerateOptions } from "./generator-script";
 
 // "critical": the critical angle. Its puzzles are only on "hard", because only the player on "hard" can turn
 // a laser in the water. They have two lasers: one in the water that reflects at the edge to a monster in the water,
@@ -233,34 +234,13 @@ export function boardKey(puzzle: Pick<LaticsPuzzle, "board" | "water">): string 
   return `${puzzle.board.join("/")}|${(puzzle.water ?? []).join("/")}`;
 }
 
-export type GenerateOptions = {
-  // The first seed. The same seed and plan always give the same puzzles.
-  readonly seed: number;
-  // The number of random boards to try for each plan item before the generator stops.
-  readonly maxTries: number;
-  // The boards that the puzzle file already has. The generator does not make them again.
-  readonly known: readonly string[];
-};
-
-// This makes the puzzles of the plan. "missing" has each plan item without enough puzzles after "maxTries".
+// This makes the puzzles of the plan. See "generatePuzzles" in "generator-script.ts".
 export function generate(plan: readonly PlanItem[], options: GenerateOptions) {
-  const known = new Set(options.known);
-  const found: LaticsPuzzle[] = [];
-  const missing: PlanItem[] = [];
-  for (const [position, item] of plan.entries()) {
-    let kept = 0;
-    // Each plan item has its own range of seeds, so one item does not change the puzzles of the others.
-    const first = options.seed + position * 1_000_000;
-    for (let seed = first; seed < first + options.maxTries && kept < item.count; seed += 1) {
-      const puzzle = candidate(seed, item.level, item.material);
-      if (known.has(boardKey(puzzle)) || !isGoodPuzzle(puzzle, item.material)) continue;
-      known.add(boardKey(puzzle));
-      found.push(puzzle);
-      kept += 1;
-    }
-    if (kept < item.count) missing.push({ ...item, count: item.count - kept });
-  }
-  return { found, missing };
+  return generatePuzzles(plan, options, {
+    candidate: (seed, item) => candidate(seed, item.level, item.material),
+    isGoodPuzzle: (puzzle, item) => isGoodPuzzle(puzzle, item.material),
+    boardKey,
+  });
 }
 
 // The text of the puzzle file: JSON with two spaces, and each laser on one line, as in the other puzzles.

@@ -4,7 +4,7 @@ import { text } from "../../../text/en";
 import styles from "./Board.module.css";
 import { Controls } from "./Controls";
 import { Equation } from "./Equation";
-import { createMoveLog, getNumpuzLog, useNumpuzLifecycle, type Meta } from "./log";
+import { createMoveLog, getNumpuzLog, useNumpuzLifecycle } from "./log";
 import type { NumpuzPuzzle } from "./puzzle";
 import { statusText } from "./status";
 import { useGame } from "./useGame";
@@ -16,7 +16,7 @@ const words = text.numpuz;
 // The puzzle is solved when a check finds that the equation is equal to the target.
 export function Board({ puzzle }: { puzzle: NumpuzPuzzle }) {
   const log = getNumpuzLog();
-  const meta: Meta = {
+  const meta = {
     puzzleId: puzzle.id,
     puzzleType: puzzle.type,
     difficulty: puzzle.difficulty,

@@ -1,8 +1,14 @@
 import LZString from "lz-string";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import indexHtml from "../../index.html?raw";
+import indexHtml from "../../../index.html?raw";
 import { defaultSavedData, savedDataKey, type SavedData } from "./saved-data";
-import { parseImportText, parseStoredText, toExportText, toStoredText } from "./storage-format";
+import {
+  isNewerText,
+  parseImportText,
+  parseStoredText,
+  toExportText,
+  toStoredText,
+} from "./storage-format";
 
 const data: SavedData = {
   theme: "dark",
@@ -56,6 +62,18 @@ describe("stored text", () => {
     toStoredText({ ...first, results: [] });
     expect(compress).toHaveBeenCalledTimes(2);
   });
+
+  it("finds a stored text of a newer version", () => {
+    expect(isNewerText(JSON.stringify({ v: 3, progress: "" }))).toBe(true);
+    expect(isNewerText(toStoredText(data))).toBe(false);
+  });
+
+  it.each([null, "", "{", "[]", '{"v":"3"}', JSON.stringify({ solved: [] })])(
+    "does not find a newer version in the text %j",
+    (text) => {
+      expect(isNewerText(text)).toBe(false);
+    },
+  );
 });
 
 describe("export file", () => {

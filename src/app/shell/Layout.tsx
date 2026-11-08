@@ -1,10 +1,11 @@
 import { Link, Outlet } from "react-router";
-import { text } from "../text/en";
+import { text } from "../../text/en";
 import { AnalyticsNotice } from "./AnalyticsNotice";
 import styles from "./Layout.module.css";
 import { StorageNotice } from "./StorageNotice";
 import { StreakPill } from "./StreakPill";
 import { ThemeSwitcher } from "./ThemeSwitcher";
+import { useReloadAtMidnight } from "./useReloadAtMidnight";
 
 // The footer year comes from the date, so the text does not need a change each year.
 // It is read one time when the app loads, because a render must not read the clock.
@@ -12,7 +13,9 @@ const currentYear = new Date().getFullYear();
 
 // The frame of each page: a sticky header, the main content and the footer.
 // The header and the footer go across the full width. Their content has the width of the main content.
+// Each page gets the puzzles of the new day after midnight. See "useReloadAtMidnight.ts".
 export function Layout() {
+  useReloadAtMidnight();
   return (
     <>
       <a className={styles.skipLink} href="#main">

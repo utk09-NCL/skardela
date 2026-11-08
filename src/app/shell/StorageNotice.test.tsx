@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { createMemoryRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import { afterEach, describe, expect, it } from "vitest";
-import { useStorageStatus } from "../shared/store";
-import { text } from "../text/en";
+import { useStorageStatus } from "../../shared/state/store";
+import { text } from "../../text/en";
 import { StorageNotice } from "./StorageNotice";
 
 const words = text.storage;
@@ -47,5 +47,12 @@ describe("storage notice", () => {
       useStorageStatus.setState({ status: "unavailable" });
     });
     expect(screen.getByRole("alert")).toHaveTextContent(words.unavailable);
+  });
+
+  it("tells the player to reload when a different tab has a newer version", () => {
+    useStorageStatus.setState({ status: "outdated" });
+    renderNotice();
+    expect(screen.getByRole("alert")).toHaveTextContent(words.outdated);
+    expect(screen.queryByRole("link", { name: words.statsLink })).toBeNull();
   });
 });

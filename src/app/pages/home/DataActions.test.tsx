@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { defaultSavedData, type SolveResult } from "../../../shared/saved-data";
+import { defaultSavedData, type SolveResult } from "../../../shared/state/saved-data";
 import { saveFile } from "../../../shared/save-file";
-import { parseImportText, toExportText } from "../../../shared/storage-format";
-import { useAppStore } from "../../../shared/store";
+import { parseImportText, toExportText } from "../../../shared/state/storage-format";
+import { useAppStore } from "../../../shared/state/store";
 import { text } from "../../../text/en";
 import { DataActions } from "./DataActions";
 

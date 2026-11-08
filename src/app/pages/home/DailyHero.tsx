@@ -1,6 +1,6 @@
 import { Link } from "react-router";
-import type { PuzzleRef } from "../../../shared/saved-data";
-import { useAppStore } from "../../../shared/store";
+import type { PuzzleRef } from "../../../shared/state/saved-data";
+import { useAppStore } from "../../../shared/state/store";
 import { useNow } from "../../../shared/useNow";
 import { text } from "../../../text/en";
 import { isPuzzleType } from "../../puzzle-types/registry";

@@ -37,7 +37,7 @@ In this file, `<type>` is the type name and `<dir>` is `src/app/puzzle-types/<ty
 
 Do this part only if `rules.md` asks for a generator tool.
 
-1. Use the Tilt generator as the model: `tools/tilt-generator.ts`, `tools/tilt-generator.test.ts` and `tools/generate-tilt.gen.ts`.
+1. Use the Tilt generator as the model: `tools/tilt-generator.ts`, `tools/tilt-generator.test.ts` and `tools/generate-tilt.gen.ts`. Use the shared parts in `tools/generator-script.ts`: the plan, the search and `addPuzzles`.
 2. Use `makeRandom` from `src/shared/random.ts`. Then the same seed always gives the same puzzles.
 3. Keep only the boards that pass all data checks: `findPuzzleProblems` and, if it exists, `findSolutionProblems`.
 4. Add the script `"generate:<type>": "vitest run --project generate tools/generate-<type>.gen.ts"` to `package.json`. Add the script and the generator to "Scripts" and "Project structure" in `CONTRIBUTING.md`.

@@ -1,8 +1,8 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { describe, expect, it, vi } from "vitest";
-import { usePlaySession } from "../../../shared/playSession";
-import { useAppStore } from "../../../shared/store";
+import { usePlaySession } from "../../../shared/state/playSession";
+import { useAppStore } from "../../../shared/state/store";
 import { text } from "../../../text/en";
 import { symbols } from "../../../text/symbols";
 import type { LoadedPuzzle } from "../../puzzles";

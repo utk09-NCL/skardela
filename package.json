@@ -15,6 +15,7 @@
     "test": "vitest run --project unit",
     "test:watch": "vitest --project unit",
     "validate": "vitest run --project validate",
+    "generate:colour-binary": "vitest run --project generate tools/generate-colour-binary.gen.ts",
     "generate:latics": "vitest run --project generate tools/generate-latics.gen.ts",
     "generate:tilt": "vitest run --project generate tools/generate-tilt.gen.ts",
     "fix": "npm run format:fix && npm run lint:fix",
@@ -42,7 +43,6 @@
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "6.2.1",
-    "ajv": "8.20.0",
     "babel-plugin-react-compiler": "1.0.0",
     "jsdom": "31.0.0",
     "oxfmt": "0.77.0",
@@ -50,9 +50,6 @@
     "typescript": "6.0.2",
     "vite": "8.3.6",
     "vitest": "5.1.0"
-  },
-  "overrides": {
-    "fast-uri": "3.1.9"
   },
   "engines": {
     "node": "24.x"

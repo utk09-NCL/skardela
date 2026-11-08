@@ -2,7 +2,7 @@
 import { symbols } from "../symbols";
 
 // A long date in British English, for example "Saturday 24 October". "timeZone" is set for a day key,
-// because a day key is a date without a time. See "src/shared/progress.ts".
+// because a day key is a date without a time. See "src/shared/state/progress.ts".
 const longDate = (date: Date, timeZone?: string) =>
   new Intl.DateTimeFormat("en-GB", {
     weekday: "long",

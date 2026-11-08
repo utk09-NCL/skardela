@@ -29,9 +29,11 @@ const barrelLength = 40;
 
 // A line from "from" to "to" times the step of the direction.
 // A beam line uses the step as it is, so a diagonal line goes to the corner of the square.
-function Line({ direction, from = 0, to }: { direction: Direction; from?: number; to: number }) {
+// The default of "from" is in the body, because React Compiler cannot compile a default in the parameters.
+function Line({ direction, from, to }: { direction: Direction; from?: number; to: number }) {
   const { row, column } = steps[direction];
-  return <line x1={column * from} y1={row * from} x2={column * to} y2={row * to} />;
+  const start = from ?? 0;
+  return <line x1={column * start} y1={row * start} x2={column * to} y2={row * to} />;
 }
 
 // A diagonal step is √2 long. This gives the multiplier for a line of the given length in the direction,

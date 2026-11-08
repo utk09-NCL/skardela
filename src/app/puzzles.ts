@@ -33,6 +33,11 @@ export async function loadPuzzle(id: string): Promise<LoadedPuzzle | null> {
   return { type, puzzle, others, today } as LoadedPuzzle;
 }
 
+// The number of a puzzle, from its ID: "0007" for "tilt-0007". The page and the share text show it.
+export function puzzleNumber(id: string): string {
+  return id.slice(id.lastIndexOf("-") + 1);
+}
+
 export function puzzleLoader({ params }: LoaderFunctionArgs): Promise<LoadedPuzzle | null> {
   return loadPuzzle(params.puzzleId ?? "");
 }

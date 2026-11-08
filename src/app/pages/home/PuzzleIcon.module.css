@@ -1,0 +1,116 @@
+/* The icon of a puzzle type: tiles on a soft square. */
+.icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 14px;
+  background-color: var(--surface-muted);
+}
+
+.iconGrid {
+  display: grid;
+  gap: 2px;
+}
+
+.iconGrid[data-columns="4"] {
+  grid-template-columns: repeat(4, 8px);
+  grid-auto-rows: 8px;
+}
+
+.iconGrid[data-columns="3"] {
+  grid-template-columns: repeat(3, 11px);
+  grid-auto-rows: 11px;
+}
+
+.iconTile {
+  border-radius: 2px;
+  background-color: color-mix(in srgb, var(--text-muted) 35%, var(--surface-muted));
+}
+
+.iconTile[data-tile="red"] {
+  background-color: var(--red);
+}
+
+.iconTile[data-tile="blue"] {
+  background-color: var(--blue);
+}
+
+/* A Guzzle letter tile. The center letter is on all words, thus it has the orange colour. */
+.letterTile {
+  display: grid;
+  place-items: center;
+  border-radius: 2px;
+  background-color: var(--surface);
+  color: var(--text-h);
+  font-family: var(--mono);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.letterTile[data-center="true"] {
+  background-color: var(--brand);
+  color: #ffffff;
+}
+
+.letterTile[data-empty="true"] {
+  background-color: transparent;
+}
+
+/* The Latics beam: the laser, the beam, the mirror and the target. */
+.beamIcon {
+  overflow: visible;
+}
+
+.beamPath {
+  fill: none;
+  stroke: var(--brand);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.5;
+}
+
+.beamMirror {
+  stroke: var(--text-h);
+  stroke-linecap: round;
+  stroke-width: 2.5;
+}
+
+.beamLaser {
+  fill: var(--brand);
+}
+
+.beamTarget {
+  fill: none;
+  stroke: var(--text-h);
+  stroke-width: 2;
+}
+
+/* The Tilt ball, its path, its hole and a wall. The hole is an outline, as on the board. */
+.tiltIcon {
+  overflow: visible;
+}
+
+.tiltBall {
+  fill: var(--red);
+}
+
+.tiltHole {
+  fill: none;
+  stroke: var(--red);
+  stroke-width: 2;
+}
+
+.tiltPath {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-dasharray: 2 2.5;
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
+.tiltWall {
+  fill: color-mix(in srgb, var(--text-muted) 45%, var(--surface-muted));
+}

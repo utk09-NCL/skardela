@@ -35,7 +35,7 @@ describe("readSavedData", () => {
     ).toEqual({
       theme: "system",
       cookieBanner: true,
-      solved: [],
+      solved: ["guzzle-0001"],
       results: [result],
       lastOpened: { puzzleId: "latics-0003", type: "latics", difficulty: "hard" },
       seenRules: [],
@@ -65,6 +65,13 @@ describe("readSavedData of the newer fields", () => {
       "guzzle-0001",
     ];
     expect(readSavedData({ results: [...broken, result] }).results).toEqual([result]);
+  });
+
+  // One broken item does not remove the other items of the list.
+  it("keeps each text of the solved puzzles and of the seen rules, and drops each broken item", () => {
+    expect(
+      readSavedData({ solved: [null, "tilt-0002", 7], seenRules: ["latics", {}, "tilt"] }),
+    ).toMatchObject({ solved: ["tilt-0002"], seenRules: ["latics", "tilt"] });
   });
 
   it(`keeps only the last ${maxResults} solves`, () => {

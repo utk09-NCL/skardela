@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { applyTheme, isTheme, themes } from "../shared/theme";
-import { getLogger } from "../shared/logger";
-import { useAppStore } from "../shared/store";
-import { text } from "../text/en";
+import { applyTheme, isTheme, themes } from "../../shared/state/theme";
+import { getLogger } from "../../shared/logger";
+import { useAppStore } from "../../shared/state/store";
+import { text } from "../../text/en";
 import styles from "./ThemeSwitcher.module.css";
 
 // This list lets the player select the system theme, the light theme or the dark theme.

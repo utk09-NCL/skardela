@@ -1,25 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { findPuzzleProblems, levelRules } from "../src/app/puzzle-types/tilt/puzzle";
 import { findSolutionProblems } from "../src/app/puzzle-types/tilt/solver";
-import { boardKey, candidate, generate, parsePlan, puzzleFileText } from "./tilt-generator";
+import { parseLevelPlan } from "./generator-script";
+import { boardKey, candidate, generate, puzzleFileText } from "./tilt-generator";
 
 // The generator makes new puzzles only when a person runs it. These checks make sure that it still works.
-
-describe("tilt generator plan", () => {
-  it("reads a plan of level and count", () => {
-    expect(parsePlan(" easy:3, hard:1 ")).toEqual([
-      { level: "easy", count: 3 },
-      { level: "hard", count: 1 },
-    ]);
-    expect(parsePlan("")).toEqual([]);
-  });
-
-  it("refuses a plan item that it cannot make", () => {
-    expect(() => parsePlan("expert:1")).toThrow(/is not a plan item/u);
-    expect(() => parsePlan("easy:0")).toThrow(/is not a plan item/u);
-    expect(() => parsePlan("easy")).toThrow(/is not a plan item/u);
-  });
-});
 
 describe("tilt generator boards", () => {
   it("puts the walls of the level on a random board", () => {
@@ -39,7 +24,7 @@ describe("tilt generator boards", () => {
 });
 
 describe("tilt generator puzzles", () => {
-  const plan = parsePlan("easy:1,medium:1,hard:1");
+  const plan = parseLevelPlan("easy:1,medium:1,hard:1");
   const options = { seed: 1, maxTries: 5_000, known: [] };
 
   it("makes puzzles that pass all data checks, and the same puzzles again for the same seed", () => {
@@ -63,7 +48,7 @@ describe("tilt generator puzzles", () => {
   });
 
   it("writes each board on one line, as in the example", () => {
-    const { found } = generate(parsePlan("easy:1"), options);
+    const { found } = generate(parseLevelPlan("easy:1"), options);
     expect(puzzleFileText(found)).toMatch(
       /"board": \["[.#RrBbYyG]{5}"(, "[.#RrBbYyG]{5}"){4}\]\n/u,
     );

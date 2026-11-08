@@ -74,6 +74,13 @@ export function parseStoredText(text: string | null): SavedData {
   return readSavedData(unpackFields(parseJson(text)));
 }
 
+// A stored text from a newer version of the app, for example from a different tab after a new release.
+// This version cannot read all of it, thus it must not write over it. See "store.ts".
+export function isNewerText(text: string | null): boolean {
+  const value = parseJson(text);
+  return isRecord(value) && typeof value.v === "number" && value.v > storedVersion;
+}
+
 // ---------- The export file ----------
 
 // The export file is a JSON file with a format name, so the import can see that the file is from Skardela.

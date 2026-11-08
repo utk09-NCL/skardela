@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { useAppStore } from "../../../shared/store";
+import { useAppStore } from "../../../shared/state/store";
 import { text } from "../../../text/en";
 import { Board } from "./Board";
 import example from "./examples/tilt-0000.json";

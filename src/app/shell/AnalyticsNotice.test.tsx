@@ -1,9 +1,9 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
-import { umami } from "../shared/analytics";
-import { useAppStore } from "../shared/store";
-import { text } from "../text/en";
+import { umami } from "../../shared/analytics";
+import { useAppStore } from "../../shared/state/store";
+import { text } from "../../text/en";
 import { AnalyticsNotice } from "./AnalyticsNotice";
 
 const words = text.analyticsNotice;

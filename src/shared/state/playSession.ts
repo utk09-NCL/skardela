@@ -18,7 +18,7 @@ export const emptySession: PlaySession = { puzzleId: null, startedAt: null, solv
 
 export const usePlaySession = create<PlaySession>()(() => emptySession);
 
-// The details of the puzzle that the board gives. They are the same as the "Meta" of the log of each type.
+// The details of the puzzle that the board gives. The log of each type uses them too.
 export type PlayMeta = {
   readonly puzzleId: string;
   readonly puzzleType: string;
@@ -73,7 +73,9 @@ export function solveSession(
 // In React strict mode, the effects run two times, which is safe: each step changes the session one time.
 export function usePlayTracking(meta: PlayMeta, progress: PlayProgress): void {
   const { puzzleId } = meta;
-  const { isSolved, isStarted = true } = progress;
+  const { isSolved } = progress;
+  // The default is not in the destructuring, because React Compiler cannot compile such a default.
+  const isStarted = progress.isStarted ?? true;
   // The effects give the puzzle ID, and the effect events read the latest type, level and mistakes.
   const open = useEffectEvent((id: string) => {
     openSession({ ...meta, puzzleId: id });

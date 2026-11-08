@@ -2,7 +2,7 @@ import shared from "../../../shared/Board.module.css";
 import { text } from "../../../text/en";
 import styles from "./Board.module.css";
 import { bankLetters, type KeyHint, type LetterKey } from "./rules-check";
-import type { Mode } from "./machine";
+import { modes } from "./machine";
 import type { Game } from "./useGame";
 
 const words = text.guzzle;
@@ -45,7 +45,7 @@ function ModeButtons({ game }: { game: Game }) {
   return (
     <fieldset className={styles.modes}>
       <legend className="visually-hidden">{words.modeLabel}</legend>
-      {(Object.keys(words.modes) as Mode[]).map((option) => (
+      {modes.map((option) => (
         <button
           key={option}
           type="button"

@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { useStorageStatus, type StorageStatus } from "../shared/store";
-import { text } from "../text/en";
-import { symbols } from "../text/symbols";
+import { useStorageStatus, type StorageStatus } from "../../shared/state/store";
+import { text } from "../../text/en";
+import { symbols } from "../../text/symbols";
 import styles from "./Layout.module.css";
 
 const words = text.storage;
 
-// A message at the top of each page when the browser cannot save data: storage is blocked, or it is full.
+// A message at the top of each page when the browser cannot save data: storage is blocked, it is full,
+// or a different tab has a newer version of the app.
 // The game still works, because the store keeps the data on this page. The player can close the message.
 // A new problem, for example "full" after "unavailable", shows the message again.
 export function StorageNotice() {
@@ -17,8 +18,7 @@ export function StorageNotice() {
   return (
     <div className={styles.storageNotice} role="alert">
       <p>
-        {status === "full" ? words.full : words.unavailable}{" "}
-        {status === "full" && <Link to="/#stats">{words.statsLink}</Link>}
+        {words[status]} {status === "full" && <Link to="/#stats">{words.statsLink}</Link>}
       </p>
       <button
         type="button"

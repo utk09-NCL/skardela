@@ -36,16 +36,16 @@ If you cannot show the bug, stop. Tell the author what you tried. Ask for more f
 3. If the code obeys `rules.md` and the player expects a different result, the rule is the problem, not the code. Stop and ask the author if `rules.md` must change.
 4. Look for the same mistake in the other puzzle types and in `src/shared/`. Write each place in your report. Do not fix these places without the approval of the author.
 
-| Symptom                                     | Look first in                                                                                |
-| ------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| A wrong status text or name                 | `status.ts` of the type, `src/text/en/`                                                      |
-| A wrong move, score or solve                | `machine.ts`, `rules-check.ts`                                                               |
-| A click, a tap or a key does nothing        | `Board.tsx`, `Grid.tsx`, `Controls.tsx`, `keys.ts`, `useGame.ts`                             |
-| A puzzle has no solution or a wrong answer  | `puzzles/<type>.json`, `findPuzzleProblems` in `puzzle.ts`, `npm run validate`               |
-| Stats, streaks, the timer or the saved data | `src/shared/store.ts`, `progress.ts`, `playSession.ts`, `saved-data.ts`, `storage-format.ts` |
-| The puzzles of the day                      | `src/app/daily.ts`                                                                           |
-| A page, a link or a URL                     | `src/app/routes.tsx`, `src/app/puzzles.ts`                                                   |
-| The look or the layout                      | the `.module.css` file of the component, `src/index.css`                                     |
+| Symptom                                     | Look first in                                                                                      |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| A wrong status text or name                 | `status.ts` of the type, `src/text/en/`                                                            |
+| A wrong move, score or solve                | `machine.ts`, `rules-check.ts`                                                                     |
+| A click, a tap or a key does nothing        | `Board.tsx`, `Grid.tsx`, `Controls.tsx`, `keys.ts`, `useGame.ts`                                   |
+| A puzzle has no solution or a wrong answer  | `puzzles/<type>.json`, `findPuzzleProblems` in `puzzle.ts`, `npm run validate`                     |
+| Stats, streaks, the timer or the saved data | `src/shared/state/store.ts`, `progress.ts`, `playSession.ts`, `saved-data.ts`, `storage-format.ts` |
+| The puzzles of the day                      | `src/app/daily.ts`                                                                                 |
+| A page, a link or a URL                     | `src/app/routes.tsx`, `src/app/puzzles.ts`                                                         |
+| The look or the layout                      | the `.module.css` file of the component, `src/index.css`                                           |
 
 ## Step 4: Fix
 

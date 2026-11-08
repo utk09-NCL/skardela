@@ -1,6 +1,6 @@
 // Skardela uses Umami analytics. Umami does not use cookies.
 // The analytics script loads only after the player selects OK on the analytics notice.
-// See "src/app/AnalyticsNotice.tsx".
+// See "src/app/shell/AnalyticsNotice.tsx".
 
 export const umami = {
   src: "https://cloud.umami.is/script.js",

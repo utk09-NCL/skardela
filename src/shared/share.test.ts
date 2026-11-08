@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { symbols } from "../text/symbols";
-import type { SolveResult } from "./saved-data";
+import type { SolveResult } from "./state/saved-data";
 import { levelMark, marksText, sendText } from "./share";
 
 const solve: SolveResult = {

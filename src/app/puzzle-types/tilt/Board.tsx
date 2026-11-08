@@ -4,7 +4,7 @@ import { text } from "../../../text/en";
 import styles from "./Board.module.css";
 import { Controls, KeyHint } from "./Controls";
 import { Grid } from "./Grid";
-import { createMoveLog, getTiltLog, useTiltLifecycle, type Meta } from "./log";
+import { createMoveLog, getTiltLog, useTiltLifecycle } from "./log";
 import type { TiltPuzzle } from "./puzzle";
 import { statusText } from "./status";
 import { useGame } from "./useGame";
@@ -16,7 +16,7 @@ const words = text.tilt;
 // are in "useGame.ts". The puzzle is solved when all coloured balls are in their holes.
 export function Board({ puzzle }: { puzzle: TiltPuzzle }) {
   const log = getTiltLog();
-  const meta: Meta = {
+  const meta = {
     puzzleId: puzzle.id,
     puzzleType: puzzle.type,
     difficulty: puzzle.difficulty,

@@ -1,6 +1,6 @@
 import { type RouteObject } from "react-router";
-import { Layout } from "./Layout";
-import { RouteError } from "./RouteError";
+import { Layout } from "./shell/Layout";
+import { RouteError } from "./shell/RouteError";
 import { HomePage } from "./pages/home/HomePage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { text } from "../text/en";

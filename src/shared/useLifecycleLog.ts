@@ -1,7 +1,6 @@
 import { useEffect, useEffectEvent, useRef } from "react";
-import type { getLogger } from "./logger";
+import type { Log } from "./logger";
 
-type Log = ReturnType<typeof getLogger>;
 type Payload = Readonly<Record<string, unknown>>;
 
 export type Lifecycle = {

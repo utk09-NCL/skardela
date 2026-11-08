@@ -4,7 +4,7 @@ import styles from "./Board.module.css";
 import { Clues } from "./Clues";
 import { Controls } from "./Controls";
 import { Grid } from "./Grid";
-import { createMoveLog, getGuzzleLog, useGuzzleLifecycle, type Meta } from "./log";
+import { createMoveLog, getGuzzleLog, useGuzzleLifecycle } from "./log";
 import { toSquares, type GuzzlePuzzle } from "./puzzle";
 import { statusText } from "./status";
 import { useGame } from "./useGame";
@@ -17,7 +17,7 @@ export function Board({ puzzle }: { puzzle: GuzzlePuzzle }) {
   const answer = toSquares(puzzle.answer);
   const size = puzzle.answer.length;
   const log = getGuzzleLog();
-  const meta: Meta = {
+  const meta = {
     puzzleId: puzzle.id,
     puzzleType: puzzle.type,
     difficulty: puzzle.difficulty,

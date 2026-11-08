@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
 import { afterEach } from "vitest";
-import { emptySession, usePlaySession } from "../shared/playSession";
-import { useAppStore } from "../shared/store";
+import { emptySession, usePlaySession } from "../shared/state/playSession";
+import { useAppStore } from "../shared/state/store";
 
 // jsdom has no "showModal" and no "close" for <dialog>. These small versions set "open",
 // and "close" sends the "close" event as a browser does. They do not make the rest of the page inert.

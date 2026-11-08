@@ -1,4 +1,4 @@
-import type { Difficulty } from "./difficulty";
+import type { Difficulty } from "../difficulty";
 import type { SolveResult } from "./saved-data";
 
 // Pure functions that make the stats from the list of solves. No React and no storage, thus they are easy to test.

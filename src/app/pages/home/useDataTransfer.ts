@@ -1,10 +1,10 @@
 import { useState, type ChangeEvent } from "react";
 import { getLogger } from "../../../shared/logger";
-import { dayKey } from "../../../shared/progress";
-import { pickSavedData } from "../../../shared/saved-data";
+import { dayKey } from "../../../shared/state/progress";
+import { pickSavedData } from "../../../shared/state/saved-data";
 import { saveFile } from "../../../shared/save-file";
-import { parseImportText, toExportText } from "../../../shared/storage-format";
-import { useAppStore } from "../../../shared/store";
+import { parseImportText, toExportText } from "../../../shared/state/storage-format";
+import { useAppStore } from "../../../shared/state/store";
 import { text } from "../../../text/en";
 
 const words = text.home.stats.data;

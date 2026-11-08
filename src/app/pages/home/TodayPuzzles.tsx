@@ -1,6 +1,6 @@
-import { bestResult, dayKey } from "../../../shared/progress";
-import { useAppStore } from "../../../shared/store";
-import { useNow } from "../../../shared/useNow";
+import { bestResult } from "../../../shared/state/progress";
+import { useAppStore } from "../../../shared/state/store";
+import { useToday } from "../../../shared/useNow";
 import { text } from "../../../text/en";
 import type { TodayCard } from "../../puzzles";
 import { CardActions } from "./CardActions";
@@ -51,7 +51,7 @@ function Card({ card, day }: { card: TodayCard; day: string }) {
 
 export function TodayPuzzles({ cards }: { cards: readonly TodayCard[] }) {
   // The clock changes each minute, so the date in a share text is correct after midnight.
-  const day = dayKey(new Date(useNow(60_000)));
+  const day = useToday();
   return (
     <section
       id="today"

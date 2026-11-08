@@ -3,7 +3,7 @@ import { KeyList, type KeyItem } from "../../../shared/RuleList";
 import styles from "./Board.module.css";
 import shared from "../../../shared/Board.module.css";
 import { Grid } from "./Grid";
-import { createMoveLog, getColourBinaryLog, useColourBinaryLifecycle, type Meta } from "./log";
+import { createMoveLog, getColourBinaryLog, useColourBinaryLifecycle } from "./log";
 import { toSquares, type ColourBinaryPuzzle } from "./puzzle";
 import { statusText } from "./status";
 import { useGame, type Game } from "./useGame";
@@ -44,7 +44,7 @@ function Buttons({ game }: { game: Game }) {
 export function Board({ puzzle }: { puzzle: ColourBinaryPuzzle }) {
   const size = puzzle.start.length;
   const log = getColourBinaryLog();
-  const meta: Meta = {
+  const meta = {
     puzzleId: puzzle.id,
     puzzleType: puzzle.type,
     difficulty: puzzle.difficulty,

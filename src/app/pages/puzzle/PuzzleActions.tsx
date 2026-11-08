@@ -2,7 +2,7 @@ import { useNavigate } from "react-router";
 import shared from "../../../shared/Board.module.css";
 import { ConfirmQuestion } from "../../../shared/ConfirmQuestion";
 import { getLogger } from "../../../shared/logger";
-import { useAppStore } from "../../../shared/store";
+import { useAppStore } from "../../../shared/state/store";
 import { useConfirm } from "../../../shared/useConfirm";
 import { text } from "../../../text/en";
 import type { LoadedPuzzle } from "../../puzzles";

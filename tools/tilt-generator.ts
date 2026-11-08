@@ -10,33 +10,14 @@ import {
   type TiltPuzzle,
 } from "../src/app/puzzle-types/tilt/puzzle";
 import { findSolutionProblems } from "../src/app/puzzle-types/tilt/solver";
-import { levels, type Difficulty } from "../src/shared/difficulty";
+import type { Difficulty } from "../src/shared/difficulty";
 import { makeRandom, pickOne } from "../src/shared/random";
-
-// One line of the plan: the number of puzzles to make for one level.
-export type PlanItem = {
-  readonly level: Difficulty;
-  readonly count: number;
-};
-
-// The plan as text, for example "easy:30,medium:30,hard:30".
-export function parsePlan(text: string): PlanItem[] {
-  return text
-    .split(",")
-    .map((item) => item.trim())
-    .filter((item) => item !== "")
-    .map((item) => {
-      const [level = "", count = ""] = item.split(":");
-      const isLevel = (levels as readonly string[]).includes(level);
-      if (!isLevel || !/^[1-9]\d*$/u.test(count)) {
-        throw new Error(
-          `"${item}" is not a plan item. Use level:count, for example easy:3. ` +
-            `The levels are ${levels.join(", ")}.`,
-        );
-      }
-      return { level: level as Difficulty, count: Number(count) };
-    });
-}
+import {
+  generatePuzzles,
+  jsonWithRows,
+  type GenerateOptions,
+  type LevelPlanItem,
+} from "./generator-script";
 
 // ---------- A random board ----------
 
@@ -96,43 +77,16 @@ export function boardKey(puzzle: Pick<TiltPuzzle, "board">): string {
   return puzzle.board.join("/");
 }
 
-export type GenerateOptions = {
-  // The first seed. The same seed and plan always give the same puzzles.
-  readonly seed: number;
-  // The number of random boards to try for each plan item before the generator stops.
-  readonly maxTries: number;
-  // The boards that the puzzle file already has. The generator does not make them again.
-  readonly known: readonly string[];
-};
-
-// This makes the puzzles of the plan. "missing" has each plan item without enough puzzles after "maxTries".
-export function generate(plan: readonly PlanItem[], options: GenerateOptions) {
-  const known = new Set(options.known);
-  const found: TiltPuzzle[] = [];
-  const missing: PlanItem[] = [];
-  for (const [position, item] of plan.entries()) {
-    let kept = 0;
-    // Each plan item has its own range of seeds, so one item does not change the puzzles of the others.
-    const first = options.seed + position * 1_000_000;
-    for (let seed = first; seed < first + options.maxTries && kept < item.count; seed += 1) {
-      const puzzle = candidate(seed, item.level);
-      if (known.has(boardKey(puzzle)) || !isGoodPuzzle(puzzle)) continue;
-      known.add(boardKey(puzzle));
-      found.push(puzzle);
-      kept += 1;
-    }
-    if (kept < item.count) missing.push({ ...item, count: item.count - kept });
-  }
-  return { found, missing };
+// This makes the puzzles of the plan. See "generatePuzzles" in "generator-script.ts".
+export function generate(plan: readonly LevelPlanItem[], options: GenerateOptions) {
+  return generatePuzzles(plan, options, {
+    candidate: (seed, item) => candidate(seed, item.level),
+    isGoodPuzzle,
+    boardKey,
+  });
 }
 
-// The text of the puzzle file: JSON with two spaces, and each board on one line, as in the example.
-// Run "npm run fix" after a change, so the formatter puts the rest in its form.
+// The text of the puzzle file, with each board on one line, as in the example.
 export function puzzleFileText(puzzles: readonly TiltPuzzle[]): string {
-  const text = JSON.stringify(puzzles, null, 2);
-  // A row has no "]", thus the list of rows ends at the first "]". The rows go on one line, with ", " between them.
-  return `${text.replaceAll(
-    /"board": \[([^\]]*)\]/gu,
-    (_, rows: string) => `"board": [${rows.trim().split(/,\s*/u).join(", ")}]`,
-  )}\n`;
+  return jsonWithRows(puzzles, ["board"]);
 }

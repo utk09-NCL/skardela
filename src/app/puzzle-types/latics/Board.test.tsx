@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
-import { useAppStore } from "../../../shared/store";
+import { useAppStore } from "../../../shared/state/store";
 import { text } from "../../../text/en";
 import { Board } from "./Board";
 import example from "./examples/latics-0000.json";

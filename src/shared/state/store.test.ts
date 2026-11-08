@@ -127,6 +127,28 @@ describe("app store and the storage status", () => {
   });
 });
 
+// A different tab can run a newer version of the app with a newer stored format.
+// This version cannot read all of that text, thus a write would lose the data of the newer version.
+describe("app store and a newer version in a different tab", () => {
+  const newer = JSON.stringify({ v: 3, theme: "dark", progress: "a format of version 3" });
+
+  it("does not write over the data of the newer version, and tells it", () => {
+    localStorage.setItem(savedDataKey, newer);
+    useAppStore.getState().setTheme("light");
+    expect(localStorage.getItem(savedDataKey)).toBe(newer);
+    expect(useStorageStatus.getState().status).toBe("outdated");
+  });
+
+  it("tells it when it reads the data of the newer version", async () => {
+    await act(async () => {
+      localStorage.setItem(savedDataKey, newer);
+      window.dispatchEvent(new StorageEvent("storage", { key: savedDataKey, newValue: newer }));
+      await Promise.resolve();
+    });
+    expect(useStorageStatus.getState().status).toBe("outdated");
+  });
+});
+
 describe("app store import", () => {
   it("adds the new solves of a file and gives their number", () => {
     useAppStore.getState().recordSolve(result);

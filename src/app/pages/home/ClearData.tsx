@@ -2,7 +2,7 @@ import { ConfirmQuestion } from "../../../shared/ConfirmQuestion";
 import shared from "../../../shared/Board.module.css";
 import { getLogger } from "../../../shared/logger";
 import { reloadPage } from "../../../shared/reload";
-import { useAppStore } from "../../../shared/store";
+import { useAppStore } from "../../../shared/state/store";
 import { useConfirm } from "../../../shared/useConfirm";
 import { text } from "../../../text/en";
 

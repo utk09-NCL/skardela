@@ -4,7 +4,7 @@ import { text } from "../../../text/en";
 import { BeamPath } from "./BeamPath";
 import { Controls } from "./Controls";
 import { Grid } from "./Grid";
-import { createMoveLog, getLaticsLog, useLaticsLifecycle, type Meta } from "./log";
+import { createMoveLog, getLaticsLog, useLaticsLifecycle } from "./log";
 import type { LaticsPuzzle } from "./puzzle";
 import { statusText } from "./status";
 import { useGame } from "./useGame";
@@ -15,7 +15,7 @@ const words = text.latics;
 // The puzzle is solved when the beam hits the monster.
 export function Board({ puzzle }: { puzzle: LaticsPuzzle }) {
   const log = getLaticsLog();
-  const meta: Meta = {
+  const meta = {
     puzzleId: puzzle.id,
     puzzleType: puzzle.type,
     difficulty: puzzle.difficulty,

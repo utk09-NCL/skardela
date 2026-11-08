@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import type { Difficulty } from "../../../shared/difficulty";
-import { formatDuration } from "../../../shared/progress";
-import type { SolveResult } from "../../../shared/saved-data";
+import { formatDuration } from "../../../shared/state/progress";
+import type { SolveResult } from "../../../shared/state/saved-data";
 import { text } from "../../../text/en";
 import type { PuzzleType } from "../../puzzle-types/registry";
 import styles from "./HomePage.module.css";

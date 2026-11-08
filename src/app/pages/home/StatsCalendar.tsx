@@ -1,5 +1,5 @@
-import { calendarDays } from "../../../shared/progress";
-import type { SolveResult } from "../../../shared/saved-data";
+import { calendarDays } from "../../../shared/state/progress";
+import type { SolveResult } from "../../../shared/state/saved-data";
 import { text } from "../../../text/en";
 import styles from "./HomePage.module.css";
 

@@ -4,9 +4,9 @@ import userEvent from "@testing-library/user-event";
 import { createMemoryRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import { describe, expect, it, vi } from "vitest";
-import { addDays, dayKey } from "../../../shared/progress";
+import { addDays, dayKey } from "../../../shared/state/progress";
 import { reloadPage } from "../../../shared/reload";
-import { useAppStore } from "../../../shared/store";
+import { useAppStore } from "../../../shared/state/store";
 import { text } from "../../../text/en";
 import { puzzleTypes } from "../../puzzle-types/registry";
 import { routes } from "../../routes";
@@ -103,7 +103,7 @@ describe("home page clear data", () => {
     expect(useAppStore.getState().results).toHaveLength(4);
 
     await user.click(screen.getByRole("button", { name: stats.clear.yes.label }));
-    // The store test checks that the saved item is removed from the storage. See "src/shared/store.test.ts".
+    // The store test checks that the saved item is removed from the storage. See "src/shared/state/store.test.ts".
     expect(useAppStore.getState().results).toEqual([]);
     expect(reloadPage).toHaveBeenCalledOnce();
   });

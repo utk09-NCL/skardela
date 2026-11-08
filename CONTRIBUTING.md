@@ -13,23 +13,25 @@ Before you open a pull request, run `npm run fix && npm run check`. CI runs the 
 
 ## Scripts
 
-| Script                    | What it does                                                                                         |
-| ------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `npm run dev`             | Starts the app on your computer.                                                                     |
-| `npm run fix`             | Formats the code and fixes lint problems that a tool can fix.                                        |
-| `npm run check`           | Runs the format, lint, type, build, unit test and data checks.                                       |
-| `npm run test`            | Runs the unit tests in `src/`.                                                                       |
-| `npm run validate`        | Checks all puzzle files in `puzzles/`. See `tools/puzzles.test.ts`.                                  |
-| `npm run generate:latics` | Makes new Latics puzzles and adds them to `puzzles/latics.json`. See `tools/generate-latics.gen.ts`. |
-| `npm run generate:tilt`   | Makes new Tilt puzzles and adds them to `puzzles/tilt.json`. See `tools/generate-tilt.gen.ts`.       |
+| Script                           | What it does                                                                                                              |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `npm run dev`                    | Starts the app on your computer.                                                                                          |
+| `npm run fix`                    | Formats the code and fixes lint problems that a tool can fix.                                                             |
+| `npm run check`                  | Runs the format, lint, type, build, unit test and data checks.                                                            |
+| `npm run test`                   | Runs the unit tests in `src/`.                                                                                            |
+| `npm run validate`               | Checks all puzzle files in `puzzles/` and the tools in `tools/`. See `tools/puzzles.test.ts`.                             |
+| `npm run generate:colour-binary` | Makes new Colour Binary puzzles and adds them to `puzzles/colour-binary.json`. See `tools/generate-colour-binary.gen.ts`. |
+| `npm run generate:latics`        | Makes new Latics puzzles and adds them to `puzzles/latics.json`. See `tools/generate-latics.gen.ts`.                      |
+| `npm run generate:tilt`          | Makes new Tilt puzzles and adds them to `puzzles/tilt.json`. See `tools/generate-tilt.gen.ts`.                            |
 
 ## Project structure
 
 ```text
 puzzles/                     Puzzle data. One JSON file for each puzzle type. The build ciphers the answers.
 tools/puzzles.test.ts        Checks all puzzle data.
-tools/latics-generator.ts    Makes new Latics puzzles. "npm run generate:latics" runs it.
-tools/tilt-generator.ts      Makes new Tilt puzzles. "npm run generate:tilt" runs it.
+tools/react-compiler.test.ts Fails when React Compiler cannot compile a component or a hook in src/.
+tools/generator-script.ts    The parts that each puzzle generator shares: the plan, the search and the puzzle file.
+tools/<type>-generator.ts    Makes new puzzles of one type. "npm run generate:<type>" runs it.
 src/
   main.tsx                   Starts the app.
   index.css                  Global styles and colour values.
@@ -37,7 +39,9 @@ src/
     routes.tsx               All pages and their URLs.
     puzzles.ts               Loads puzzles for the home page and the puzzle page.
     daily.ts                 Selects the puzzles of the day.
-    AnalyticsNotice.tsx      The notice for new players. Analytics loads only after the OK.
+    shell/                   The frame of each page: the header, the notices, the footer and the route error.
+      AnalyticsNotice.tsx    The notice for new players. Analytics loads only after the OK.
+      useReloadAtMidnight.ts Loads the puzzles of the new day after midnight, on each page.
     pages/                   One file or one folder for each page.
       home/                  The home page: today's progress, today's puzzles, the stats and the questions.
       puzzle/                The puzzle page ("Now playing"), with the timer, Restart and Random puzzle.
@@ -45,12 +49,13 @@ src/
       registry.ts            The list of puzzle types and their puzzle files.
       boards.ts              The board component of each puzzle type.
       <type>/                One folder for each puzzle type. See below.
-  shared/                    Code that more than one puzzle type uses.
-    store.ts                 The Zustand store: the saved data and its actions. It saves to one localStorage item.
-    saved-data.ts            The shape of the saved data and its checks.
-    storage-format.ts        The stored text and the export file. The lists of solves are compressed.
-    playSession.ts           The game that the player plays now: the timer and the saving of a solve.
-    progress.ts              Pure functions for the stats: streaks, the calendar and personal bests.
+  shared/                    Code that more than one page or puzzle type uses.
+    state/                   The saved data and the code that reads it. No React components.
+      store.ts               The Zustand store: the saved data and its actions. It saves to one localStorage item.
+      saved-data.ts          The shape of the saved data and its checks.
+      storage-format.ts      The stored text and the export file. The lists of solves are compressed.
+      playSession.ts         The game that the player plays now: the timer and the saving of a solve.
+      progress.ts            Pure functions for the stats: streaks, the calendar and personal bests.
     share.ts                 The squares of a share text, and the copy or the share menu. See ShareButton.tsx.
   text/
     en/                      All UI text. "index.ts" puts the parts together. One file for each page and puzzle type.
@@ -94,7 +99,7 @@ parts into their own files. See `guzzle/` for an example: `useGame.ts`, `Grid.ts
    - `src/app/pages/home/PuzzleIcon.tsx`: the small icon of your type on the home page.
    - `tools/puzzles.test.ts`: your example and your data check.
 6. Put emoji symbols in `src/text/symbols.ts`, not in other files.
-7. In the lifecycle hook of your board, call `useLifecycleLog` and `usePlayTracking` from `src/shared/`.
+7. In the lifecycle hook of your board, call `useLifecycleLog` from `src/shared/` and `usePlayTracking` from `src/shared/state/`.
    `usePlayTracking` starts the timer and saves each solve, for the stats and for "Random puzzle".
    Give it the score to keep low as `mistakes`, for example the misses of Latics. The result card and the share text show it. See the lifecycle hook in `log.ts` of an existing type, for example `latics/log.ts`.
 8. Add tests for your rule logic and your board.

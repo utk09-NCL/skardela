@@ -1,5 +1,5 @@
 import { symbols } from "../text/symbols";
-import type { SolveResult } from "./saved-data";
+import type { SolveResult } from "./state/saved-data";
 
 // The share text of a result. It is plain text, thus it works in each app, and it needs no server.
 // The text of each line is in "src/text/en/app.ts". This file gives the square marks and sends the text.

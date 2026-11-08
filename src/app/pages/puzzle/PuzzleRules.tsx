@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { KeyList, RuleList } from "../../../shared/RuleList";
-import { useAppStore } from "../../../shared/store";
+import { useAppStore } from "../../../shared/state/store";
 import { text } from "../../../text/en";
 import type { PuzzleType } from "../../puzzle-types/registry";
 import styles from "./PuzzlePage.module.css";

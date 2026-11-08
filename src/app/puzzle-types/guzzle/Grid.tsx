@@ -34,9 +34,9 @@ type SquareProps = {
   label: string;
   letter: string;
   guess: Guess | undefined;
-  isFixed?: boolean;
-  isSelected?: boolean;
-  isInWord?: boolean;
+  isFixed: boolean;
+  isSelected: boolean;
+  isInWord: boolean;
   start?: Line;
   isLocked: boolean;
   onSelect?: () => void;
@@ -51,9 +51,9 @@ function SquareButton({
   label,
   letter,
   guess,
-  isFixed = false,
-  isSelected = false,
-  isInWord = false,
+  isFixed,
+  isSelected,
+  isInWord,
   start,
   isLocked,
   onSelect,

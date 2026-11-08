@@ -1,5 +1,5 @@
-import { compareToAverage, formatDuration } from "../../../shared/progress";
-import type { SolveResult } from "../../../shared/saved-data";
+import { compareToAverage, formatDuration } from "../../../shared/state/progress";
+import type { SolveResult } from "../../../shared/state/saved-data";
 import { text } from "../../../text/en";
 import type { PuzzleType } from "../../puzzle-types/registry";
 import styles from "./PuzzlePage.module.css";
@@ -11,17 +11,18 @@ const sameTime = 0.5;
 
 // One number of the result card. The label is first in the code, for a screen reader.
 // The CSS shows the value above the label.
+// "isGood" has no default value in the parameters, because React Compiler cannot compile such a default.
 function ResultNumber({
   label,
   value,
-  isGood = false,
+  isGood,
 }: {
   label: string;
   value: string;
   isGood?: boolean;
 }) {
   return (
-    <div className={styles.solvedNumber} data-faster={isGood}>
+    <div className={styles.solvedNumber} data-faster={isGood === true}>
       <dt>{label}</dt>
       <dd>{value}</dd>
     </div>

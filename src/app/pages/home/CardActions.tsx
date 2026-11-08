@@ -1,6 +1,6 @@
 import { Link } from "react-router";
-import { formatDuration } from "../../../shared/progress";
-import type { SolveResult } from "../../../shared/saved-data";
+import { formatDuration } from "../../../shared/state/progress";
+import type { SolveResult } from "../../../shared/state/saved-data";
 import { marksText } from "../../../shared/share";
 import { ShareButton } from "../../../shared/ShareButton";
 import { text } from "../../../text/en";

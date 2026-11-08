@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { text } from "../../../text/en";
 import { symbols } from "../../../text/symbols";
-import type { LoadedPuzzle } from "../../puzzles";
+import { puzzleNumber, type LoadedPuzzle } from "../../puzzles";
 import { PlayTimer } from "./PlayTimer";
 import styles from "./PuzzlePage.module.css";
 
@@ -20,7 +20,7 @@ export function PuzzleHeader({ loaded }: { loaded: LoadedPuzzle }) {
           <p className={styles.level}>{text.levels[puzzle.difficulty]}</p>
         </div>
         <ul className={styles.details} aria-label={page.detailsLabel}>
-          <li>{page.puzzleNumber(puzzle.id.slice(puzzle.id.lastIndexOf("-") + 1))}</li>
+          <li>{page.puzzleNumber(puzzleNumber(puzzle.id))}</li>
           <li>{page.author(puzzle.author)}</li>
         </ul>
       </div>

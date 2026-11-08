@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { loadPuzzle } from "./puzzles";
+import { loadPuzzle, puzzleNumber } from "./puzzles";
 import { puzzleTypes } from "./puzzle-types/registry";
 
 describe("loadPuzzle", () => {
@@ -15,5 +15,14 @@ describe("loadPuzzle", () => {
 
   it.each(["guzzle-9999", "unknown-0001", "guzzle", ""])("gives null for the ID %j", async (id) => {
     expect(await loadPuzzle(id)).toBeNull();
+  });
+});
+
+describe("puzzleNumber", () => {
+  it.each([
+    ["colour-binary-0007", "0007"],
+    ["tilt-0031", "0031"],
+  ])("gives the number of %s", (id, number) => {
+    expect(puzzleNumber(id)).toBe(number);
   });
 });

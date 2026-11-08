@@ -29,7 +29,7 @@ The build target is Baseline "widely available". This is the default of Vite.
 | Size from the container           | `container-type: inline-size`, `cqi` units and `clamp()`          | `.square` in `src/shared/Board.module.css`     |
 | Style when the focus is in a part | `:focus-within`                                                   | `.keyHint` in `tilt/Board.module.css`          |
 | Style for a mouse only            | `@media (hover: hover) and (pointer: fine)`                       | `.keyHint` in `tilt/Board.module.css`          |
-| Modal window                      | `<dialog>` with `showModal()`                                     | `src/app/AnalyticsNotice.tsx`                  |
+| Modal window                      | `<dialog>` with `showModal()`                                     | `src/app/shell/AnalyticsNotice.tsx`            |
 | Open and close a part             | `<details>` and `<summary>`                                       | `home/Faq.tsx`, `puzzle/PuzzleRules.tsx`       |
 | Status for a screen reader        | `<output>`                                                        | `Board.tsx` of each puzzle type                |
 | Less motion                       | `@media (prefers-reduced-motion: reduce)`                         | `src/index.css`                                |

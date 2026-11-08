@@ -1,6 +1,6 @@
-import { currentStreak, dayKey, longestStreak, solvesPerDay } from "../../../shared/progress";
-import { useAppStore } from "../../../shared/store";
-import { useNow } from "../../../shared/useNow";
+import { currentStreak, longestStreak, solvesPerDay } from "../../../shared/state/progress";
+import { useAppStore } from "../../../shared/state/store";
+import { useToday } from "../../../shared/useNow";
 import { text } from "../../../text/en";
 import type { TodayCard } from "../../puzzles";
 import { DataActions } from "./DataActions";
@@ -16,7 +16,7 @@ export function Stats({ cards }: { cards: readonly TodayCard[] }) {
   const results = useAppStore((state) => state.results);
   const solved = useAppStore((state) => state.solved);
   // The clock changes each minute, so the streak and the calendar are correct after midnight.
-  const today = dayKey(new Date(useNow(60_000)));
+  const today = useToday();
   const types = cards.map((card) => card.type);
   const [firstCard] = cards;
   const firstLevel = firstCard?.levels[0];

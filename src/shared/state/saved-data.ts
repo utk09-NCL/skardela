@@ -1,4 +1,4 @@
-import { levels, type Difficulty } from "./difficulty";
+import { levels, type Difficulty } from "../difficulty";
 import { isTheme, type Theme } from "./theme";
 
 // The data that Skardela saves in the browser, and its checks. It is one localStorage item.
@@ -90,23 +90,26 @@ function isSolveResult(value: unknown): value is SolveResult {
   );
 }
 
-const isTextList = (value: unknown): value is string[] =>
-  Array.isArray(value) && value.every((item) => typeof item === "string");
+// A list of texts keeps each text and drops each broken item, so one broken item does not remove the list.
+const readTexts = (value: unknown): string[] | undefined =>
+  Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === "string")
+    : undefined;
 
 // Each field has a reader. A reader gives the value when it is correct, and undefined when it is not.
 // Then the field gets its default value, thus a broken or an old value in the storage does not break the app.
-// The list of results keeps each correct solve and drops each broken one.
+// Each list keeps its correct items and drops each broken one.
 // To add a field, add it to "SavedData", "defaultSavedData" and "readers".
 const readers: { [Name in keyof SavedData]: (value: unknown) => SavedData[Name] | undefined } = {
   theme: (value) => (isTheme(value) ? value : undefined),
   cookieBanner: (value) => (typeof value === "boolean" ? value : undefined),
-  solved: (value) => (isTextList(value) ? value : undefined),
+  solved: readTexts,
   results: (value) =>
     Array.isArray(value)
       ? value.filter((item) => isSolveResult(item)).slice(-maxResults)
       : undefined,
   lastOpened: (value) => (isPuzzleRef(value) || value === null ? value : undefined),
-  seenRules: (value) => (isTextList(value) ? value : undefined),
+  seenRules: readTexts,
 };
 
 // This makes correct saved data from a value, for example from parsed JSON.

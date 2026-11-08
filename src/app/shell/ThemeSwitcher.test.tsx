@@ -1,9 +1,9 @@
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
-import { savedDataKey } from "../shared/saved-data";
-import { useAppStore } from "../shared/store";
-import { text } from "../text/en";
+import { savedDataKey } from "../../shared/state/saved-data";
+import { useAppStore } from "../../shared/state/store";
+import { text } from "../../text/en";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 
 // The saved data in the storage, as an object.

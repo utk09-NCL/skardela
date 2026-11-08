@@ -1,7 +1,7 @@
 import { symbols } from "../symbols";
 
 // A short date in British English, for example "25 October". "timeZone" is set for a day key,
-// because a day key is a date without a time. See "src/shared/progress.ts".
+// because a day key is a date without a time. See "src/shared/state/progress.ts".
 const shortDate = (date: Date, timeZone?: string) =>
   new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", timeZone }).format(date);
 
@@ -85,11 +85,13 @@ export const app = {
     source: { label: "Source on GitHub", href: "https://github.com/utk09-NCL/skardela" },
     content: (year: number) => `© ${year} Skardela. This website uses analytics without cookies.`,
   },
-  // The message when the browser cannot save data. See "src/app/StorageNotice.tsx".
+  // The message when the browser cannot save data. See "src/app/shell/StorageNotice.tsx".
   storage: {
     unavailable:
       "Your browser does not let Skardela save data. You can play, but your progress is lost when you close the page.",
     full: 'The browser storage is full, thus Skardela cannot save your new progress. Select "Export my data" under "Your stats", then "Clear my data".',
+    outdated:
+      "A different tab has a new version of Skardela. Reload this page to save your progress.",
     statsLink: "Go to your stats",
     close: "Close the message",
   },

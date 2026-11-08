@@ -1,5 +1,5 @@
-import { usePlaySession } from "../../../shared/playSession";
-import { formatDuration } from "../../../shared/progress";
+import { usePlaySession } from "../../../shared/state/playSession";
+import { formatDuration } from "../../../shared/state/progress";
 import { useNow } from "../../../shared/useNow";
 import { text } from "../../../text/en";
 import styles from "./PuzzlePage.module.css";

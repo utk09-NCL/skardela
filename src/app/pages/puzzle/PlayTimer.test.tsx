@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { createMemoryRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import { describe, expect, it } from "vitest";
-import { usePlaySession } from "../../../shared/playSession";
-import { useAppStore } from "../../../shared/store";
+import { usePlaySession } from "../../../shared/state/playSession";
+import { useAppStore } from "../../../shared/state/store";
 import { text } from "../../../text/en";
 import { routes } from "../../routes";
 

@@ -1,4 +1,3 @@
-import type { text } from "../../../text/en";
 import {
   checkLetter,
   isPlayable,
@@ -18,7 +17,9 @@ import {
 // The UI uses "useReducer" with "transition", so each event applies to the latest state.
 
 // "bank" shows the letters of the answer. "noBank" shows all letters from A to Z.
-export type Mode = keyof typeof text.guzzle.modes;
+// The machine owns the list of modes. The text in "src/text/en/guzzle.ts" gives only their names.
+export const modes = ["bank", "noBank"] as const;
+export type Mode = (typeof modes)[number];
 
 // The answer and the size of the board. They do not change during a game.
 export type GameConfig = { readonly answer: readonly string[]; readonly size: number };
