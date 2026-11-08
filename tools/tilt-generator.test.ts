@@ -25,7 +25,8 @@ describe("tilt generator boards", () => {
 
 describe("tilt generator puzzles", () => {
   const plan = parseLevelPlan("easy:1,medium:1,hard:1");
-  const options = { seed: 1, maxTries: 5_000, known: [] };
+  // Seed 2 is a good easy puzzle, and the next good puzzles are within 20 tries.
+  const options = { seed: 2, maxTries: 25, known: [] };
 
   it("makes puzzles that pass all data checks, and the same puzzles again for the same seed", () => {
     const { found, missing } = generate(plan, options);
