@@ -23,7 +23,8 @@ describe("latics generator plan", () => {
 
 describe("latics generator puzzles", () => {
   const plan = parsePlan("water:easy:1");
-  const options = { seed: 1, maxTries: 20_000, known: [] };
+  // Seed 30074 is a good puzzle, and seed 30265 is the next one. Thus the tests do not try 17,253 bad seeds.
+  const options = { seed: 30_074, maxTries: 200, known: [] };
 
   it("makes a puzzle that passes all data checks, and the same puzzle again for the same seed", () => {
     const { found, missing } = generate(plan, options);
