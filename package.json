@@ -17,6 +17,7 @@
     "validate": "vitest run --project validate",
     "generate:colour-binary": "vitest run --project generate tools/generate-colour-binary.gen.ts",
     "generate:latics": "vitest run --project generate tools/generate-latics.gen.ts",
+    "generate:orbital": "vitest run --project generate tools/generate-orbital.gen.ts",
     "generate:tilt": "vitest run --project generate tools/generate-tilt.gen.ts",
     "fix": "npm run format:fix && npm run lint:fix",
     "check": "npm run format:check && npm run lint:check && npm run typecheck && npm run build && npm run test && npm run validate"

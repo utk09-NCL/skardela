@@ -22,6 +22,7 @@ Before you open a pull request, run `npm run fix && npm run check`. CI runs the 
 | `npm run validate`               | Checks all puzzle files in `puzzles/` and the tools in `tools/`. See `tools/puzzles.test.ts`.                             |
 | `npm run generate:colour-binary` | Makes new Colour Binary puzzles and adds them to `puzzles/colour-binary.json`. See `tools/generate-colour-binary.gen.ts`. |
 | `npm run generate:latics`        | Makes new Latics puzzles and adds them to `puzzles/latics.json`. See `tools/generate-latics.gen.ts`.                      |
+| `npm run generate:orbital`       | Makes new Orbital puzzles and adds them to `puzzles/orbital.json`. See `tools/generate-orbital.gen.ts`.                   |
 | `npm run generate:tilt`          | Makes new Tilt puzzles and adds them to `puzzles/tilt.json`. See `tools/generate-tilt.gen.ts`.                            |
 
 ## Project structure

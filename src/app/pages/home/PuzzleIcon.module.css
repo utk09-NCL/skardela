@@ -114,3 +114,30 @@
 .tiltWall {
   fill: color-mix(in srgb, var(--text-muted) 45%, var(--surface-muted));
 }
+
+/* The Orbital planet, the path of the probe, the ring and the probe. The ring is an outline, as on the board. */
+.orbitalIcon {
+  overflow: visible;
+}
+
+.orbitalPlanet {
+  fill: color-mix(in srgb, var(--text-muted) 55%, var(--surface-muted));
+}
+
+.orbitalPath {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-dasharray: 2 2.5;
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
+.orbitalRing {
+  fill: none;
+  stroke: var(--brand);
+  stroke-width: 2.5;
+}
+
+.orbitalProbe {
+  fill: var(--text-h);
+}

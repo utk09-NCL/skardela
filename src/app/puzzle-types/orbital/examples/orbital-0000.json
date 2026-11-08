@@ -1,0 +1,10 @@
+{
+  "id": "orbital-0000",
+  "type": "orbital",
+  "difficulty": "easy",
+  "author": "skardela",
+  "license": "CC-BY-4.0",
+  "launch": { "x": 30, "y": 10 },
+  "ring": { "x": 40, "y": 85 },
+  "planets": [{ "x": 40, "y": 50, "size": "big" }]
+}

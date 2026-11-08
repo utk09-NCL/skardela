@@ -15,6 +15,9 @@ import { puzzleTypes, type PuzzleMap, type PuzzleType } from "../src/app/puzzle-
 import { levels } from "../src/shared/difficulty";
 import numpuzExample from "../src/app/puzzle-types/numpuz/examples/numpuz-0000.json";
 import { findPuzzleProblems as findNumpuzProblems } from "../src/app/puzzle-types/numpuz/puzzle";
+import orbitalExample from "../src/app/puzzle-types/orbital/examples/orbital-0000.json";
+import { findPuzzleProblems as findOrbitalProblems } from "../src/app/puzzle-types/orbital/puzzle";
+import { findSolutionProblems as findOrbitalSolutionProblems } from "../src/app/puzzle-types/orbital/solver";
 import tiltExample from "../src/app/puzzle-types/tilt/examples/tilt-0000.json";
 import { findPuzzleProblems as findTiltProblems } from "../src/app/puzzle-types/tilt/puzzle";
 import { findSolutionProblems as findTiltSolutionProblems } from "../src/app/puzzle-types/tilt/solver";
@@ -51,6 +54,15 @@ const checks: {
     },
   },
   numpuz: { example: numpuzExample, findProblems: findNumpuzProblems },
+  orbital: {
+    example: orbitalExample,
+    // An orbital puzzle must also have enough good launches, and the straight launch and the start launch must miss.
+    // The flights need valid data, thus they run only when the data has no problems.
+    findProblems: (puzzle) => {
+      const problems = findOrbitalProblems(puzzle);
+      return problems.length > 0 ? problems : findOrbitalSolutionProblems(puzzle);
+    },
+  },
   tilt: {
     example: tiltExample,
     // A tilt puzzle must also have a solution with the fewest tilts of its level. On hard, it must need the grey ball.
@@ -82,7 +94,9 @@ describe.each(Object.keys(puzzleTypes) as PuzzleType[])("%s puzzle file", (type)
   const findProblems = checks[type].findProblems as (puzzle: AnyPuzzle) => string[];
   const load = async () => [...(await puzzleTypes[type].loadPuzzles())] as AnyPuzzle[];
 
-  it("has no broken puzzles", async () => {
+  // The data check of some types searches or flies each puzzle, for example 3,600 launches for each Orbital puzzle.
+  // On a slow computer, this can take more time than the default limit of 5 s.
+  it("has no broken puzzles", { timeout: 30_000 }, async () => {
     for (const puzzle of [checks[type].example as AnyPuzzle, ...(await load())]) {
       const problems = [...findCommonProblems(puzzle, type), ...findProblems(puzzle)];
       expect({ id: puzzle.id, problems }).toEqual({ id: puzzle.id, problems: [] });

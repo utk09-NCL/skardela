@@ -93,6 +93,18 @@ function NumpuzIcon() {
   );
 }
 
+// Orbital: the probe flies on a curved path past a planet and into the ring.
+function OrbitalIcon() {
+  return (
+    <svg className={styles.orbitalIcon} viewBox="0 0 32 32" width="34" height="34">
+      <circle className={styles.orbitalPlanet} cx="14" cy="17" r="5.5" />
+      <path className={styles.orbitalPath} d="M5 28 Q4 6 21 8" />
+      <circle className={styles.orbitalRing} cx="25" cy="8" r="4" />
+      <path className={styles.orbitalProbe} d="M5 24.5 L7.5 27 L5 29.5 L2.5 27 Z" />
+    </svg>
+  );
+}
+
 // Tilt: a red ball rolls along a path to the outline of its hole. A wall is under the path.
 function TiltIcon() {
   return (
@@ -112,6 +124,7 @@ const icons: { [Type in PuzzleType]: () => ReactNode } = {
   guzzle: GuzzleIcon,
   latics: LaticsIcon,
   numpuz: NumpuzIcon,
+  orbital: OrbitalIcon,
   tilt: TiltIcon,
 };
 

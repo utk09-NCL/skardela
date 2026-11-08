@@ -1,0 +1,1112 @@
+[
+  {
+    "id": "orbital-0001",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 9, "y": 13 },
+    "ring": { "x": 94, "y": 71 },
+    "planets": [{ "x": 53, "y": 38, "size": "medium" }]
+  },
+  {
+    "id": "orbital-0002",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 11, "y": 10 },
+    "ring": { "x": 92, "y": 53 },
+    "planets": [{ "x": 33, "y": 26, "size": "small" }]
+  },
+  {
+    "id": "orbital-0003",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 15, "y": 14 },
+    "ring": { "x": 52, "y": 85 },
+    "planets": [{ "x": 36, "y": 47, "size": "medium" }]
+  },
+  {
+    "id": "orbital-0004",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 60, "y": 7 },
+    "ring": { "x": 57, "y": 85 },
+    "planets": [{ "x": 61, "y": 56, "size": "medium" }]
+  },
+  {
+    "id": "orbital-0005",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 78, "y": 5 },
+    "ring": { "x": 68, "y": 84 },
+    "planets": [{ "x": 67, "y": 36, "size": "big" }]
+  },
+  {
+    "id": "orbital-0006",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 11, "y": 84 },
+    "ring": { "x": 84, "y": 47 },
+    "planets": [{ "x": 36, "y": 65, "size": "medium" }]
+  },
+  {
+    "id": "orbital-0007",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 16, "y": 90 },
+    "ring": { "x": 22, "y": 18 },
+    "planets": [{ "x": 20, "y": 48, "size": "small" }]
+  },
+  {
+    "id": "orbital-0008",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 42, "y": 8 },
+    "ring": { "x": 28, "y": 89 },
+    "planets": [{ "x": 35, "y": 64, "size": "medium" }]
+  },
+  {
+    "id": "orbital-0009",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 12, "y": 21 },
+    "ring": { "x": 89, "y": 37 },
+    "planets": [{ "x": 64, "y": 32, "size": "small" }]
+  },
+  {
+    "id": "orbital-0010",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 58, "y": 91 },
+    "ring": { "x": 75, "y": 8 },
+    "planets": [{ "x": 64, "y": 41, "size": "medium" }]
+  },
+  {
+    "id": "orbital-0011",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 36, "y": 8 },
+    "ring": { "x": 89, "y": 85 },
+    "planets": [{ "x": 66, "y": 51, "size": "small" }]
+  },
+  {
+    "id": "orbital-0012",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 90, "y": 41 },
+    "ring": { "x": 9, "y": 44 },
+    "planets": [{ "x": 42, "y": 40, "size": "small" }]
+  },
+  {
+    "id": "orbital-0013",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 46, "y": 93 },
+    "ring": { "x": 48, "y": 10 },
+    "planets": [{ "x": 44, "y": 39, "size": "big" }]
+  },
+  {
+    "id": "orbital-0014",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 12, "y": 96 },
+    "ring": { "x": 77, "y": 8 },
+    "planets": [{ "x": 35, "y": 58, "size": "small" }]
+  },
+  {
+    "id": "orbital-0015",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 67, "y": 88 },
+    "ring": { "x": 32, "y": 15 },
+    "planets": [{ "x": 47, "y": 55, "size": "small" }]
+  },
+  {
+    "id": "orbital-0016",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 12, "y": 77 },
+    "ring": { "x": 94, "y": 43 },
+    "planets": [{ "x": 41, "y": 71, "size": "medium" }]
+  },
+  {
+    "id": "orbital-0017",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 5, "y": 76 },
+    "ring": { "x": 90, "y": 21 },
+    "planets": [{ "x": 48, "y": 53, "size": "big" }]
+  },
+  {
+    "id": "orbital-0018",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 50, "y": 11 },
+    "ring": { "x": 41, "y": 83 },
+    "planets": [{ "x": 44, "y": 43, "size": "small" }]
+  },
+  {
+    "id": "orbital-0019",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 94, "y": 86 },
+    "ring": { "x": 8, "y": 76 },
+    "planets": [{ "x": 49, "y": 73, "size": "big" }]
+  },
+  {
+    "id": "orbital-0020",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 4, "y": 90 },
+    "ring": { "x": 85, "y": 26 },
+    "planets": [{ "x": 38, "y": 71, "size": "medium" }]
+  },
+  {
+    "id": "orbital-0021",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 4, "y": 78 },
+    "ring": { "x": 84, "y": 76 },
+    "planets": [{ "x": 42, "y": 73, "size": "medium" }]
+  },
+  {
+    "id": "orbital-0022",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 4, "y": 76 },
+    "ring": { "x": 85, "y": 38 },
+    "planets": [{ "x": 47, "y": 49, "size": "big" }]
+  },
+  {
+    "id": "orbital-0023",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 13, "y": 46 },
+    "ring": { "x": 86, "y": 24 },
+    "planets": [{ "x": 44, "y": 39, "size": "medium" }]
+  },
+  {
+    "id": "orbital-0024",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 91, "y": 32 },
+    "ring": { "x": 6, "y": 15 },
+    "planets": [{ "x": 63, "y": 34, "size": "big" }]
+  },
+  {
+    "id": "orbital-0025",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 84, "y": 8 },
+    "ring": { "x": 28, "y": 84 },
+    "planets": [{ "x": 56, "y": 52, "size": "small" }]
+  },
+  {
+    "id": "orbital-0026",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 59, "y": 88 },
+    "ring": { "x": 51, "y": 7 },
+    "planets": [{ "x": 58, "y": 50, "size": "small" }]
+  },
+  {
+    "id": "orbital-0027",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 15, "y": 8 },
+    "ring": { "x": 31, "y": 93 },
+    "planets": [{ "x": 25, "y": 49, "size": "small" }]
+  },
+  {
+    "id": "orbital-0028",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 76, "y": 4 },
+    "ring": { "x": 16, "y": 82 },
+    "planets": [{ "x": 53, "y": 27, "size": "medium" }]
+  },
+  {
+    "id": "orbital-0029",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 80, "y": 89 },
+    "ring": { "x": 15, "y": 15 },
+    "planets": [{ "x": 46, "y": 53, "size": "small" }]
+  },
+  {
+    "id": "orbital-0030",
+    "type": "orbital",
+    "difficulty": "easy",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 47, "y": 11 },
+    "ring": { "x": 45, "y": 91 },
+    "planets": [{ "x": 47, "y": 64, "size": "medium" }]
+  },
+  {
+    "id": "orbital-0031",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 93, "y": 28 },
+    "ring": { "x": 12, "y": 83 },
+    "planets": [
+      { "x": 36, "y": 62, "size": "medium" },
+      { "x": 48, "y": 78, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0032",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 87, "y": 67 },
+    "ring": { "x": 17, "y": 84 },
+    "planets": [
+      { "x": 55, "y": 68, "size": "big" },
+      { "x": 18, "y": 37, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0033",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 45, "y": 7 },
+    "ring": { "x": 15, "y": 89 },
+    "planets": [
+      { "x": 34, "y": 47, "size": "big" },
+      { "x": 66, "y": 42, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0034",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 70, "y": 92 },
+    "ring": { "x": 27, "y": 7 },
+    "planets": [
+      { "x": 41, "y": 36, "size": "small" },
+      { "x": 95, "y": 20, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0035",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 86, "y": 10 },
+    "ring": { "x": 16, "y": 46 },
+    "planets": [
+      { "x": 65, "y": 22, "size": "small" },
+      { "x": 73, "y": 51, "size": "big" }
+    ]
+  },
+  {
+    "id": "orbital-0036",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 10, "y": 14 },
+    "ring": { "x": 87, "y": 64 },
+    "planets": [
+      { "x": 61, "y": 49, "size": "small" },
+      { "x": 11, "y": 84, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0037",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 91, "y": 79 },
+    "ring": { "x": 12, "y": 88 },
+    "planets": [
+      { "x": 39, "y": 83, "size": "small" },
+      { "x": 78, "y": 61, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0038",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 95, "y": 76 },
+    "ring": { "x": 16, "y": 34 },
+    "planets": [
+      { "x": 57, "y": 51, "size": "medium" },
+      { "x": 59, "y": 67, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0039",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 22, "y": 11 },
+    "ring": { "x": 11, "y": 86 },
+    "planets": [
+      { "x": 23, "y": 39, "size": "medium" },
+      { "x": 63, "y": 44, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0040",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 8, "y": 24 },
+    "ring": { "x": 95, "y": 78 },
+    "planets": [
+      { "x": 41, "y": 51, "size": "big" },
+      { "x": 94, "y": 28, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0041",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 62, "y": 8 },
+    "ring": { "x": 30, "y": 94 },
+    "planets": [
+      { "x": 45, "y": 57, "size": "small" },
+      { "x": 72, "y": 53, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0042",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 80, "y": 89 },
+    "ring": { "x": 20, "y": 14 },
+    "planets": [
+      { "x": 66, "y": 59, "size": "big" },
+      { "x": 4, "y": 79, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0043",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 79, "y": 88 },
+    "ring": { "x": 14, "y": 8 },
+    "planets": [
+      { "x": 49, "y": 46, "size": "big" },
+      { "x": 83, "y": 25, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0044",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 58, "y": 93 },
+    "ring": { "x": 23, "y": 16 },
+    "planets": [
+      { "x": 40, "y": 48, "size": "small" },
+      { "x": 38, "y": 6, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0045",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 96, "y": 60 },
+    "ring": { "x": 9, "y": 22 },
+    "planets": [
+      { "x": 56, "y": 38, "size": "medium" },
+      { "x": 59, "y": 9, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0046",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 24, "y": 8 },
+    "ring": { "x": 35, "y": 90 },
+    "planets": [
+      { "x": 29, "y": 53, "size": "small" },
+      { "x": 81, "y": 51, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0047",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 90, "y": 88 },
+    "ring": { "x": 14, "y": 43 },
+    "planets": [
+      { "x": 63, "y": 76, "size": "medium" },
+      { "x": 26, "y": 28, "size": "big" }
+    ]
+  },
+  {
+    "id": "orbital-0048",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 59, "y": 91 },
+    "ring": { "x": 51, "y": 15 },
+    "planets": [
+      { "x": 56, "y": 44, "size": "small" },
+      { "x": 66, "y": 55, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0049",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 78, "y": 96 },
+    "ring": { "x": 35, "y": 13 },
+    "planets": [
+      { "x": 53, "y": 59, "size": "medium" },
+      { "x": 60, "y": 33, "size": "big" }
+    ]
+  },
+  {
+    "id": "orbital-0050",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 48, "y": 9 },
+    "ring": { "x": 29, "y": 87 },
+    "planets": [
+      { "x": 38, "y": 34, "size": "small" },
+      { "x": 88, "y": 57, "size": "big" }
+    ]
+  },
+  {
+    "id": "orbital-0051",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 96, "y": 55 },
+    "ring": { "x": 7, "y": 47 },
+    "planets": [
+      { "x": 59, "y": 46, "size": "medium" },
+      { "x": 36, "y": 37, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0052",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 47, "y": 87 },
+    "ring": { "x": 58, "y": 8 },
+    "planets": [
+      { "x": 54, "y": 61, "size": "medium" },
+      { "x": 17, "y": 49, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0053",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 95, "y": 53 },
+    "ring": { "x": 16, "y": 86 },
+    "planets": [
+      { "x": 65, "y": 69, "size": "medium" },
+      { "x": 57, "y": 32, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0054",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 87, "y": 31 },
+    "ring": { "x": 6, "y": 25 },
+    "planets": [
+      { "x": 54, "y": 27, "size": "small" },
+      { "x": 36, "y": 21, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0055",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 95, "y": 79 },
+    "ring": { "x": 6, "y": 68 },
+    "planets": [
+      { "x": 46, "y": 71, "size": "small" },
+      { "x": 36, "y": 34, "size": "big" }
+    ]
+  },
+  {
+    "id": "orbital-0056",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 94, "y": 81 },
+    "ring": { "x": 17, "y": 69 },
+    "planets": [
+      { "x": 50, "y": 77, "size": "small" },
+      { "x": 67, "y": 33, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0057",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 86, "y": 62 },
+    "ring": { "x": 17, "y": 81 },
+    "planets": [
+      { "x": 42, "y": 81, "size": "big" },
+      { "x": 73, "y": 23, "size": "big" }
+    ]
+  },
+  {
+    "id": "orbital-0058",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 12, "y": 75 },
+    "ring": { "x": 87, "y": 81 },
+    "planets": [
+      { "x": 51, "y": 74, "size": "big" },
+      { "x": 24, "y": 12, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0059",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 16, "y": 12 },
+    "ring": { "x": 24, "y": 94 },
+    "planets": [
+      { "x": 26, "y": 68, "size": "big" },
+      { "x": 8, "y": 42, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0060",
+    "type": "orbital",
+    "difficulty": "medium",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 88, "y": 59 },
+    "ring": { "x": 13, "y": 45 },
+    "planets": [
+      { "x": 39, "y": 46, "size": "medium" },
+      { "x": 39, "y": 69, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0061",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 62, "y": 90 },
+    "ring": { "x": 29, "y": 6 },
+    "planets": [
+      { "x": 40, "y": 40, "size": "small" },
+      { "x": 59, "y": 32, "size": "medium" },
+      { "x": 12, "y": 4, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0062",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 49, "y": 91 },
+    "ring": { "x": 50, "y": 8 },
+    "planets": [
+      { "x": 51, "y": 56, "size": "medium" },
+      { "x": 15, "y": 34, "size": "big" },
+      { "x": 7, "y": 14, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0063",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 93, "y": 42 },
+    "ring": { "x": 7, "y": 67 },
+    "planets": [
+      { "x": 46, "y": 58, "size": "small" },
+      { "x": 32, "y": 79, "size": "big" },
+      { "x": 19, "y": 15, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0064",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 11, "y": 19 },
+    "ring": { "x": 93, "y": 69 },
+    "planets": [
+      { "x": 51, "y": 39, "size": "medium" },
+      { "x": 86, "y": 90, "size": "big" },
+      { "x": 29, "y": 51, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0065",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 9, "y": 39 },
+    "ring": { "x": 95, "y": 23 },
+    "planets": [
+      { "x": 59, "y": 32, "size": "small" },
+      { "x": 57, "y": 56, "size": "big" },
+      { "x": 20, "y": 77, "size": "big" }
+    ]
+  },
+  {
+    "id": "orbital-0066",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 49, "y": 93 },
+    "ring": { "x": 65, "y": 13 },
+    "planets": [
+      { "x": 55, "y": 58, "size": "medium" },
+      { "x": 46, "y": 31, "size": "big" },
+      { "x": 75, "y": 96, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0067",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 10, "y": 34 },
+    "ring": { "x": 87, "y": 65 },
+    "planets": [
+      { "x": 45, "y": 43, "size": "medium" },
+      { "x": 26, "y": 93, "size": "medium" },
+      { "x": 51, "y": 94, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0068",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 69, "y": 13 },
+    "ring": { "x": 79, "y": 87 },
+    "planets": [
+      { "x": 74, "y": 37, "size": "small" },
+      { "x": 66, "y": 54, "size": "small" },
+      { "x": 96, "y": 94, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0069",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 39, "y": 89 },
+    "ring": { "x": 26, "y": 10 },
+    "planets": [
+      { "x": 30, "y": 52, "size": "medium" },
+      { "x": 88, "y": 62, "size": "big" },
+      { "x": 87, "y": 28, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0070",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 87, "y": 13 },
+    "ring": { "x": 46, "y": 93 },
+    "planets": [
+      { "x": 73, "y": 36, "size": "small" },
+      { "x": 6, "y": 81, "size": "small" },
+      { "x": 52, "y": 71, "size": "big" }
+    ]
+  },
+  {
+    "id": "orbital-0071",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 4, "y": 30 },
+    "ring": { "x": 85, "y": 84 },
+    "planets": [
+      { "x": 38, "y": 61, "size": "big" },
+      { "x": 7, "y": 45, "size": "medium" },
+      { "x": 91, "y": 33, "size": "big" }
+    ]
+  },
+  {
+    "id": "orbital-0072",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 13, "y": 10 },
+    "ring": { "x": 37, "y": 89 },
+    "planets": [
+      { "x": 24, "y": 51, "size": "small" },
+      { "x": 13, "y": 40, "size": "small" },
+      { "x": 88, "y": 43, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0073",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 59, "y": 88 },
+    "ring": { "x": 73, "y": 14 },
+    "planets": [
+      { "x": 67, "y": 65, "size": "medium" },
+      { "x": 14, "y": 59, "size": "medium" },
+      { "x": 27, "y": 43, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0074",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 81, "y": 96 },
+    "ring": { "x": 65, "y": 4 },
+    "planets": [
+      { "x": 75, "y": 42, "size": "medium" },
+      { "x": 22, "y": 39, "size": "big" },
+      { "x": 27, "y": 87, "size": "big" }
+    ]
+  },
+  {
+    "id": "orbital-0075",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 32, "y": 10 },
+    "ring": { "x": 53, "y": 96 },
+    "planets": [
+      { "x": 41, "y": 50, "size": "small" },
+      { "x": 19, "y": 83, "size": "big" },
+      { "x": 62, "y": 86, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0076",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 40, "y": 92 },
+    "ring": { "x": 79, "y": 9 },
+    "planets": [
+      { "x": 59, "y": 56, "size": "small" },
+      { "x": 29, "y": 19, "size": "big" },
+      { "x": 11, "y": 55, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0077",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 53, "y": 9 },
+    "ring": { "x": 20, "y": 84 },
+    "planets": [
+      { "x": 38, "y": 41, "size": "big" },
+      { "x": 94, "y": 30, "size": "medium" },
+      { "x": 85, "y": 83, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0078",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 69, "y": 10 },
+    "ring": { "x": 15, "y": 87 },
+    "planets": [
+      { "x": 36, "y": 59, "size": "medium" },
+      { "x": 73, "y": 78, "size": "small" },
+      { "x": 25, "y": 10, "size": "big" }
+    ]
+  },
+  {
+    "id": "orbital-0079",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 90, "y": 42 },
+    "ring": { "x": 16, "y": 72 },
+    "planets": [
+      { "x": 49, "y": 53, "size": "medium" },
+      { "x": 71, "y": 34, "size": "medium" },
+      { "x": 28, "y": 57, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0080",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 49, "y": 86 },
+    "ring": { "x": 46, "y": 11 },
+    "planets": [
+      { "x": 43, "y": 55, "size": "big" },
+      { "x": 22, "y": 86, "size": "small" },
+      { "x": 70, "y": 35, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0081",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 81, "y": 6 },
+    "ring": { "x": 78, "y": 96 },
+    "planets": [
+      { "x": 81, "y": 46, "size": "big" },
+      { "x": 59, "y": 36, "size": "small" },
+      { "x": 21, "y": 60, "size": "big" }
+    ]
+  },
+  {
+    "id": "orbital-0082",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 7, "y": 30 },
+    "ring": { "x": 94, "y": 54 },
+    "planets": [
+      { "x": 46, "y": 44, "size": "big" },
+      { "x": 81, "y": 80, "size": "medium" },
+      { "x": 94, "y": 29, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0083",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 13, "y": 63 },
+    "ring": { "x": 91, "y": 29 },
+    "planets": [
+      { "x": 44, "y": 53, "size": "big" },
+      { "x": 48, "y": 90, "size": "big" },
+      { "x": 75, "y": 46, "size": "big" }
+    ]
+  },
+  {
+    "id": "orbital-0084",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 23, "y": 95 },
+    "ring": { "x": 13, "y": 14 },
+    "planets": [
+      { "x": 24, "y": 63, "size": "medium" },
+      { "x": 58, "y": 12, "size": "big" },
+      { "x": 48, "y": 36, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0085",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 5, "y": 12 },
+    "ring": { "x": 85, "y": 73 },
+    "planets": [
+      { "x": 32, "y": 39, "size": "medium" },
+      { "x": 68, "y": 20, "size": "big" },
+      { "x": 45, "y": 6, "size": "medium" }
+    ]
+  },
+  {
+    "id": "orbital-0086",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 78, "y": 88 },
+    "ring": { "x": 52, "y": 15 },
+    "planets": [
+      { "x": 63, "y": 60, "size": "medium" },
+      { "x": 51, "y": 79, "size": "medium" },
+      { "x": 86, "y": 40, "size": "big" }
+    ]
+  },
+  {
+    "id": "orbital-0087",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 22, "y": 9 },
+    "ring": { "x": 72, "y": 84 },
+    "planets": [
+      { "x": 40, "y": 41, "size": "medium" },
+      { "x": 20, "y": 39, "size": "small" },
+      { "x": 56, "y": 23, "size": "small" }
+    ]
+  },
+  {
+    "id": "orbital-0088",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 85, "y": 86 },
+    "ring": { "x": 60, "y": 13 },
+    "planets": [
+      { "x": 71, "y": 55, "size": "small" },
+      { "x": 53, "y": 28, "size": "medium" },
+      { "x": 27, "y": 56, "size": "big" }
+    ]
+  },
+  {
+    "id": "orbital-0089",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 14, "y": 92 },
+    "ring": { "x": 79, "y": 11 },
+    "planets": [
+      { "x": 51, "y": 43, "size": "big" },
+      { "x": 4, "y": 52, "size": "small" },
+      { "x": 92, "y": 56, "size": "big" }
+    ]
+  },
+  {
+    "id": "orbital-0090",
+    "type": "orbital",
+    "difficulty": "hard",
+    "author": "skardela",
+    "license": "CC-BY-4.0",
+    "launch": { "x": 14, "y": 73 },
+    "ring": { "x": 90, "y": 56 },
+    "planets": [
+      { "x": 65, "y": 59, "size": "medium" },
+      { "x": 69, "y": 28, "size": "medium" },
+      { "x": 32, "y": 54, "size": "medium" }
+    ]
+  }
+]

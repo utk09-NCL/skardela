@@ -3,6 +3,7 @@ import type { GuzzlePuzzle } from "./guzzle/puzzle";
 import type { LaticsPuzzle } from "./latics/puzzle";
 import { decipherPuzzles } from "../../shared/cipher";
 import type { NumpuzPuzzle } from "./numpuz/puzzle";
+import type { OrbitalPuzzle } from "./orbital/puzzle";
 import type { TiltPuzzle } from "./tilt/puzzle";
 
 // This file is the list of all puzzle types and their puzzle files.
@@ -17,6 +18,7 @@ export type PuzzleMap = {
   guzzle: GuzzlePuzzle;
   latics: LaticsPuzzle;
   numpuz: NumpuzPuzzle;
+  orbital: OrbitalPuzzle;
   tilt: TiltPuzzle;
 };
 
@@ -45,6 +47,11 @@ export const puzzleTypes: { [Type in PuzzleType]: PuzzleTypeEntry<PuzzleMap[Type
   numpuz: {
     loadPuzzles: async () =>
       decipherPuzzles<NumpuzPuzzle>((await import("../../../puzzles/numpuz.json")).default),
+  },
+  // An Orbital puzzle has no "answer": the game checks each launch with the rules. Thus it does not need "decipherPuzzles".
+  orbital: {
+    loadPuzzles: async () =>
+      (await import("../../../puzzles/orbital.json")).default as OrbitalPuzzle[],
   },
   // A Tilt puzzle has no "answer": the game checks each tilt with the rules. Thus it does not need "decipherPuzzles".
   tilt: {

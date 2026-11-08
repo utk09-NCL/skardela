@@ -1,0 +1,164 @@
+/* The base of the board, the status box and the buttons are in "src/shared/Board.module.css".
+   This file sets what is special to Orbital: the drawing of the board, the sliders and the Launch button.
+   The drawing uses the units of the board: one unit is 1/100 of the width of the board. */
+
+.board {
+  margin: 0;
+}
+
+/* The board is a square. It grows with the page to a maximum width, as the grids of the other puzzle types. */
+.scene {
+  --planet: light-dark(#8a7660, #a08b74);
+  --planet-edge: color-mix(in srgb, var(--planet) 70%, #000000);
+  display: block;
+  width: min(100%, 32rem);
+  aspect-ratio: 1;
+  margin-inline: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background-color: var(--surface);
+  /* A drag on the board aims the probe, thus the page does not scroll or zoom during a touch on the board. */
+  touch-action: none;
+  user-select: none;
+}
+
+.scene[data-dragging="true"] {
+  cursor: grabbing;
+}
+
+/* Each planet is a full circle. Its size shows its pull. */
+.planet {
+  fill: var(--planet);
+  stroke: var(--planet-edge);
+  stroke-width: 0.5;
+}
+
+/* The ring is a thick circle outline with a soft fill. */
+.ring {
+  fill: var(--accent-bg);
+  stroke: var(--accent);
+  stroke-width: 1.2;
+}
+
+/* The path of the flight in the air ("current") is a solid line. */
+.path {
+  fill: none;
+  stroke: var(--blue);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 0.6;
+}
+
+/* The paths of the earlier launches are faint dashed lines, so they do not look like the flight in the air. */
+.path[data-path="earlier"] {
+  stroke: var(--text-muted);
+  stroke-dasharray: 1.2 1.2;
+  stroke-width: 0.4;
+  opacity: 0.6;
+}
+
+/* The probe is a small diamond. The edge keeps it clear on a planet or a path. */
+.probe {
+  fill: var(--text-h);
+  stroke: var(--surface);
+  stroke-width: 0.4;
+}
+
+/* The grip shows where a drag can start: a soft circle around the probe. */
+.grip {
+  fill: var(--surface-muted);
+  stroke: var(--line);
+  stroke-dasharray: 1 1;
+  stroke-width: 0.3;
+  cursor: grab;
+}
+
+.arrow {
+  fill: var(--text-h);
+  stroke: var(--text-h);
+  stroke-linecap: round;
+  stroke-width: 0.6;
+}
+
+/* The two sliders are side by side when the page has space. The misses and the Launch button are under them.
+   The controls are in a fieldset, thus the first lines remove its default styles. */
+.controls {
+  min-inline-size: 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 0.75rem 1.5rem;
+  inline-size: min(100%, 32rem);
+  margin-inline: auto;
+}
+
+/* The name of a slider and its value are on one line. The slider is under them. */
+.slider {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+  color: var(--text-h);
+  font-weight: 600;
+}
+
+.value {
+  font-variant-numeric: tabular-nums;
+}
+
+.slider > input {
+  grid-column: 1 / -1;
+  inline-size: 100%;
+  min-block-size: 2rem;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.slider > input:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* During a flight and after the solve, the controls use "aria-disabled", not "disabled". So they keep the focus. */
+.slider > input[aria-disabled="true"] {
+  cursor: default;
+  opacity: 0.6;
+}
+
+/* The misses and the Launch button are on one line, under the sliders. */
+.launchRow {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1.5rem;
+}
+
+.misses {
+  color: var(--text-h);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The ".launchRow >" part makes this rule stronger than the shared "button" rule, in any order of the files. */
+.launchRow > .launch {
+  min-inline-size: 10rem;
+}
+
+.launch:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* This rule turns off the shared hover rule for a button with "aria-disabled". */
+.launchRow > .launch[aria-disabled="true"]:hover:enabled {
+  border-color: var(--border);
+  background-color: var(--surface);
+}
+
+.launch[aria-disabled="true"] {
+  cursor: default;
+  opacity: 0.6;
+}

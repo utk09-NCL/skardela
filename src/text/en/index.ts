@@ -5,6 +5,7 @@ import { home } from "./home";
 import { latics } from "./latics";
 import { puzzlePage } from "./puzzle-page";
 import { numpuz } from "./numpuz";
+import { orbital } from "./orbital";
 import { tilt } from "./tilt";
 
 // All UI text in English. Import it from "src/text/en": the code uses "text.home.hero.title", for example.
@@ -19,5 +20,6 @@ export const text = {
   guzzle,
   latics,
   numpuz,
+  orbital,
   tilt,
 };
