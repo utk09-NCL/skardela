@@ -1,9 +1,8 @@
+import { useTranslation } from "react-i18next";
 import { calendarDays } from "../../../shared/state/progress";
 import type { SolveResult } from "../../../shared/state/saved-data";
-import { text } from "../../../text/en";
 import styles from "./HomePage.module.css";
 
-const words = text.home.stats.calendar;
 const weeks = 5;
 
 // The colour step of a day: 0 is no solve, then 1–3, 4–6 and 7 or more solves.
@@ -22,17 +21,19 @@ export function StatsCalendar({
   results: readonly SolveResult[];
   today: string;
 }) {
+  const { t } = useTranslation();
+  const heading = t(($) => $.home.stats.calendar.heading);
   const days = calendarDays(results, today, weeks);
   return (
     <div className={styles.panel}>
-      <h3 className={styles.panelTitle}>{words.heading}</h3>
+      <h3 className={styles.panelTitle}>{heading}</h3>
       <div className={styles.weekdays} aria-hidden="true">
-        {words.weekdays.map((weekday, index) => (
+        {t(($) => $.home.stats.calendar.weekdays, { returnObjects: true }).map((weekday, index) => (
           // oxlint-disable-next-line react/no-array-index-key -- two weekdays have the same letter.
           <span key={index}>{weekday}</span>
         ))}
       </div>
-      <ol className={styles.days} aria-label={words.heading}>
+      <ol className={styles.days} aria-label={heading}>
         {days.map(({ day, solves, isToday, isFuture }) => (
           <li
             key={day}
@@ -42,7 +43,11 @@ export function StatsCalendar({
             data-future={isFuture}
             aria-hidden={isFuture}
           >
-            {!isFuture && <span className="visually-hidden">{words.day(day, solves)}</span>}
+            {!isFuture && (
+              <span className="visually-hidden">
+                {t(($) => $.home.stats.calendar.day, { date: day, count: solves })}
+              </span>
+            )}
           </li>
         ))}
       </ol>
@@ -50,7 +55,7 @@ export function StatsCalendar({
         {(["none", "low", "mid", "high"] as const).map((step, index) => (
           <li key={step}>
             <span className={styles.day} data-step={index} />
-            {words.legend[step]}
+            {t(($) => $.home.stats.calendar.legend[step])}
           </li>
         ))}
       </ul>

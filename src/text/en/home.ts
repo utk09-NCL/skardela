@@ -1,23 +1,11 @@
 // The text of the home page. Each section of "src/app/pages/home/" has one part.
 import { symbols } from "../symbols";
 
-// A long date in British English, for example "Saturday 24 October". "timeZone" is set for a day key,
-// because a day key is a date without a time. See "src/shared/state/progress.ts".
-const longDate = (date: Date, timeZone?: string) =>
-  new Intl.DateTimeFormat("en-GB", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    timeZone,
-  }).format(date);
-
-// "1 puzzle", "2 puzzles".
-const puzzleCount = (count: number) => `${count} ${count === 1 ? "puzzle" : "puzzles"}`;
-
 // The text of the home page. Each section of "src/app/pages/home/" has one part.
+// "longDate" is a long date of the language, for example "Saturday 24 October". See "src/i18n/config.ts".
 export const home = {
   // The date above the headline. The CSS shows it in capitals.
-  date: (now: Date) => longDate(now),
+  date: "{{date, longDate}}",
   hero: {
     // A new player sees what Skardela is, and two links.
     title: "A new set of puzzles every day",
@@ -25,38 +13,33 @@ export const home = {
       "Skardela has new kinds of logic and word puzzles. Each puzzle type has an easy, a medium and a hard puzzle each day. Play in your browser. You do not need an account or a download.",
     play: "Play today's puzzles",
     howItWorks: "How it works",
-    // A returning player sees the progress of today.
-    solvedSome: (solved: number, total: number) =>
-      `${solved} down. ${puzzleCount(total - solved)} left today.`,
+    // A returning player sees the progress of today. "count" is the number of puzzles that are not solved.
+    solvedSome_one: "{{solved}} down. {{count}} puzzle left today.",
+    solvedSome_other: "{{solved}} down. {{count}} puzzles left today.",
     solvedAll: "All of today's puzzles are solved. See you tomorrow.",
     pickUp: "Pick up where you left off.",
     // The link to the last puzzle that the player opened and did not solve.
     continueLabel: "Continue",
-    puzzleName: (typeName: string, level: string) => `${typeName} · ${level}`,
+    puzzleName: "{{typeName}} · {{level}}",
     progressLabel: "Today's puzzles",
-    segment: (typeName: string, level: string, isSolved: boolean) =>
-      `${typeName} ${level}: ${isSolved ? "solved" : "not solved"}`,
-    progress: (solved: number, total: number) => `${solved} of ${total} solved`,
+    segmentSolved: "{{typeName}} {{level}}: solved",
+    segmentNotSolved: "{{typeName}} {{level}}: not solved",
+    progress: "{{solved}} of {{total}} solved",
     // The time to the next midnight. The screen shows units in short form, for example "3 h 57 min".
     // A screen reader reads the full words, for example "3 hours 57 minutes".
     newPuzzlesIn: "new puzzles in",
-    timeShort: ({ hours, minutes }: { hours: number; minutes: number }) =>
-      [hours > 0 ? `${hours} h` : "", minutes > 0 || hours === 0 ? `${minutes} min` : ""]
-        .filter((part) => part !== "")
-        .join(" "),
-    timeLong: ({ hours, minutes }: { hours: number; minutes: number }) =>
-      [
-        hours > 0 ? `${hours} ${hours === 1 ? "hour" : "hours"}` : "",
-        minutes > 0 || hours === 0 ? `${minutes} ${minutes === 1 ? "minute" : "minutes"}` : "",
-      ]
-        .filter((part) => part !== "")
-        .join(" "),
+    hoursShort: "{{count}} h",
+    minutesShort: "{{count}} min",
+    hours_one: "{{count}} hour",
+    hours_other: "{{count}} hours",
+    minutes_one: "{{count}} minute",
+    minutes_other: "{{count}} minutes",
   },
   today: {
     heading: "Today's puzzles",
     intro:
       "The puzzles change at midnight, your local time. All players get the same puzzles on the same date.",
-    levelsLabel: (puzzleTypeName: string) => `Today's ${puzzleTypeName}`,
+    levelsLabel: "Today's {{typeName}}",
     // The status under the name of each level. A solved level shows a check mark after its name,
     // and the result of its best solve: the time and the score, for example "1:42" and "0 mistakes".
     // An older solve has no score. Then the status shows only the time.
@@ -64,21 +47,18 @@ export const home = {
     solvedMark: symbols.progress.solved,
     solvedNoTime: "solved",
     // The name of a level link for a screen reader. It starts with the visible level name.
-    levelLink: (level: string, result?: { time?: string; score?: string }) =>
-      result === undefined
-        ? `${level}, not solved`
-        : [
-            `${level}, solved`,
-            result.time === undefined ? "" : ` in ${result.time}`,
-            result.score === undefined ? "" : ` with ${result.score}`,
-          ].join(""),
-    play: (level: string) => `Play ${level}`,
+    levelNotSolved: "{{level}}, not solved",
+    levelSolved: "{{level}}, solved",
+    levelSolvedIn: "{{level}}, solved in {{time}}",
+    levelSolvedWith: "{{level}}, solved with {{score}}",
+    levelSolvedInWith: "{{level}}, solved in {{time}} with {{score}}",
+    play: "Play {{level}}",
     // When all levels are solved, the card shows the total of the best times.
-    allSolved: (total: string | undefined) =>
-      total === undefined ? "All solved today" : `All solved · ${total} total`,
+    allSolved: "All solved today",
+    allSolvedTotal: "All solved · {{total}} total",
     // Each card has a Share button. Its label tells a screen reader which puzzle type it shares.
     share: "Share",
-    shareLabel: (puzzleTypeName: string) => `Share your ${puzzleTypeName} results of today`,
+    shareLabel: "Share your {{typeName}} results of today",
   },
   stats: {
     heading: "Your stats",
@@ -92,8 +72,8 @@ export const home = {
     calendar: {
       heading: "Last five weeks",
       weekdays: ["M", "T", "W", "T", "F", "S", "S"],
-      day: (day: string, solves: number) =>
-        `${longDate(new Date(`${day}T00:00:00Z`), "UTC")}: ${puzzleCount(solves)} solved`,
+      day_one: "{{date, longDate}}: {{count}} puzzle solved",
+      day_other: "{{date, longDate}}: {{count}} puzzles solved",
       legendLabel: "Solved puzzles in a day",
       legend: { none: "none", low: "1–3", mid: "4–6", high: "7+" },
     },
@@ -103,22 +83,21 @@ export const home = {
       heading: "Personal bests",
       puzzle: "Puzzle",
       noTime: "No solves",
-      average: (time: string) => `average ${time}`,
+      average: "average {{time}}",
       note: "Best times. Select a puzzle to see your average times.",
       // Before the first solve, the panel shows one message and a link to a puzzle.
       empty: "Your best times show here after your first solve.",
-      play: (typeName: string, level: string) => `Play ${typeName} ${level}`,
+      play: "Play {{typeName}} {{level}}",
     },
     // Export, import and clear. The message line tells the result of each action.
     data: {
       export: "Export my data",
       import: "Import",
-      fileName: (day: string) => `skardela-data-${day}.json`,
-      exported: (fileName: string) => `Your data is in the file "${fileName}".`,
-      imported: (count: number) =>
-        count === 0
-          ? "The file has no new solves."
-          : `${count} new ${count === 1 ? "solve" : "solves"} added.`,
+      fileName: "skardela-data-{{day}}.json",
+      exported: 'Your data is in the file "{{fileName}}".',
+      imported_zero: "The file has no new solves.",
+      imported_one: "{{count}} new solve added.",
+      imported_other: "{{count}} new solves added.",
       notData: 'This file is not a Skardela data file. Select a file from "Export my data".',
       tooLarge: "This file is too large for a Skardela data file.",
       note: "Export makes a backup file. Import adds the solves of a backup file to your data.",

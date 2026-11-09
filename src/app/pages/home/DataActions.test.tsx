@@ -5,7 +5,7 @@ import { defaultSavedData, type SolveResult } from "../../../shared/state/saved-
 import { saveFile } from "../../../shared/save-file";
 import { parseImportText, toExportText } from "../../../shared/state/storage-format";
 import { useAppStore } from "../../../shared/state/store";
-import { text } from "../../../text/en";
+import { t } from "../../../test/i18n";
 import { DataActions } from "./DataActions";
 
 // jsdom cannot download a file or load a page again, thus the tests replace these two functions.
@@ -14,7 +14,7 @@ vi.mock(import("../../../shared/save-file"), () => ({
 }));
 vi.mock(import("../../../shared/reload"), () => ({ reloadPage: vi.fn<() => void>() }));
 
-const words = text.home.stats.data;
+const words = t(($) => $.home.stats.data, { returnObjects: true });
 const solve: SolveResult = {
   puzzleId: "latics-0004",
   type: "latics",
@@ -51,7 +51,7 @@ describe("export", () => {
     const [fileName, content] = lastSavedFile();
     expect(fileName).toMatch(/^skardela-data-\d{4}-\d{2}-\d{2}\.json$/u);
     expect(parseImportText(content)?.results).toEqual([solve]);
-    expect(message()).toHaveTextContent(words.exported(fileName));
+    expect(message()).toHaveTextContent(t(($) => $.home.stats.data.exported, { fileName }));
   });
 });
 
@@ -68,7 +68,9 @@ describe("import", () => {
       new File([exported], "backup.json", { type: "application/json" }),
     );
 
-    expect(await screen.findByText(words.imported(1))).toBeInTheDocument();
+    expect(
+      await screen.findByText(t(($) => $.home.stats.data.imported, { count: 1 })),
+    ).toBeInTheDocument();
     expect(useAppStore.getState().results).toEqual([solve]);
     expect(useAppStore.getState().solved).toEqual([solve.puzzleId]);
   });

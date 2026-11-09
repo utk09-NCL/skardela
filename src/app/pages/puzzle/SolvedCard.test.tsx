@@ -3,7 +3,7 @@ import { MemoryRouter } from "react-router";
 import { describe, expect, it, vi } from "vitest";
 import { usePlaySession } from "../../../shared/state/playSession";
 import { useAppStore } from "../../../shared/state/store";
-import { text } from "../../../text/en";
+import { t } from "../../../test/i18n";
 import { symbols } from "../../../text/symbols";
 import type { LoadedPuzzle } from "../../puzzles";
 import { puzzleTypes } from "../../puzzle-types/registry";
@@ -11,7 +11,7 @@ import { SolvedCard } from "./SolvedCard";
 
 type Level = LoadedPuzzle["puzzle"]["difficulty"];
 
-const words = text.puzzlePage.result;
+const words = t(($) => $.puzzlePage.result, { returnObjects: true });
 const [guzzle] = await puzzleTypes.guzzle.loadPuzzles();
 
 // Today's Guzzle puzzles in these tests: #0023 easy, #0024 medium and #0025 hard.
@@ -76,9 +76,9 @@ describe("result card numbers", () => {
     solve("guzzle-0024", "medium", 134, 1);
     renderSolved(loadedAs("guzzle-0024", "medium"));
     const card = screen.getByRole("region", { name: words.title });
-    expect(within(card).getByText(words.puzzle("Guzzle", "Medium", "0024"))).toBeInTheDocument();
+    expect(within(card).getByText("Guzzle, Medium, #0024")).toBeInTheDocument();
     expect(numberOf(words.time)).toBe("2:14");
-    expect(numberOf(text.guzzle.scoreWord(1))).toBe("1");
+    expect(numberOf("mistake")).toBe("1");
     // The average of the other medium solves is 2:45. Thus this solve is 0:31 faster.
     expect(numberOf(words.faster)).toBe("0:31");
   });
@@ -86,7 +86,7 @@ describe("result card numbers", () => {
   it("shows First for the first solve of a level", () => {
     solve("guzzle-0024", "medium", 134, 1);
     renderSolved(loadedAs("guzzle-0024", "medium"));
-    expect(numberOf(words.firstLabel("Medium"))).toBe(words.first);
+    expect(numberOf("Medium solve")).toBe(words.first);
   });
 });
 
@@ -103,12 +103,12 @@ describe("result card share", () => {
       "Guzzle #0024, Medium",
       `${symbols.share.clean}${symbols.share.mistakes}${symbols.share.unsolved}`,
       "Solved in 2:14 with 1 mistake",
-      text.share.site,
+      t(($) => $.share.site),
     ]);
     fireEvent.click(screen.getByRole("button", { name: words.copy }));
-    expect(await screen.findByText(text.share.copiedMessage)).toBeInTheDocument();
+    expect(await screen.findByText(t(($) => $.share.copiedMessage))).toBeInTheDocument();
     expect(writeText).toHaveBeenCalledWith(shareText);
-    expect(screen.getByRole("link", { name: words.nextLabel("Guzzle", "Hard") })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Next puzzle: Guzzle Hard" })).toHaveAttribute(
       "href",
       "/puzzles/guzzle-0025",
     );
@@ -124,7 +124,7 @@ describe("result card share", () => {
       symbols.share.clean,
     ]);
     // The next level is today's first level that the player did not solve.
-    expect(screen.getByRole("link", { name: words.nextLabel("Guzzle", "Easy") })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Next puzzle: Guzzle Easy" })).toHaveAttribute(
       "href",
       "/puzzles/guzzle-0023",
     );

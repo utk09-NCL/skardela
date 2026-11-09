@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Confetti } from "../../../shared/Confetti";
 import { KeyList, type KeyItem } from "../../../shared/RuleList";
 import styles from "./Board.module.css";
@@ -7,24 +8,15 @@ import { createMoveLog, getColourBinaryLog, useColourBinaryLifecycle } from "./l
 import { toSquares, type ColourBinaryPuzzle } from "./puzzle";
 import { statusText } from "./status";
 import { useGame, type Game } from "./useGame";
-import { text } from "../../../text/en";
-
-const words = text["colour-binary"];
-
-// The key under the board. A given square and a square of the player have the same colour.
-// Only the given square has a dot.
-const legend: KeyItem[] = [
-  { text: words.legend.given, sample: { fill: "red", symbol: "", isGiven: true } },
-  { text: words.legend.yours, sample: { fill: "red", symbol: "" } },
-];
 
 // Undo and Hint. Each button is disabled when the machine does not accept its event.
 function Buttons({ game }: { game: Game }) {
+  const { t } = useTranslation();
   const buttonClass = `${shared.button} ${shared.boxed}`;
   return (
     <div className={styles.buttons}>
       <button type="button" className={buttonClass} disabled={!game.canUndo} onClick={game.undo}>
-        {words.undoButton}
+        {t(($) => $["colour-binary"].undoButton)}
       </button>
       <button
         type="button"
@@ -32,7 +24,7 @@ function Buttons({ game }: { game: Game }) {
         disabled={!game.canAskHint}
         onClick={game.askHint}
       >
-        {words.hintButton}
+        {t(($) => $["colour-binary"].hintButton)}
       </button>
     </div>
   );
@@ -42,7 +34,17 @@ function Buttons({ game }: { game: Game }) {
 // The puzzle is solved when the board matches the rule set.
 // The board shows the grid, the key, the status text, and the Undo and Hint buttons.
 export function Board({ puzzle }: { puzzle: ColourBinaryPuzzle }) {
+  const { t } = useTranslation();
   const size = puzzle.start.length;
+  // The key under the board. A given square and a square of the player have the same colour.
+  // Only the given square has a dot.
+  const legend: KeyItem[] = [
+    {
+      text: t(($) => $["colour-binary"].legend.given),
+      sample: { fill: "red", symbol: "", isGiven: true },
+    },
+    { text: t(($) => $["colour-binary"].legend.yours), sample: { fill: "red", symbol: "" } },
+  ];
   const log = getColourBinaryLog();
   const meta = {
     puzzleId: puzzle.id,
@@ -57,11 +59,11 @@ export function Board({ puzzle }: { puzzle: ColourBinaryPuzzle }) {
       <Grid game={game} size={size} />
 
       <div className={styles.legend}>
-        <KeyList items={legend} label={words.legend.label} />
+        <KeyList items={legend} label={t(($) => $["colour-binary"].legend.label)} />
       </div>
 
       <output className={shared.status} data-solved={game.isSolved}>
-        {statusText(game, size)}
+        {statusText(t, game, size)}
       </output>
 
       {/* The confetti shows when the puzzle is solved. It is not in the grid, because the grid has "container-type". */}

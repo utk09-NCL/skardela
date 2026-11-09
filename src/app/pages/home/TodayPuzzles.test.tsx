@@ -4,12 +4,12 @@ import { createMemoryRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import { describe, expect, it } from "vitest";
 import { useAppStore } from "../../../shared/state/store";
-import { text } from "../../../text/en";
+import { t } from "../../../test/i18n";
 import { symbols } from "../../../text/symbols";
 import { homeLoader, type TodayCard } from "../../puzzles";
 import { routes } from "../../routes";
 
-const home = text.home;
+const home = t(($) => $.home, { returnObjects: true });
 
 type Difficulty = TodayCard["levels"][number]["difficulty"];
 
@@ -46,9 +46,9 @@ describe("home page card results", () => {
     solveToday(cards, 102, "easy", 1);
     await renderHome();
     const link = screen.getByRole("link", {
-      name: home.today.levelLink(text.levels.easy, { time: "1:42", score: "1 mistake" }),
+      name: "Easy, solved in 1:42 with 1 mistake",
     });
-    expect(link).toHaveTextContent(`${text.levels.easy}${home.today.solvedMark}`);
+    expect(link).toHaveTextContent(`Easy${home.today.solvedMark}`);
     expect(link).toHaveTextContent("1:42");
     expect(link).toHaveTextContent("1 mistake");
   });
@@ -56,7 +56,7 @@ describe("home page card results", () => {
   it("has a Share button only after a solve, and copies today's results", async () => {
     const cards = await homeLoader();
     const user = userEvent.setup();
-    const shareName = home.today.shareLabel(text.guzzle.name);
+    const shareName = "Share your Guzzle results of today";
     await renderHome();
     expect(screen.queryByRole("button", { name: shareName })).toBeNull();
     solveToday(cards, 102, "easy", 0);
@@ -65,12 +65,14 @@ describe("home page card results", () => {
     const lines = (await navigator.clipboard.readText()).split("\n");
     expect(lines[0]).toMatch(/^Skardela · \d{1,2} [A-Z][a-z]+$/u);
     expect(lines.slice(1)).toEqual([
-      text.guzzle.name,
+      "Guzzle",
       `${symbols.share.clean}${symbols.share.mistakes}${symbols.share.unsolved}`,
       "Easy 1:42 · Medium 2:14",
-      text.share.site,
+      t(($) => $.share.site),
     ]);
-    expect(screen.getByRole("button", { name: shareName })).toHaveTextContent(text.share.copied);
+    expect(screen.getByRole("button", { name: shareName })).toHaveTextContent(
+      t(($) => $.share.copied),
+    );
   });
 
   it("shows the total of the best times when all levels are solved", async () => {
@@ -79,6 +81,6 @@ describe("home page card results", () => {
     solveToday(cards, 60, "medium");
     solveToday(cards, 100, "hard");
     await renderHome();
-    expect(screen.getByText(home.today.allSolved("3:22"))).toBeInTheDocument();
+    expect(screen.getByText("All solved · 3:22 total")).toBeInTheDocument();
   });
 });

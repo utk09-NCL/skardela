@@ -1,12 +1,11 @@
 import { Fragment, useEffect, useRef, type KeyboardEvent } from "react";
+import { useTranslation } from "react-i18next";
 import shared from "../../../shared/Board.module.css";
-import { text } from "../../../text/en";
+import { symbols } from "../../../text/symbols";
 import styles from "./Board.module.css";
 import { operatorOfKey } from "./keys";
 import type { Operator } from "./rules-check";
 import type { Game } from "./useGame";
-
-const words = text.numpuz;
 
 // This helper reads an operator from a physical keyboard. Other keys and shortcuts give no operator.
 function operatorFromKey(event: KeyboardEvent): Operator | undefined {
@@ -35,9 +34,11 @@ function Blank({ game, index }: { game: Game; index: number }) {
   const operator = game.guess[index] ?? null;
   const isSelected = game.selected === index;
   const ref = useFocusWhenSelected(isSelected);
-  const label = words.blank({
+  const { t } = useTranslation();
+  const label = t(($) => $.numpuz.blank, {
     position: index + 1,
-    operator: operator === null ? "" : words.operatorNames[operator],
+    operator:
+      operator === null ? t(($) => $.numpuz.empty) : t(($) => $.numpuz.operatorNames[operator]),
   });
   return (
     <button
@@ -61,7 +62,7 @@ function Blank({ game, index }: { game: Game; index: number }) {
       }}
     >
       <span aria-hidden="true">
-        {operator === null ? words.symbols.empty : words.symbols.operators[operator]}
+        {operator === null ? symbols.numpuz.empty : symbols.numpuz.operators[operator]}
       </span>
     </button>
   );
@@ -69,9 +70,10 @@ function Blank({ game, index }: { game: Game; index: number }) {
 
 // The equation shows the numbers, the blanks between them, and the target.
 export function Equation({ game }: { game: Game }) {
+  const { t } = useTranslation();
   return (
     <fieldset className={shared.board}>
-      <legend className="visually-hidden">{words.boardLabel}</legend>
+      <legend className="visually-hidden">{t(($) => $.numpuz.boardLabel)}</legend>
       <div className={styles.equation}>
         {game.numbers.map((number, index) => (
           // oxlint-disable-next-line react/no-array-index-key -- the numbers never move in the list.
@@ -81,7 +83,7 @@ export function Equation({ game }: { game: Game }) {
           </Fragment>
         ))}
       </div>
-      <p className={styles.target}>{words.target(game.target)}</p>
+      <p className={styles.target}>{t(($) => $.numpuz.target, { target: game.target })}</p>
     </fieldset>
   );
 }

@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { gridStyle } from "../../../shared/grid";
 import shared from "../../../shared/Board.module.css";
-import { text } from "../../../text/en";
+import { symbols } from "../../../text/symbols";
 import styles from "./Board.module.css";
 import { colourOfKey, squareAfterKey } from "./keys";
+import { colourName } from "./status";
 import type { Game } from "./useGame";
-
-const words = text["colour-binary"];
 
 // The keyboard of the board, as a grid: one square has the Tab stop, the arrow keys move the focus,
 // and R, B and Space set the colour of the square with the focus.
@@ -62,12 +62,15 @@ function SquareButton({ game, index, size, keys }: SquareProps) {
   const square = game.squares[index] ?? ".";
   const isGiven = game.isGiven(index);
   const ref = useFocusWhenTabStop(keys.focused === index);
-  const label = words.square({
+  const { t } = useTranslation();
+  const values = {
     row: Math.floor(index / size) + 1,
     column: (index % size) + 1,
-    colour: words.colours[square],
-    isGiven,
-  });
+    colour: colourName(t, square),
+  };
+  const label = isGiven
+    ? t(($) => $["colour-binary"].squareGiven, values)
+    : t(($) => $["colour-binary"].square, values);
   return (
     // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a table with a CSS grid loses its table role in some browsers.
     <div role="gridcell" className={styles.cell}>
@@ -100,7 +103,7 @@ function SquareButton({ game, index, size, keys }: SquareProps) {
           keys.setShaking(null);
         }}
       >
-        <span aria-hidden="true">{words.symbols[square]}</span>
+        <span aria-hidden="true">{symbols["colour-binary"][square]}</span>
       </button>
     </div>
   );
@@ -109,12 +112,13 @@ function SquareButton({ game, index, size, keys }: SquareProps) {
 // The board is a grid with rows, so a screen reader can tell the row and the column of each square.
 // The rows use the columns of the board (subgrid), so the squares look the same as on the other boards.
 export function Grid({ game, size }: { game: Game; size: number }) {
+  const { t } = useTranslation();
   const keys = useBoardKeys(game, size);
   const all = Array.from({ length: size }, (_, position) => position);
   return (
     <div
       role="grid"
-      aria-label={words.boardLabel(size)}
+      aria-label={t(($) => $["colour-binary"].boardLabel, { size })}
       className={shared.grid}
       style={gridStyle(size)}
     >

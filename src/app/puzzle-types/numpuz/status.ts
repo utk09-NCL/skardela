@@ -1,19 +1,19 @@
-import { text } from "../../../text/en";
+import type { TFunction } from "i18next";
 import type { Game } from "./useGame";
-
-const words = text.numpuz;
 
 // The status text tells the player what to do next, or what the last check found.
 // The result of a check goes away when the guess changes. See "machine.ts".
-export function statusText(game: Game): string {
+export function statusText(t: TFunction, game: Game): string {
   switch (game.checked) {
     case "correct":
-      return words.status.solved(game.mistakes);
+      return t(($) => $.numpuz.status.solved, {
+        mistakes: t(($) => $.numpuz.score, { count: game.mistakes }),
+      });
     case "wrong":
-      return words.status.wrong(game.mistakes);
+      return t(($) => $.numpuz.status.wrong, { count: game.mistakes });
     case "incomplete":
-      return words.status.incomplete;
+      return t(($) => $.numpuz.status.incomplete);
     case null:
-      return words.status.start;
+      return t(($) => $.numpuz.status.start);
   }
 }

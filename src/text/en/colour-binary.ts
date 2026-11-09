@@ -1,12 +1,7 @@
 import type { KeyItem, Rule } from "../../shared/RuleList";
-import { symbols } from "../symbols";
+import { samples } from "../samples";
 
-// "hint", "hints". The hints are the score of Colour Binary.
-const hintWord = (count: number) => (count === 1 ? "hint" : "hints");
-
-// "Row 3", "Column 2".
-const lineName = (line: "row" | "column", number: number) =>
-  `${line === "row" ? "Row" : "Column"} ${number}`;
+const sample = samples["colour-binary"];
 
 // The text of the Colour Binary puzzle type.
 export const colourBinary = {
@@ -20,9 +15,9 @@ export const colourBinary = {
     "Three squares of the same colour must not be next to each other in a row or a column.",
   ] satisfies Rule[],
   rulesKey: [
-    { text: "tap one time: red", sample: { fill: "red", symbol: symbols["colour-binary"].R } },
-    { text: "two times: blue", sample: { fill: "blue", symbol: symbols["colour-binary"].B } },
-    { text: "three times: empty", sample: { fill: "empty", symbol: "" } },
+    { text: "tap one time: red", sample: sample.red },
+    { text: "two times: blue", sample: sample.blue },
+    { text: "three times: empty", sample: sample.empty },
   ] satisfies KeyItem[],
   moreRules: {
     label: "More rules: given squares, keys, hints",
@@ -34,12 +29,12 @@ export const colourBinary = {
     ] satisfies Rule[],
   },
   // The name of the board grid, for example "Colour Binary, 6 by 6".
-  boardLabel: (size: number) => `Colour Binary, ${size} by ${size}`,
-  colours: { R: "red", B: "blue", ".": "empty" },
-  symbols: symbols["colour-binary"],
+  boardLabel: "Colour Binary, {{size}} by {{size}}",
+  // An empty square is "." in the puzzle data. A "." cannot be a key, thus its key is "empty".
+  colours: { R: "red", B: "blue", empty: "empty" },
   // The label of a square, for example "Row 1, column 4: red" or "Row 1, column 1: red, given".
-  square: (square: { row: number; column: number; colour: string; isGiven: boolean }) =>
-    `Row ${square.row}, column ${square.column}: ${square.colour}${square.isGiven ? ", given" : ""}`,
+  square: "Row {{row}}, column {{column}}: {{colour}}",
+  squareGiven: "Row {{row}}, column {{column}}: {{colour}}, given",
   // The key under the board. A given square and a square of the player have the same colour.
   // Only the given square has a dot.
   legend: {
@@ -51,37 +46,26 @@ export const colourBinary = {
     start: "Tap a square to make it red. Tap again for blue, and again to make it empty.",
     solved: "You solved the puzzle. Each row and each column obeys the rules.",
   },
+  // The name of a line in a message, for example "Row 3".
+  lines: { row: "Row {{number}}", column: "Column {{number}}" },
   // The message after a change that breaks a rule, for example "Row 3 has three blue squares next to each other."
-  broken: (broken: {
-    line: "row" | "column";
-    number: number;
-    colour: string;
-    reason: "half" | "three";
-    half: number;
-  }) =>
-    broken.reason === "three"
-      ? `${lineName(broken.line, broken.number)} has three ${broken.colour} squares next to each other.`
-      : `${lineName(broken.line, broken.number)} has more than ${broken.half} ${broken.colour} squares.`,
+  broken: {
+    three: "{{line}} has three {{colour}} squares next to each other.",
+    half: "{{line}} has more than {{half}} {{colour}} squares.",
+  },
   undoButton: "Undo",
   hintButton: "Hint",
-  hint: (hint: {
-    row: number;
-    column: number;
-    colour: string;
-    otherColour: string;
-    reason: "half" | "three";
-    line: "row" | "column";
-    number: number;
-  }) => {
-    const line = lineName(hint.line, hint.number);
-    const why =
-      hint.reason === "half"
-        ? `${line} already has half of its squares ${hint.otherColour}.`
-        : `${hint.otherColour} here makes three ${hint.otherColour} squares next to each other in ${line}.`;
-    return `Row ${hint.row}, column ${hint.column}: ${why} Thus this square is ${hint.colour}.`;
+  // The hint and its reason, for example "Row 1, column 2: Row 1 already has half of its squares blue.
+  // Thus this square is red."
+  hint: {
+    half: "Row {{row}}, column {{column}}: {{line}} already has half of its squares {{otherColour}}. Thus this square is {{colour}}.",
+    three:
+      "Row {{row}}, column {{column}}: {{otherColour}} here makes three {{otherColour}} squares next to each other in {{line}}. Thus this square is {{colour}}.",
   },
   noHint: "No hints available",
   // The score of a solve: the number of hints. The home page and the result card show it.
-  score: (count: number) => `${count} ${hintWord(count)}`,
-  scoreWord: hintWord,
+  score_one: "{{count}} hint",
+  score_other: "{{count}} hints",
+  scoreWord_one: "hint",
+  scoreWord_other: "hints",
 };

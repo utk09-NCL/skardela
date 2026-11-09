@@ -1,11 +1,10 @@
+import { useTranslation } from "react-i18next";
 import shared from "../../../shared/Board.module.css";
-import { text } from "../../../text/en";
+import { symbols } from "../../../text/symbols";
 import styles from "./Board.module.css";
 import { bankLetters, type KeyHint, type LetterKey } from "./rules-check";
 import { modes } from "./machine";
 import type { Game } from "./useGame";
-
-const words = text.guzzle;
 
 const alphabet: LetterKey[] = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"].map((letter) => ({ letter }));
 
@@ -14,12 +13,21 @@ type KeyProps = LetterKey & { hint: KeyHint | undefined; onPut: (letter: string)
 // One letter key. It shows what the player knows about its letter for the selected square,
 // from the earlier moves. The symbol shows the hint as a shape too, so the colour is not the only signal.
 function KeyButton({ letter, count, hint, onPut }: KeyProps) {
+  const { t } = useTranslation();
+  // The parts of the label: the action, the count in the bank, and the hint from the earlier moves.
+  const label = [
+    t(($) => $.guzzle.key.put, { letter }),
+    count === undefined ? "" : t(($) => $.guzzle.key.left, { count }),
+    hint === undefined ? "" : t(($) => $.guzzle.key[hint]),
+  ]
+    .filter((part) => part !== "")
+    .join(". ");
   return (
     <button
       type="button"
       className={`${shared.button} ${styles.key}`}
       data-hint={hint ?? "none"}
-      aria-label={words.key(letter, count, hint)}
+      aria-label={label}
       onClick={() => {
         onPut(letter);
       }}
@@ -27,7 +35,7 @@ function KeyButton({ letter, count, hint, onPut }: KeyProps) {
       {letter}
       {hint !== undefined && (
         <span className={styles.keySymbol} aria-hidden="true">
-          {hint === "wrong" ? words.symbols.absent : words.symbols.present}
+          {hint === "wrong" ? symbols.guzzle.absent : symbols.guzzle.present}
         </span>
       )}
       {/* The count shows only when more than one square needs the letter. */}
@@ -42,9 +50,10 @@ function KeyButton({ letter, count, hint, onPut }: KeyProps) {
 
 // Before the first move, the player selects a mode with these buttons.
 function ModeButtons({ game }: { game: Game }) {
+  const { t } = useTranslation();
   return (
     <fieldset className={styles.modes}>
-      <legend className="visually-hidden">{words.modeLabel}</legend>
+      <legend className="visually-hidden">{t(($) => $.guzzle.modeLabel)}</legend>
       {modes.map((option) => (
         <button
           key={option}
@@ -54,7 +63,7 @@ function ModeButtons({ game }: { game: Game }) {
             game.chooseMode(option);
           }}
         >
-          {words.modes[option]}
+          {t(($) => $.guzzle.modes[option])}
         </button>
       ))}
     </fieldset>
@@ -64,13 +73,14 @@ function ModeButtons({ game }: { game: Game }) {
 // Before the first move, the player selects a mode. Then the player gets letter keys.
 // With the bank, the keys are the letters that are not green yet. Without the bank, the keys are A to Z.
 export function Controls({ answer, game }: { answer: readonly string[]; game: Game }) {
+  const { t } = useTranslation();
   if (game.mode === null) return <ModeButtons game={game} />;
 
   const keys = game.mode === "bank" ? bankLetters(answer, game.guesses) : alphabet;
   return (
     <fieldset className={styles.keys} disabled={!game.canUseKeys}>
       <legend className="visually-hidden">
-        {game.mode === "bank" ? words.bankLabel : words.keysLabel}
+        {game.mode === "bank" ? t(($) => $.guzzle.bankLabel) : t(($) => $.guzzle.keysLabel)}
       </legend>
       {keys.map(({ letter, count }) => (
         <KeyButton

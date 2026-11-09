@@ -3,12 +3,12 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { useAppStore } from "../../../shared/state/store";
-import { text } from "../../../text/en";
+import { t } from "../../../test/i18n";
 import { Board } from "./Board";
 import example from "./examples/orbital-0000.json";
 import type { OrbitalPuzzle } from "./puzzle";
 
-const words = text.orbital;
+const words = t(($) => $.orbital, { returnObjects: true });
 // The example is the rules.md example: an easy board with the launch point at x 30, y 10,
 // the ring at x 40, y 85 and a big planet at x 40, y 50.
 const puzzle = example as OrbitalPuzzle;

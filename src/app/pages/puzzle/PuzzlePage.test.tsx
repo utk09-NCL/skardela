@@ -4,12 +4,12 @@ import { createMemoryRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import { describe, expect, it } from "vitest";
 import { useAppStore } from "../../../shared/state/store";
-import { text } from "../../../text/en";
+import { t } from "../../../test/i18n";
 import { puzzleTypes } from "../../puzzle-types/registry";
 import { routes } from "../../routes";
 import { PuzzlePage } from "./PuzzlePage";
 
-const page = text.puzzlePage;
+const page = t(($) => $.puzzlePage, { returnObjects: true });
 
 // The tests play as a returning player, so the analytics notice does not show.
 function renderAt(path: string) {
@@ -123,7 +123,7 @@ describe("puzzle page random puzzle", () => {
     expect(await easyGuzzleIds()).toContain(id);
     // The page can render the new puzzle a moment after the path changes, thus the test waits for it.
     const details = screen.getByRole("list", { name: page.detailsLabel });
-    expect(await within(details).findByText(page.puzzleNumber(id.slice(-4)))).toBeInTheDocument();
+    expect(await within(details).findByText(`#${id.slice(-4)}`)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: page.random })).toHaveFocus();
   });
 
@@ -189,7 +189,9 @@ describe("puzzle page rules", () => {
     const [short] = within(rules).getAllByRole("list");
     expect(within(short as HTMLElement).getAllByRole("listitem")).toHaveLength(3);
     expect(within(rules).getByRole("list", { name: page.keyLabel })).toBeInTheDocument();
-    const more = within(rules).getByText(text.guzzle.moreRules.label).closest("details");
+    const more = within(rules)
+      .getByText(t(($) => $.guzzle.moreRules.label))
+      .closest("details");
     expect(more).toHaveAttribute("open");
     // The effect in "PuzzleRules" saves the puzzle type after the render, thus the test waits for the store.
     await waitFor(() => {
@@ -201,10 +203,14 @@ describe("puzzle page rules", () => {
     useAppStore.getState().seeRules("latics");
     renderAt("/puzzles/latics-0001");
     const rules = await screen.findByRole("region", { name: page.rulesHeading });
-    const more = within(rules).getByText(text.latics.moreRules.label).closest("details");
+    const more = within(rules)
+      .getByText(t(($) => $.latics.moreRules.label))
+      .closest("details");
     expect(more).not.toHaveAttribute("open");
     // The key of Latics shows the materials.
     const key = within(rules).getByRole("list", { name: page.keyLabel });
-    expect(within(key).getAllByRole("listitem")).toHaveLength(text.latics.rulesKey.length);
+    expect(within(key).getAllByRole("listitem")).toHaveLength(
+      t(($) => $.latics.rulesKey, { returnObjects: true }).length,
+    );
   });
 });

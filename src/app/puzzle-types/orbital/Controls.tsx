@@ -1,11 +1,9 @@
 import { useId } from "react";
+import { useTranslation } from "react-i18next";
 import shared from "../../../shared/Board.module.css";
-import { text } from "../../../text/en";
 import styles from "./Board.module.css";
 import { maxAngle, maxPower, minPower, type Aim } from "./rules-check";
 import type { Game } from "./useGame";
-
-const words = text.orbital;
 
 type SliderProps = {
   label: string;
@@ -53,23 +51,24 @@ function Slider({ label, value, min, max, valueText, isDisabled, onChange }: Sli
 // During a flight and after the solve, the controls have "aria-disabled" and do nothing.
 // See "## Motion": "During the flight, the sliders and the Launch button keep the keyboard focus."
 export function Controls({ game, aim }: { game: Game; aim: Aim }) {
+  const { t } = useTranslation();
   const isDisabled = !game.canLaunch;
   return (
     <fieldset className={styles.controls}>
-      <legend className="visually-hidden">{words.controlsLabel}</legend>
+      <legend className="visually-hidden">{t(($) => $.orbital.controlsLabel)}</legend>
       <Slider
-        label={words.angle}
+        label={t(($) => $.orbital.angle)}
         value={aim.angle}
         min={0}
         max={maxAngle}
-        valueText={words.degrees(aim.angle)}
+        valueText={t(($) => $.orbital.degrees, { angle: aim.angle })}
         isDisabled={isDisabled}
         onChange={(angle) => {
           game.setAim({ angle, power: aim.power });
         }}
       />
       <Slider
-        label={words.power}
+        label={t(($) => $.orbital.power)}
         value={aim.power}
         min={minPower}
         max={maxPower}
@@ -80,14 +79,14 @@ export function Controls({ game, aim }: { game: Game; aim: Aim }) {
         }}
       />
       <div className={styles.launchRow}>
-        <p className={styles.misses}>{words.misses(game.misses)}</p>
+        <p className={styles.misses}>{t(($) => $.orbital.misses, { count: game.misses })}</p>
         <button
           type="button"
           className={`${shared.button} ${shared.boxed} ${styles.launch}`}
           aria-disabled={isDisabled}
           onClick={game.launch}
         >
-          {words.launch}
+          {t(($) => $.orbital.launch)}
         </button>
       </div>
     </fieldset>

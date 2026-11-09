@@ -1,18 +1,6 @@
 // The text of the Tilt puzzle type.
 import type { KeyItem, Rule } from "../../shared/RuleList";
-import { symbols } from "../symbols";
-
-// The icons come from "src/text/symbols.ts", so the text and the board show the same icons.
-const { red, blue, yellow } = symbols.tilt.colours;
-
-// "extra tilt", "extra tilts". The extra tilts are the score of Tilt.
-const extraWord = (count: number) => (count === 1 ? "extra tilt" : "extra tilts");
-
-// "1 extra tilt", "2 extra tilts".
-const extraCount = (count: number) => `${count} ${extraWord(count)}`;
-
-// "1 square", "3 squares".
-const squareCount = (count: number) => `${count} ${count === 1 ? "square" : "squares"}`;
+import { samples } from "../samples";
 
 export const tilt = {
   name: "Tilt",
@@ -25,10 +13,10 @@ export const tilt = {
     "Get all coloured balls into their holes with the fewest tilts.",
   ] satisfies Rule[],
   rulesKey: [
-    { text: "red ball and hole", sample: { fill: "red", symbol: red } },
-    { text: "blue ball and hole", sample: { fill: "blue", symbol: blue } },
-    { text: "yellow ball and hole", sample: { fill: "yellow", symbol: yellow } },
-    { text: "ball in its hole", sample: { fill: "empty", symbol: symbols.tilt.full } },
+    { text: "red ball and hole", sample: samples.tilt.red },
+    { text: "blue ball and hole", sample: samples.tilt.blue },
+    { text: "yellow ball and hole", sample: samples.tilt.yellow },
+    { text: "ball in its hole", sample: samples.tilt.full },
   ] satisfies KeyItem[],
   moreRules: {
     label: "More rules: walls, holes, the grey ball and the controls",
@@ -45,14 +33,14 @@ export const tilt = {
     ] satisfies Rule[],
   },
   // The score of a solve: the number of extra tilts. The home page and the result card show it.
-  score: extraCount,
-  scoreWord: extraWord,
-  // The board shows these icons on the balls and the holes, and these arrows on the buttons.
-  symbols: symbols.tilt,
+  score_one: "{{count}} extra tilt",
+  score_other: "{{count}} extra tilts",
+  scoreWord_one: "extra tilt",
+  scoreWord_other: "extra tilts",
   colours: { red: "red", blue: "blue", yellow: "yellow", grey: "grey" },
   directions: { up: "up", down: "down", left: "left", right: "right" },
   // The name of the board, for example "Tilt board, 6 by 6".
-  boardLabel: (size: number) => `Tilt board, ${size} by ${size}`,
+  boardLabel: "Tilt board, {{size}} by {{size}}",
   boardHelp: "Use the arrow keys to tilt the board.",
   // The key hint above the board, with a mouse. It tells the player to give the focus to the board.
   // "idle": the board and the arrow buttons do not have the focus. "active": one of them has the focus.
@@ -61,33 +49,32 @@ export const tilt = {
     active: "The arrow keys tilt the board.",
   },
   // The name of a square, for example "Row 2, column 3, red ball". "content" is one of "squares" below.
-  square: (row: number, column: number, content: string) =>
-    `Row ${row}, column ${column}, ${content}`,
+  square: "Row {{row}}, column {{column}}, {{content}}",
   squares: {
     empty: "empty",
     wall: "wall",
-    ball: (colour: string) => `${colour} ball`,
-    hole: (colour: string) => `${colour} hole`,
-    inHole: (colour: string) => `${colour} ball in its hole`,
+    ball: "{{colour}} ball",
+    hole: "{{colour}} hole",
+    inHole: "{{colour}} ball in its hole",
     // A ball that stopped on an empty hole of a different colour, for example "blue ball on the red hole".
-    onHole: (ball: string, hole: string) => `${ball} ball on the ${hole} hole`,
+    onHole: "{{ball}} ball on the {{hole}} hole",
   },
   // The tilts and the fewest tilts, for example "Tilts: 7. Fewest: 5."
-  counts: (tilts: number, fewest: number | null) =>
-    `Tilts: ${tilts}. Fewest: ${fewest === null ? "unknown" : fewest}.`,
+  counts: "Tilts: {{tilts}}. Fewest: {{fewest}}.",
+  fewestUnknown: "unknown",
   controlsLabel: "Tilt the board",
-  tiltButton: (direction: string) => `Tilt ${direction}`,
+  tiltButton: "Tilt {{direction}}",
   status: {
     start: "Tilt the board with the arrow keys, the arrow buttons or a swipe.",
     // The text after a tilt, for example "Tilt left. The red ball rolls 3 squares. Tilts: 4."
-    tilt: (direction: string) => `Tilt ${direction}.`,
-    rolls: (colour: string, squares: number) => `The ${colour} ball rolls ${squareCount(squares)}.`,
-    fallsIn: (colour: string) => `The ${colour} ball falls into its hole.`,
-    tilts: (count: number) => `Tilts: ${count}.`,
-    noMove: (direction: string) => `No ball can move ${direction}.`,
-    solved: (extra: number) =>
-      extra === 0
-        ? "You solved the puzzle with 0 extra tilts. This is a perfect solve."
-        : `You solved the puzzle with ${extraCount(extra)}.`,
+    tilt: "Tilt {{direction}}.",
+    rolls_one: "The {{colour}} ball rolls {{count}} square.",
+    rolls_other: "The {{colour}} ball rolls {{count}} squares.",
+    fallsIn: "The {{colour}} ball falls into its hole.",
+    tilts: "Tilts: {{count}}.",
+    noMove: "No ball can move {{direction}}.",
+    perfect: "You solved the puzzle with 0 extra tilts. This is a perfect solve.",
+    // "extra" is the score, for example "2 extra tilts".
+    solved: "You solved the puzzle with {{extra}}.",
   },
 };

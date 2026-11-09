@@ -1,50 +1,59 @@
-import { text } from "../../../text/en";
+import type { TFunction } from "i18next";
 import type { Point } from "./puzzle";
 import { maxSteps, stepsPerSecond, type Board, type Flight } from "./rules-check";
 import type { Game } from "./useGame";
 
-const words = text.orbital;
-
 // A position in words, for example "x 12, y 40". See "## Screen reader" in "rules.md".
 // A position of the probe after a flight is not a whole number, thus it is rounded.
-export function positionText(point: Point): string {
-  return words.at(Math.round(point.x), Math.round(point.y));
+export function positionText(t: TFunction, point: Point): string {
+  return t(($) => $.orbital.at, { x: Math.round(point.x), y: Math.round(point.y) });
 }
 
 // Why the flight stopped, for example "The probe hit the big planet at x 50, y 45."
-function endText(flight: Flight): string {
+function endText(t: TFunction, flight: Flight): string {
   const { end } = flight;
   switch (end.type) {
     case "ring":
-      return words.status.ends.ring;
+      return t(($) => $.orbital.status.ends.ring);
     case "planet":
-      return words.status.ends.planet(words.sizes[end.planet.size], positionText(end.planet));
+      return t(($) => $.orbital.status.ends.planet, {
+        size: t(($) => $.orbital.sizes[end.planet.size]),
+        at: positionText(t, end.planet),
+      });
     case "edge":
-      return words.status.ends.edge;
+      return t(($) => $.orbital.status.ends.edge);
     case "time":
-      return words.status.ends.time(maxSteps / stepsPerSecond);
+      return t(($) => $.orbital.status.ends.time, { seconds: maxSteps / stepsPerSecond });
   }
 }
 
 // The status text tells the player what to do, or what the last flight did and the misses.
 // The status box is a live region, thus a screen reader tells each new text. See "## Screen reader" in "rules.md".
 // It changes only at the end of a flight. After the solve, it tells the last launch and then the solve.
-export function statusText(game: Game): string {
+export function statusText(t: TFunction, game: Game): string {
   const flight = game.lastFlight;
-  if (flight === null) return words.status.start;
-  const launch = `${words.status.aim(flight.aim.angle, flight.aim.power)} ${endText(flight)}`;
-  if (game.isSolved) return `${launch} ${words.status.solved(game.misses)}`;
-  return `${launch} ${words.status.closest(flight.closest)} ${words.misses(game.misses)}`;
+  if (flight === null) return t(($) => $.orbital.status.start);
+  const aim = t(($) => $.orbital.status.aim, {
+    angle: flight.aim.angle,
+    power: flight.aim.power,
+  });
+  const launch = `${aim} ${endText(t, flight)}`;
+  if (game.isSolved) {
+    const misses = t(($) => $.orbital.score, { count: game.misses });
+    return `${launch} ${t(($) => $.orbital.status.solved, { misses })}`;
+  }
+  const closest = t(($) => $.orbital.status.closest, { count: flight.closest });
+  return `${launch} ${closest} ${t(($) => $.orbital.misses, { count: game.misses })}`;
 }
 
 // The list of the items on the board for a screen reader, for example "Probe at x 12, y 40.",
 // "Ring at x 82, y 30." and "Big planet at x 50, y 45."
-export function itemTexts(board: Board, probe: Point): string[] {
+export function itemTexts(t: TFunction, board: Board, probe: Point): string[] {
   return [
-    words.items.probe(positionText(probe)),
-    words.items.ring(positionText(board.ring)),
+    t(($) => $.orbital.items.probe, { at: positionText(t, probe) }),
+    t(($) => $.orbital.items.ring, { at: positionText(t, board.ring) }),
     ...board.planets.map((planet) =>
-      words.items.planet(words.sizes[planet.size], positionText(planet)),
+      t(($) => $.orbital.items.planets[planet.size], { at: positionText(t, planet) }),
     ),
   ];
 }

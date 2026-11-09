@@ -4,10 +4,10 @@ import { createMemoryRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import { afterEach, describe, expect, it } from "vitest";
 import { useStorageStatus } from "../../shared/state/store";
-import { text } from "../../text/en";
+import { t } from "../../test/i18n";
 import { StorageNotice } from "./StorageNotice";
 
-const words = text.storage;
+const words = t(($) => $.storage, { returnObjects: true });
 
 // The notice has a link, thus it needs a router.
 function renderNotice() {

@@ -1,6 +1,6 @@
 import { Confetti } from "../../../shared/Confetti";
 import shared from "../../../shared/Board.module.css";
-import { text } from "../../../text/en";
+import { useTranslation } from "react-i18next";
 import styles from "./Board.module.css";
 import { Controls } from "./Controls";
 import { Equation } from "./Equation";
@@ -9,12 +9,11 @@ import type { NumpuzPuzzle } from "./puzzle";
 import { statusText } from "./status";
 import { useGame } from "./useGame";
 
-const words = text.numpuz;
-
 // The board shows the equation, the operator keys, the status text and the Check button.
 // The game is in one state machine. See "machine.ts".
 // The puzzle is solved when a check finds that the equation is equal to the target.
 export function Board({ puzzle }: { puzzle: NumpuzPuzzle }) {
+  const { t } = useTranslation();
   const log = getNumpuzLog();
   const meta = {
     puzzleId: puzzle.id,
@@ -37,7 +36,7 @@ export function Board({ puzzle }: { puzzle: NumpuzPuzzle }) {
         data-solved={game.isSolved}
         data-wrong={game.checked === "wrong"}
       >
-        {statusText(game)}
+        {statusText(t, game)}
       </output>
 
       {/* The Check button is disabled after a check, until the player changes the guess. See "machine.ts". */}
@@ -47,7 +46,7 @@ export function Board({ puzzle }: { puzzle: NumpuzPuzzle }) {
         disabled={!game.canCheck}
         onClick={game.check}
       >
-        {words.checkButton}
+        {t(($) => $.numpuz.checkButton)}
       </button>
 
       {/* The confetti shows when the puzzle is solved, as on the boards of the other puzzle types. */}

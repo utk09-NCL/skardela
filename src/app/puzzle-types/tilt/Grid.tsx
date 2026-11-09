@@ -1,19 +1,19 @@
 import { useId, type CSSProperties } from "react";
+import { useTranslation } from "react-i18next";
 import { gridStyle } from "../../../shared/grid";
 import shared from "../../../shared/Board.module.css";
-import { text } from "../../../text/en";
+import { symbols } from "../../../text/symbols";
 import styles from "./Board.module.css";
 import { tiltOnArrowKey, useSwipe } from "./input";
 import { holeAt, type Ball } from "./rules-check";
 import { squareLabel } from "./status";
 import type { Game } from "./useGame";
 
-const words = text.tilt;
-
 // One square of the board: empty, a wall or a hole. The balls are not in the squares. See "BallView".
 // The name of the square tells what is on it, the ball too, so a screen reader can read the full board.
 // The drawing is only decoration: a hole is the outline of a circle with the icon of its colour.
 function Square({ game, index }: { game: Game; index: number }) {
+  const { t } = useTranslation();
   const hole = holeAt(game.layout, index);
   return (
     <div
@@ -21,11 +21,11 @@ function Square({ game, index }: { game: Game; index: number }) {
       role="img"
       className={`${shared.square} ${styles.square}`}
       data-wall={game.layout.walls[index] === true}
-      aria-label={squareLabel(game.layout, game.balls, index)}
+      aria-label={squareLabel(t, game.layout, game.balls, index)}
     >
       {hole !== undefined && (
         <span className={styles.hole} data-colour={hole} aria-hidden="true">
-          {words.symbols.colours[hole]}
+          {symbols.tilt.colours[hole]}
         </span>
       )}
     </div>
@@ -52,7 +52,7 @@ function BallView({ ball, size }: { ball: Ball; size: number }) {
       aria-hidden="true"
     >
       <span className={styles.disc}>
-        {ball.isInHole ? words.symbols.full : words.symbols.colours[ball.colour]}
+        {ball.isInHole ? symbols.tilt.full : symbols.tilt.colours[ball.colour]}
       </span>
     </span>
   );
@@ -63,6 +63,7 @@ function BallView({ ball, size }: { ball: Ball; size: number }) {
 type GridStyle = ReturnType<typeof gridStyle> & { "--slide": string };
 
 export function Grid({ game }: { game: Game }) {
+  const { t } = useTranslation();
   const swipe = useSwipe(game.tilt);
   const helpId = useId();
   const style: GridStyle = { ...gridStyle(game.size), "--slide": `${game.slide}ms` };
@@ -75,7 +76,7 @@ export function Grid({ game }: { game: Game }) {
         role="group"
         // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- the board takes the focus for the arrow keys. See "rules.md".
         tabIndex={0}
-        aria-label={words.boardLabel(game.size)}
+        aria-label={t(($) => $.tilt.boardLabel, { size: game.size })}
         aria-describedby={helpId}
         className={`${shared.grid} ${styles.grid}`}
         style={style}
@@ -93,7 +94,7 @@ export function Grid({ game }: { game: Game }) {
         ))}
       </div>
       <p id={helpId} className="visually-hidden">
-        {words.boardHelp}
+        {t(($) => $.tilt.boardHelp)}
       </p>
     </>
   );

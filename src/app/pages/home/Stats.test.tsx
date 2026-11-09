@@ -7,14 +7,15 @@ import { describe, expect, it, vi } from "vitest";
 import { addDays, dayKey } from "../../../shared/state/progress";
 import { reloadPage } from "../../../shared/reload";
 import { useAppStore } from "../../../shared/state/store";
-import { text } from "../../../text/en";
+import { t } from "../../../test/i18n";
 import { puzzleTypes } from "../../puzzle-types/registry";
 import { routes } from "../../routes";
 
 // jsdom cannot load a page again, thus the test replaces "reloadPage".
 vi.mock(import("../../../shared/reload"), () => ({ reloadPage: vi.fn<() => void>() }));
 
-const stats = text.home.stats;
+const stats = t(($) => $.home.stats, { returnObjects: true });
+const faq = t(($) => $.home.faq, { returnObjects: true });
 
 function renderHome() {
   useAppStore.getState().acknowledgeNotice();
@@ -57,7 +58,9 @@ describe("home page stats", () => {
     const today = solveOnDays();
     await renderHome();
     const calendar = screen.getByRole("list", { name: stats.calendar.heading });
-    expect(within(calendar).getByText(stats.calendar.day(today, 2))).toBeInTheDocument();
+    expect(
+      within(calendar).getByText(t(($) => $.home.stats.calendar.day, { date: today, count: 2 })),
+    ).toBeInTheDocument();
     const table = screen.getByRole("table", { name: stats.bests.heading });
     // One heading row, one row for each puzzle type, and one column for each level.
     // The count comes from the registry, thus a new puzzle type does not need a change here.
@@ -74,21 +77,19 @@ describe("home page stats", () => {
     solveOnDays();
     const user = userEvent.setup();
     await renderHome();
-    const toggle = screen.getByRole("button", { name: text.guzzle.name });
+    const toggle = screen.getByRole("button", { name: "Guzzle" });
     expect(toggle).toHaveAttribute("aria-expanded", "false");
-    expect(screen.queryByText(stats.bests.average("1:15"))).toBeNull();
+    expect(screen.queryByText("average 1:15")).toBeNull();
     await user.click(toggle);
     expect(toggle).toHaveAttribute("aria-expanded", "true");
-    expect(screen.getByText(stats.bests.average("1:15"))).toBeInTheDocument();
+    expect(screen.getByText("average 1:15")).toBeInTheDocument();
   });
 
   it("shows one message and a link to a puzzle before the first solve", async () => {
     await renderHome();
     expect(screen.queryByRole("table", { name: stats.bests.heading })).toBeNull();
     expect(screen.getByText(stats.bests.empty)).toBeInTheDocument();
-    const link = screen.getByRole("link", {
-      name: stats.bests.play(text["colour-binary"].name, text.levels.easy),
-    });
+    const link = screen.getByRole("link", { name: "Play Colour Binary Easy" });
     expect(link.getAttribute("href")).toMatch(/^\/puzzles\/colour-binary-\d{4}$/u);
   });
 });
@@ -120,7 +121,7 @@ describe("home page clear data", () => {
 
   it("explains Clear data in the questions", async () => {
     await renderHome();
-    const item = text.home.faq.items.find(({ answer }) => answer.includes(stats.clear.button));
+    const item = faq.items.find(({ answer }) => answer.includes(stats.clear.button));
     expect(screen.getByText(String(item?.question))).toBeInTheDocument();
   });
 });

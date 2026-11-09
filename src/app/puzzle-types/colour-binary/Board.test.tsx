@@ -2,12 +2,12 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { useAppStore } from "../../../shared/state/store";
-import { text } from "../../../text/en";
+import { t } from "../../../test/i18n";
 import { Board } from "./Board";
 import example from "./examples/colour-binary-0000.json";
 import type { ColourBinaryPuzzle } from "./puzzle";
 
-const words = text["colour-binary"];
+const words = t(($) => $["colour-binary"], { returnObjects: true });
 const puzzle = example as ColourBinaryPuzzle;
 
 // This helper finds a square by its row and column, so the test does not depend on the label end.
@@ -43,7 +43,7 @@ async function fillAnswer(user: ReturnType<typeof userEvent.setup>) {
 describe("colour-binary board", () => {
   it("is a grid with one row for each line of squares", () => {
     render(<Board puzzle={puzzle} />);
-    const grid = screen.getByRole("grid", { name: words.boardLabel(4) });
+    const grid = screen.getByRole("grid", { name: "Colour Binary, 4 by 4" });
     expect(within(grid).getAllByRole("row")).toHaveLength(4);
     expect(within(grid).getAllByRole("gridcell")).toHaveLength(16);
   });
@@ -128,9 +128,7 @@ describe("colour-binary board messages", () => {
     render(<Board puzzle={puzzle} />);
     // Row 3 starts with two red squares. A third red square is more than half of the row.
     await user.click(square(3, 3));
-    expect(screen.getByRole("status")).toHaveTextContent(
-      words.broken({ reason: "half", line: "row", number: 3, colour: "red", half: 2 }),
-    );
+    expect(screen.getByRole("status")).toHaveTextContent("Row 3 has more than 2 red squares.");
     // The next change in a different square without a broken rule shows the start text again.
     await user.click(square(4, 4));
     expect(screen.getByRole("status")).toHaveTextContent(words.status.start);

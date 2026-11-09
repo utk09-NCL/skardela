@@ -1,11 +1,6 @@
 import type { KeyItem, Rule } from "../../shared/RuleList";
+import { samples } from "../samples";
 import { symbols } from "../symbols";
-
-// "mistake", "mistakes". The mistakes are the score of Guzzle.
-const mistakeWord = (count: number) => (count === 1 ? "mistake" : "mistakes");
-
-// "1 mistake", "2 mistakes". More than one text in this file uses it.
-const mistakeCount = (count: number) => `${count} ${mistakeWord(count)}`;
 
 // The text of the Guzzle puzzle type.
 export const guzzle = {
@@ -19,12 +14,9 @@ export const guzzle = {
     "Make all squares green with the fewest mistakes.",
   ] satisfies Rule[],
   rulesKey: [
-    { text: "correct", sample: { fill: "green", symbol: symbols.guzzle.correct } },
-    {
-      text: "in this word, in a different square",
-      sample: { fill: "yellow", symbol: symbols.guzzle.present },
-    },
-    { text: "not in this word", sample: { fill: "red", symbol: symbols.guzzle.absent } },
+    { text: "correct", sample: samples.guzzle.correct },
+    { text: "in this word, in a different square", sample: samples.guzzle.present },
+    { text: "not in this word", sample: samples.guzzle.absent },
   ] satisfies KeyItem[],
   moreRules: {
     label: "More rules: modes, keys, mistakes",
@@ -38,54 +30,44 @@ export const guzzle = {
       "A wrong letter adds a mistake. A letter that you already know is wrong does not add a mistake.",
     ] satisfies Rule[],
   },
-  // The score of a solve: the number of mistakes. The home page and the result card show it.
-  score: mistakeCount,
-  scoreWord: mistakeWord,
+  // The score of a solve: the number of mistakes. The home page, the board and the result card show it.
+  score_one: "{{count}} mistake",
+  score_other: "{{count}} mistakes",
+  scoreWord_one: "mistake",
+  scoreWord_other: "mistakes",
   boardLabel: "Guzzle board",
   modeLabel: "How do you want to play?",
   modes: { bank: "With bank", noBank: "Without bank" },
   bankLabel: "Letter bank",
   keysLabel: "Letters",
-  // The label of a letter key. The count is only in the bank. The hint comes from the earlier moves.
-  key: (letter: string, count?: number, hint?: "wrong" | "inWord") =>
-    [
-      `Put ${letter} in the selected square`,
-      count === undefined ? "" : `${count} left`,
-      hint === undefined ? "" : { wrong: "Not in this square", inWord: "In this word" }[hint],
-    ]
-      .filter((part) => part !== "")
-      .join(". "),
+  // The parts of the label of a letter key. The count is only in the bank. The hint comes from the earlier moves.
+  // The code puts the parts together with ". " between them.
+  key: {
+    put: "Put {{letter}} in the selected square",
+    left: "{{count}} left",
+    wrong: "Not in this square",
+    inWord: "In this word",
+  },
   marks: {
     correct: "green, correct",
     present: "yellow, in a different square",
     absent: "red, not in this word",
   },
-  symbols: symbols.guzzle,
   lines: {
     across: "across word",
     down: "down word",
     diagonalDown: "diagonal from the top left",
     diagonalUp: "diagonal from the bottom left",
   },
-  // The name of the word that starts at a square, for example "start of the across word".
-  start: (line: string) => `start of the ${line}`,
-  square: (square: {
-    row: number;
-    column: number;
-    letter: string;
-    mark: string;
-    isFixed: boolean;
-    start: string;
-  }) =>
-    [
-      `Row ${square.row}, column ${square.column}`,
-      square.letter === "" ? "empty" : square.letter,
-      square.mark,
-      square.isFixed ? "fixed" : "",
-      square.start,
-    ]
-      .filter((part) => part !== "")
-      .join(", "),
+  // The parts of the label of a square, for example "Row 1, column 1, A, green, correct, start of the across word".
+  // The code puts the parts together with ", " between them.
+  square: {
+    position: "Row {{row}}, column {{column}}",
+    empty: "empty",
+    fixed: "fixed",
+    // The name of the word that starts at a square, for example "start of the across word".
+    start: "start of the {{line}}",
+  },
   cluesLabel: "Clues",
   // The name of each word in the list of clues.
   clueLines: {
@@ -95,15 +77,14 @@ export const guzzle = {
     diagonalUp: "Diagonal from the bottom left",
   },
   // The position of the selected square in its word, for example "letter 2 of 5".
-  position: (position: number, length: number) => `letter ${position} of ${length}`,
-  mistakes: mistakeCount,
+  position: "letter {{position}} of {{length}}",
   status: {
     choose: "Select a mode to start.",
     start: "Select a square. Then type a letter or select a letter.",
-    correct: (letter: string) => `${letter} is correct.`,
-    present: (letter: string, line: string) => `The ${line} has ${letter} in a different square.`,
-    absent: (letter: string, line: string) => `The ${line} does not have ${letter}.`,
-    solved: (mode: string, mistakes: number) =>
-      `You solved the puzzle. ${mode}, ${mistakeCount(mistakes)}.`,
+    correct: "{{letter}} is correct.",
+    present: "The {{line}} has {{letter}} in a different square.",
+    absent: "The {{line}} does not have {{letter}}.",
+    // "mistakes" is the score, for example "2 mistakes".
+    solved: "You solved the puzzle. {{mode}}, {{mistakes}}.",
   },
 };

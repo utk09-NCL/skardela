@@ -1,4 +1,4 @@
-import { text } from "../../../text/en";
+import { useTranslation } from "react-i18next";
 import styles from "./Board.module.css";
 import type { DragState } from "./input";
 import { useFlightStep } from "./motion";
@@ -6,8 +6,6 @@ import { boardSize, sizeRules, type Point } from "./puzzle";
 import { dragStartDistance, type Aim, type Board } from "./rules-check";
 import { itemTexts } from "./status";
 import type { Game } from "./useGame";
-
-const words = text.orbital;
 
 // The sizes of the drawings, in units. The rules use only the centre of the probe.
 // Half the width of the probe diamond.
@@ -72,9 +70,10 @@ function Targets({ board }: { board: Board }) {
 
 // The list of the items on the board, for a screen reader. See "## Screen reader" in "rules.md".
 function ItemList({ game }: { game: Game }) {
+  const { t } = useTranslation();
   return (
-    <ul aria-label={words.itemsLabel} className="visually-hidden">
-      {itemTexts(game.board, game.probe).map((item, index) => (
+    <ul aria-label={t(($) => $.orbital.itemsLabel)} className="visually-hidden">
+      {itemTexts(t, game.board, game.probe).map((item, index) => (
         // oxlint-disable-next-line react/no-array-index-key -- the items never move in the list.
         <li key={index}>{item}</li>
       ))}
@@ -87,11 +86,12 @@ function ItemList({ game }: { game: Game }) {
 // information, and the status tells each flight. A drag on the drawing aims the probe. See "input.ts".
 // During a flight, the probe moves along its path. The animation sends "land" at the end. See "motion.ts".
 export function Scene({ game, drag }: { game: Game; drag: DragState }) {
+  const { t } = useTranslation();
   const { board, flying } = game;
   const step = useFlightStep(flying, game.land);
   const probe = flying === null ? game.probe : (flying.path[step] ?? board.launch);
   return (
-    <figure className={styles.board} aria-label={words.boardLabel}>
+    <figure className={styles.board} aria-label={t(($) => $.orbital.boardLabel)}>
       <svg
         className={styles.scene}
         viewBox={`0 0 ${boardSize} ${boardSize}`}

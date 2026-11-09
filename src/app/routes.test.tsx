@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { routes } from "./routes";
 import { render, screen } from "@testing-library/react";
 import { RouterProvider } from "react-router/dom";
-import { text } from "../text/en";
+import { t } from "../test/i18n";
 
 function renderAt(path: string) {
   const router = createMemoryRouter(routes, { initialEntries: [path] });
@@ -18,32 +18,36 @@ describe("routes", () => {
   it("shows the home page at /", async () => {
     renderAt("/");
     expect(
-      await screen.findByRole("heading", { level: 1, name: text.home.hero.title }),
+      await screen.findByRole("heading", { level: 1, name: t(($) => $.home.hero.title) }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("navigation", { name: text.nav.label })).toBeInTheDocument();
+    expect(screen.getByRole("navigation", { name: t(($) => $.nav.label) })).toBeInTheDocument();
   });
 
   it("shows the colour-binary puzzle page", async () => {
     renderAt("/puzzles/colour-binary-0001");
     expect(
-      await screen.findByRole("heading", { level: 1, name: text["colour-binary"].name }),
+      await screen.findByRole("heading", { level: 1, name: t(($) => $["colour-binary"].name) }),
     ).toBeInTheDocument();
   });
 
   it("shows the guzzle puzzle page", async () => {
     renderAt("/puzzles/guzzle-0001");
     expect(
-      await screen.findByRole("heading", { level: 1, name: text.guzzle.name }),
+      await screen.findByRole("heading", { level: 1, name: t(($) => $.guzzle.name) }),
     ).toBeInTheDocument();
-    expect(await screen.findByRole("button", { name: text.guzzle.modes.bank })).toBeInTheDocument();
+    expect(
+      await screen.findByRole("button", { name: t(($) => $.guzzle.modes.bank) }),
+    ).toBeInTheDocument();
   });
 
   it("shows the latics puzzle page", async () => {
     renderAt("/puzzles/latics-0001");
     expect(
-      await screen.findByRole("heading", { level: 1, name: text.latics.name }),
+      await screen.findByRole("heading", { level: 1, name: t(($) => $.latics.name) }),
     ).toBeInTheDocument();
-    expect(await screen.findByRole("group", { name: text.latics.boardLabel })).toBeInTheDocument();
+    expect(
+      await screen.findByRole("group", { name: t(($) => $.latics.boardLabel) }),
+    ).toBeInTheDocument();
   });
 
   it.each(["/puzzles/guzzle-9999", "/puzzles/unknown-0001", "/puzzles/guzzle"])(

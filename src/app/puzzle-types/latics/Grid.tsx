@@ -1,6 +1,7 @@
+import { useTranslation } from "react-i18next";
 import { gridStyle } from "../../../shared/grid";
 import shared from "../../../shared/Board.module.css";
-import { text } from "../../../text/en";
+import { symbols } from "../../../text/symbols";
 import styles from "./Board.module.css";
 import {
   beamColours,
@@ -17,9 +18,9 @@ import {
 import type { Game } from "./useGame";
 import { beamLines, laserSquares, type BeamLine } from "./beam";
 import { steps } from "./rules-check";
+import { squareLabel } from "./status";
 
-const words = text.latics;
-const shapes = words.symbols.colours;
+const shapes = symbols.latics.colours;
 
 // Each square has a drawing in a box from −50 to 50. The middle of the square is at 0, 0.
 // A beam line goes a little past the side of the square, so the lines of two squares meet in the gap.
@@ -115,23 +116,10 @@ type SquareProps = {
   laser: LaserData | undefined;
 };
 
-// The label of a square for a screen reader, for example "Row 1, column 1, laser, points right".
-function squareLabel(game: Game, index: number, laser: LaserData | undefined, isHit: boolean) {
-  const square = game.squares[index] ?? ".";
-  return words.square({
-    row: Math.floor(index / game.size) + 1,
-    column: (index % game.size) + 1,
-    piece: laser === undefined ? words.pieces[square] : words.laserName(laser.colour),
-    laser: laser === undefined ? "" : words.directions[laser.direction],
-    isFromTray: game.fromTray.includes(index),
-    isHit,
-    isInWater: game.config.water[index] === true,
-  });
-}
-
 // Each square is a button. The player selects a square to change its piece.
 // A square that the player cannot change has "aria-disabled", so a screen reader can still read it.
 function SquareButton({ game, index, lines, laser }: SquareProps) {
+  const { t } = useTranslation();
   const square = game.squares[index] ?? ".";
   const isHit = isMonster(square) && game.beam?.hits.includes(index) === true;
   // A red piece shows a circle and a blue piece shows a square, as in Colour Binary.
@@ -145,7 +133,7 @@ function SquareButton({ game, index, lines, laser }: SquareProps) {
       data-water={game.config.water[index] === true}
       data-from-tray={game.fromTray.includes(index)}
       data-hit={isHit}
-      aria-label={squareLabel(game, index, laser, isHit)}
+      aria-label={squareLabel(t, game, index, laser, isHit)}
       aria-disabled={!game.canSelect(index)}
       onClick={() => {
         game.select(index);
@@ -154,7 +142,7 @@ function SquareButton({ game, index, lines, laser }: SquareProps) {
       <SquareArt square={square} laser={laser} lines={lines} />
       {isMonster(square) && (
         <span aria-hidden="true" className={styles.monster}>
-          {words.symbols.monster}
+          {symbols.latics.monster}
         </span>
       )}
       {colour !== null && (
@@ -164,7 +152,7 @@ function SquareButton({ game, index, lines, laser }: SquareProps) {
       )}
       {isHit && (
         <span aria-hidden="true" className={styles.hit}>
-          {words.symbols.hit}
+          {symbols.latics.hit}
         </span>
       )}
     </button>

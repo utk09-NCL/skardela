@@ -1,13 +1,11 @@
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { formatDuration } from "../../../shared/state/progress";
 import type { SolveResult } from "../../../shared/state/saved-data";
-import { marksText } from "../../../shared/share";
+import { marksText, todayShareText } from "../../../shared/share";
 import { ShareButton } from "../../../shared/ShareButton";
-import { text } from "../../../text/en";
 import type { TodayCard } from "../../puzzles";
 import styles from "./HomePage.module.css";
-
-const words = text.home.today;
 
 type CardActionsProps = {
   card: TodayCard;
@@ -28,9 +26,11 @@ function totalTime(bests: readonly (SolveResult | undefined)[]): string | undefi
 // The last row of a card: the link to the next level, or the total time when all levels are solved.
 // After the first solve, "Share" copies today's results of this puzzle type.
 export function CardActions({ card, bests, next, day }: CardActionsProps) {
-  const name = text[card.type].name;
+  const { t } = useTranslation();
+  const name = t(($) => $[card.type].name);
+  const total = totalTime(bests);
   const shareText = () =>
-    text.share.today({
+    todayShareText(t, {
       day,
       typeName: name,
       marks: marksText(bests),
@@ -38,23 +38,27 @@ export function CardActions({ card, bests, next, day }: CardActionsProps) {
         const best = bests[index];
         return best === undefined
           ? []
-          : [{ level: text.levels[difficulty], time: formatDuration(best.seconds) }];
+          : [{ level: t(($) => $.levels[difficulty]), time: formatDuration(best.seconds) }];
       }),
     });
   return (
     <div className={styles.cardActions}>
       {next === undefined ? (
-        <p className={styles.allSolved}>{words.allSolved(totalTime(bests))}</p>
+        <p className={styles.allSolved}>
+          {total === undefined
+            ? t(($) => $.home.today.allSolved)
+            : t(($) => $.home.today.allSolvedTotal, { total })}
+        </p>
       ) : (
         <Link className={styles.cta} to={`/puzzles/${next.id}`}>
-          {words.play(text.levels[next.difficulty])}
+          {t(($) => $.home.today.play, { level: t(($) => $.levels[next.difficulty]) })}
         </Link>
       )}
       {bests.some((best) => best !== undefined) && (
         <ShareButton
           getText={shareText}
-          label={words.share}
-          accessibleName={words.shareLabel(name)}
+          label={t(($) => $.home.today.share)}
+          accessibleName={t(($) => $.home.today.shareLabel, { typeName: name })}
           className={styles.share}
         />
       )}

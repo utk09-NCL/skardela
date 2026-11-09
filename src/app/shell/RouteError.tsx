@@ -1,6 +1,6 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { isRouteErrorResponse, Link, useRouteError } from "react-router";
-import { text } from "../../text/en";
 import styles from "./RouteError.module.css";
 import { getLogger } from "../../shared/logger";
 
@@ -8,6 +8,8 @@ import { getLogger } from "../../shared/logger";
 // It keeps the user in the app and gives the team useful error data in the log.
 export function RouteError() {
   const error = useRouteError();
+  const { t } = useTranslation();
+  const title = t(($) => $.routeError.title);
   useEffect(() => {
     const log = getLogger("app.route-error");
     if (isRouteErrorResponse(error)) {
@@ -24,11 +26,11 @@ export function RouteError() {
 
   return (
     <main className={`content-width ${styles.main}`}>
-      <title>{`${text.routeError.title} | ${text.siteName}`}</title>
-      <h1 data-testid="route-error-title">{text.routeError.title}</h1>
-      <p>{text.routeError.body}</p>
+      <title>{t(($) => $.pageTitle, { title, siteName: t(($) => $.siteName) })}</title>
+      <h1 data-testid="route-error-title">{title}</h1>
+      <p>{t(($) => $.routeError.body)}</p>
       <p>
-        <Link to="/">{text.routeError.homeLink}</Link>
+        <Link to="/">{t(($) => $.routeError.homeLink)}</Link>
       </p>
     </main>
   );

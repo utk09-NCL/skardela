@@ -1,25 +1,27 @@
 import shared from "../../../shared/Board.module.css";
-import { text } from "../../../text/en";
+import { useTranslation } from "react-i18next";
+import { symbols } from "../../../text/symbols";
 import styles from "./Board.module.css";
 import { tiltOnArrowKey } from "./input";
 import { directions } from "./rules-check";
 import type { Game } from "./useGame";
 
-const words = text.tilt;
-
 // The four arrow buttons tilt the board with a mouse or a touch. An arrow key on a button tilts the board too.
 // After the solve, the buttons have "aria-disabled", so a screen reader can still read them.
 export function Controls({ game }: { game: Game }) {
+  const { t } = useTranslation();
   return (
     <fieldset className={styles.arrows}>
-      <legend className="visually-hidden">{words.controlsLabel}</legend>
+      <legend className="visually-hidden">{t(($) => $.tilt.controlsLabel)}</legend>
       {directions.map((direction) => (
         <button
           key={direction}
           type="button"
           className={`${shared.button} ${shared.boxed} ${styles.arrow}`}
           data-direction={direction}
-          aria-label={words.tiltButton(words.directions[direction])}
+          aria-label={t(($) => $.tilt.tiltButton, {
+            direction: t(($) => $.tilt.directions[direction]),
+          })}
           aria-disabled={game.isSolved}
           onClick={() => {
             game.tilt(direction);
@@ -28,7 +30,7 @@ export function Controls({ game }: { game: Game }) {
             tiltOnArrowKey(event, game.tilt);
           }}
         >
-          <span aria-hidden="true">{words.symbols.arrows[direction]}</span>
+          <span aria-hidden="true">{symbols.tilt.arrows[direction]}</span>
         </button>
       ))}
     </fieldset>
@@ -41,13 +43,14 @@ export function Controls({ game }: { game: Game }) {
 // A screen reader does not read it, because the board has its own help text.
 // The CSS shows it only with a mouse. See "## Controls" in "rules.md".
 export function KeyHint() {
+  const { t } = useTranslation();
   return (
     <p className={styles.keyHint} aria-hidden="true">
       <span className={styles.keyHintIdle}>
-        {words.symbols.keyboard} {words.keyHint.idle}
+        {symbols.tilt.keyboard} {t(($) => $.tilt.keyHint.idle)}
       </span>
       <span className={styles.keyHintActive}>
-        {words.symbols.keyboard} {words.keyHint.active}
+        {symbols.tilt.keyboard} {t(($) => $.tilt.keyHint.active)}
       </span>
     </p>
   );

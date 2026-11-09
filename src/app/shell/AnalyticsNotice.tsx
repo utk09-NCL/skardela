@@ -1,8 +1,8 @@
 import { useEffect, type SyntheticEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { loadAnalytics } from "../../shared/analytics";
 import { getLogger } from "../../shared/logger";
 import { useAppStore } from "../../shared/state/store";
-import { text } from "../../text/en";
 import styles from "./AnalyticsNotice.module.css";
 
 // This notice tells a new player that the site uses analytics. It shows on each page until the player selects OK.
@@ -46,7 +46,7 @@ function openAgain(event: SyntheticEvent<HTMLDialogElement>) {
 }
 
 function NoticeDialog({ onAcknowledge }: { onAcknowledge: () => void }) {
-  const words = text.analyticsNotice;
+  const { t } = useTranslation();
   return (
     <dialog
       ref={openModal}
@@ -59,12 +59,12 @@ function NoticeDialog({ onAcknowledge }: { onAcknowledge: () => void }) {
     >
       <div className={styles.text}>
         <h2 id="analytics-notice-title" className={styles.title}>
-          {words.title}
+          {t(($) => $.analyticsNotice.title)}
         </h2>
-        <p id="analytics-notice-body">{words.body}</p>
+        <p id="analytics-notice-body">{t(($) => $.analyticsNotice.body)}</p>
       </div>
       <button type="button" className={styles.ok} onClick={onAcknowledge}>
-        {words.ok}
+        {t(($) => $.analyticsNotice.ok)}
       </button>
     </dialog>
   );

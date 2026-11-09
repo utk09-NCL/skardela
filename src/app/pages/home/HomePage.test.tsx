@@ -6,12 +6,13 @@ import { describe, expect, it } from "vitest";
 import { levels } from "../../../shared/difficulty";
 import { dayKey } from "../../../shared/state/progress";
 import { useAppStore } from "../../../shared/state/store";
-import { text } from "../../../text/en";
+import { t } from "../../../test/i18n";
 import { homeLoader, type TodayCard } from "../../puzzles";
 import { puzzleTypes } from "../../puzzle-types/registry";
 import { routes } from "../../routes";
+import { timeLong, timeShort } from "./timeText";
 
-const home = text.home;
+const home = t(($) => $.home, { returnObjects: true });
 
 // Each day has one puzzle of each level for each puzzle type.
 // The count comes from the registry, thus a new puzzle type does not need a change here.
@@ -49,9 +50,7 @@ describe("home page hero", () => {
     expect(screen.getByRole("link", { name: home.hero.play })).toHaveAttribute("href", "#today");
     const progress = screen.getByRole("list", { name: home.hero.progressLabel });
     expect(within(progress).getAllByRole("listitem")).toHaveLength(todayCount);
-    expect(
-      screen.getByText(new RegExp(`^${home.hero.progress(0, todayCount)} · `, "u")),
-    ).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(`^0 of ${todayCount} solved · `, "u"))).toBeInTheDocument();
   });
 
   it("links to the last puzzle that the player opened and did not solve", async () => {
@@ -61,7 +60,7 @@ describe("home page hero", () => {
     expect(await renderHome()).toHaveTextContent(home.hero.pickUp);
     const link = screen.getByRole("link", { name: /^Continue/u });
     expect(link).toHaveAttribute("href", "/puzzles/latics-0012");
-    expect(link).toHaveTextContent(home.hero.puzzleName(text.latics.name, text.levels.medium));
+    expect(link).toHaveTextContent("Latics · Medium");
     expect(screen.queryByRole("link", { name: home.hero.play })).toBeNull();
   });
 
@@ -70,11 +69,9 @@ describe("home page hero", () => {
     solveToday(cards, 42);
     const id = todayId(cards, "guzzle", "easy");
     useAppStore.getState().openPuzzle({ puzzleId: id, type: "guzzle", difficulty: "easy" });
-    expect(await renderHome()).toHaveTextContent(home.hero.solvedSome(1, todayCount));
+    expect(await renderHome()).toHaveTextContent(`1 down. ${todayCount - 1} puzzles left today.`);
     expect(screen.queryByRole("link", { name: /^Continue/u })).toBeNull();
-    expect(
-      screen.getByText(home.hero.segment(text.guzzle.name, text.levels.easy, true)),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Guzzle Easy: solved")).toBeInTheDocument();
   });
 });
 
@@ -82,10 +79,14 @@ describe("home page cards", () => {
   it("links to today's puzzle of each level for each puzzle type, in level order", async () => {
     await renderHome();
     for (const type of ["colour-binary", "guzzle", "latics"] as const) {
-      const nav = screen.getByRole("navigation", { name: home.today.levelsLabel(text[type].name) });
+      const nav = screen.getByRole("navigation", {
+        name: t(($) => $.home.today.levelsLabel, { typeName: t(($) => $[type].name) }),
+      });
       const links = within(nav).getAllByRole("link");
       expect(links.map((link) => link.getAttribute("aria-label"))).toEqual(
-        levels.map((level) => home.today.levelLink(text.levels[level])),
+        levels.map((level) =>
+          t(($) => $.home.today.levelNotSolved, { level: t(($) => $.levels[level]) }),
+        ),
       );
       for (const link of links) {
         expect(link.getAttribute("href")).toMatch(new RegExp(`^/puzzles/${type}-\\d{4}$`, "u"));
@@ -97,10 +98,8 @@ describe("home page cards", () => {
     const cards = await homeLoader();
     solveToday(cards, 42);
     await renderHome();
-    expect(
-      screen.getByRole("link", { name: home.today.levelLink(text.levels.easy, { time: "0:42" }) }),
-    ).toHaveTextContent("0:42");
-    expect(screen.getByRole("link", { name: home.today.play(text.levels.medium) })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Easy, solved in 0:42" })).toHaveTextContent("0:42");
+    expect(screen.getByRole("link", { name: "Play Medium" })).toHaveAttribute(
       "href",
       `/puzzles/${todayId(cards, "guzzle", "medium")}`,
     );
@@ -116,7 +115,7 @@ describe("home page sections", () => {
     expect(within(faq).getAllByRole("group")).toHaveLength(home.faq.items.length);
     expect(within(faq).getByRole("link", { name: /GitHub/u })).toHaveAttribute(
       "href",
-      text.footer.source.href,
+      t(($) => $.footer.source.href),
     );
   });
 });
@@ -127,13 +126,13 @@ describe("home page time to new puzzles", () => {
     [{ hours: 0, minutes: 1 }, "1 min", "1 minute"],
     [{ hours: 1, minutes: 0 }, "1 h", "1 hour"],
   ])("shows %j with units, and with full words for a screen reader", (time, short, long) => {
-    expect(home.hero.timeShort(time)).toBe(short);
-    expect(home.hero.timeLong(time)).toBe(long);
+    expect(timeShort(t, time)).toBe(short);
+    expect(timeLong(t, time)).toBe(long);
   });
 
   it("shows the time with its units next to the progress", async () => {
     await renderHome();
-    const line = screen.getByText(new RegExp(`^${home.hero.progress(0, todayCount)} · `, "u"));
+    const line = screen.getByText(new RegExp(`^0 of ${todayCount} solved · `, "u"));
     expect(line.textContent).toMatch(/new puzzles in (\d+ h ?)?(\d+ min)?/u);
     expect(line.querySelector("time")?.getAttribute("datetime")).toMatch(/^PT\d+H\d+M$/u);
   });

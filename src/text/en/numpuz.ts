@@ -3,13 +3,8 @@ import type { KeyItem, Rule } from "../../shared/RuleList";
 import { symbols } from "../symbols";
 
 // The operator symbols come from "src/text/symbols.ts", so the text and the board show the same symbols.
-const { "+": add, "-": subtract, "\u00D7": multiply, "\u00F7": divide } = symbols.numpuz.operators;
+const { "+": add, "-": subtract, "×": multiply, "÷": divide } = symbols.numpuz.operators;
 
-// "mistake", "mistakes". The mistakes are the score of Numpuz.
-const mistakeWord = (count: number) => (count === 1 ? "mistake" : "mistakes");
-
-// "1 mistake", "2 mistakes".
-const mistakeCount = (count: number) => `${count} ${mistakeWord(count)}`;
 export const numpuz = {
   name: "Numpuz",
   summary: `Fill each blank with ${add} ${subtract} ${multiply} or ${divide} to reach the target number.`,
@@ -35,24 +30,25 @@ export const numpuz = {
     ] satisfies Rule[],
   },
   // The score of a solve: the number of mistakes. The home page and the result card show it.
-  score: mistakeCount,
-  scoreWord: mistakeWord,
+  score_one: "{{count}} mistake",
+  score_other: "{{count}} mistakes",
+  scoreWord_one: "mistake",
+  scoreWord_other: "mistakes",
   boardLabel: "Numpuz board",
-  target: (target: number) => `Target: ${target}`,
-  // The board shows these symbols for the operators and for an empty blank.
-  symbols: symbols.numpuz,
-  operatorNames: { "+": "plus", "-": "minus", "\u00D7": "times", "\u00F7": "divided by" },
-  blank: (blank: { position: number; operator: string }) =>
-    `Blank ${blank.position}, ${blank.operator === "" ? "empty" : blank.operator}`,
+  target: "Target: {{target}}",
+  operatorNames: { "+": "plus", "-": "minus", "×": "times", "÷": "divided by" },
+  // The label of a blank, for example "Blank 2, plus". "empty" is a blank without an operator.
+  blank: "Blank {{position}}, {{operator}}",
+  empty: "empty",
   keysLabel: "Operators",
-  key: (name: string) => `Put ${name} in the selected blank`,
+  key: "Put {{name}} in the selected blank",
   checkButton: "Check",
   status: {
     start: "Select a blank. Then type an operator or select an operator.",
     incomplete: "Fill every blank before you check.",
-    wrong: (count: number) =>
-      `Not yet. The equation is not equal to the target. Change an operator and check again. Mistakes: ${count}.`,
-    solved: (count: number) =>
-      `You solved the puzzle with ${mistakeCount(count)}. The equation is equal to the target.`,
+    wrong:
+      "Not yet. The equation is not equal to the target. Change an operator and check again. Mistakes: {{count}}.",
+    // "mistakes" is the score, for example "2 mistakes".
+    solved: "You solved the puzzle with {{mistakes}}. The equation is equal to the target.",
   },
 };
