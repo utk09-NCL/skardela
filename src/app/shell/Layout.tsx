@@ -1,5 +1,6 @@
+import { useTranslation } from "react-i18next";
 import { Link, Outlet } from "react-router";
-import { text } from "../../text/en";
+import { LanguageSwitcher } from "../../components/LanguageSwitcher";
 import { AnalyticsNotice } from "./AnalyticsNotice";
 import styles from "./Layout.module.css";
 import { StorageNotice } from "./StorageNotice";
@@ -16,25 +17,27 @@ const currentYear = new Date().getFullYear();
 // Each page gets the puzzles of the new day after midnight. See "useReloadAtMidnight.ts".
 export function Layout() {
   useReloadAtMidnight();
+  const { t } = useTranslation();
   return (
     <>
       <a className={styles.skipLink} href="#main">
-        {text.skipLink}
+        {t(($) => $.skipLink)}
       </a>
       <header className={styles.header}>
         <div className={`content-width ${styles.headerInner}`}>
           {/* The logo is decoration. The site name next to it is the name of the link. */}
-          <nav aria-label={text.nav.label} className={styles.nav}>
+          <nav aria-label={t(($) => $.nav.label)} className={styles.nav}>
             <Link className={styles.brand} to="/">
               <img src="/favicon.svg" alt="" width="28" height="28" />
-              <span>{text.siteName}</span>
+              <span>{t(($) => $.siteName)}</span>
             </Link>
             <Link className={styles.navLink} to="/#stats">
-              {text.nav.stats}
+              {t(($) => $.nav.stats)}
             </Link>
           </nav>
           <StreakPill />
           <ThemeSwitcher />
+          <LanguageSwitcher />
         </div>
       </header>
       <main id="main" className={`content-width ${styles.main}`} tabIndex={-1}>
@@ -44,16 +47,16 @@ export function Layout() {
       <footer className={styles.footer}>
         {/* The name and the link are in the first line. The legal line is smaller, under them. */}
         <div className={`content-width ${styles.footerInner}`}>
-          <p className={styles.footerTagline}>{text.footer.tagline}</p>
+          <p className={styles.footerTagline}>{t(($) => $.footer.tagline)}</p>
           <a
             className={styles.footerLink}
-            href={text.footer.source.href}
+            href={t(($) => $.footer.source.href)}
             target="_blank"
             rel="noreferrer"
           >
-            {text.footer.source.label}
+            {t(($) => $.footer.source.label)}
           </a>
-          <p className={styles.footerLegal}>{text.footer.content(currentYear)}</p>
+          <p className={styles.footerLegal}>{t(($) => $.footer.content, { year: currentYear })}</p>
         </div>
       </footer>
       {/* The notice shows on each page, because a new player can open a puzzle link first. */}

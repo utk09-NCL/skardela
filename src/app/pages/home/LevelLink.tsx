@@ -1,12 +1,10 @@
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import type { Difficulty } from "../../../shared/difficulty";
 import { formatDuration } from "../../../shared/state/progress";
 import type { SolveResult } from "../../../shared/state/saved-data";
-import { text } from "../../../text/en";
 import type { PuzzleType } from "../../puzzle-types/registry";
 import styles from "./HomePage.module.css";
-
-const words = text.home.today;
 
 type LevelProps = {
   id: string;
@@ -21,28 +19,42 @@ type LevelProps = {
 // A link to the puzzle of one level, with its status. A solved level shows a check mark and the result
 // of its best solve: the time and the score, for example "1:42" and "0 mistakes". The next level to play has a ring.
 export function LevelLink({ id, type, difficulty, isSolved, best, isNext }: LevelProps) {
-  const level = text.levels[difficulty];
+  const { t } = useTranslation();
+  const level = t(($) => $.levels[difficulty]);
   const time = best === undefined ? undefined : formatDuration(best.seconds);
-  const score = best?.mistakes === undefined ? undefined : text[type].score(best.mistakes);
+  const mistakes = best?.mistakes;
+  const score = mistakes === undefined ? undefined : t(($) => $[type].score, { count: mistakes });
+  // The name of the link for a screen reader. It starts with the visible level name.
+  const linkName = isSolved
+    ? time === undefined && score === undefined
+      ? t(($) => $.home.today.levelSolved, { level })
+      : score === undefined
+        ? t(($) => $.home.today.levelSolvedIn, { level, time })
+        : time === undefined
+          ? t(($) => $.home.today.levelSolvedWith, { level, score })
+          : t(($) => $.home.today.levelSolvedInWith, { level, time, score })
+    : t(($) => $.home.today.levelNotSolved, { level });
   return (
     <Link
       className={styles.level}
       data-solved={isSolved}
       data-next={isNext}
       to={`/puzzles/${id}`}
-      aria-label={words.levelLink(level, isSolved ? { time, score } : undefined)}
+      aria-label={linkName}
     >
       <span className={styles.levelName}>
         {level}
         {isSolved && (
           <span className={styles.levelMark} aria-hidden="true">
-            {words.solvedMark}
+            {t(($) => $.home.today.solvedMark)}
           </span>
         )}
       </span>
       {/* A narrow card has no space for the time and the score in one line, thus each has its own line. */}
       <span className={styles.levelStatus}>
-        {isSolved ? (time ?? words.solvedNoTime) : words.notSolved}
+        {isSolved
+          ? (time ?? t(($) => $.home.today.solvedNoTime))
+          : t(($) => $.home.today.notSolved)}
       </span>
       {score !== undefined && <span className={styles.levelStatus}>{score}</span>}
     </Link>

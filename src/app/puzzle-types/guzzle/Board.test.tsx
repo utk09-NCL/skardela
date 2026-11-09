@@ -2,12 +2,13 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { useAppStore } from "../../../shared/state/store";
-import { text } from "../../../text/en";
+import { t } from "../../../test/i18n";
+import { symbols } from "../../../text/symbols";
 import { Board } from "./Board";
 import example from "./examples/guzzle-0000.json";
 import type { GuzzlePuzzle } from "./puzzle";
 
-const words = text.guzzle;
+const words = t(($) => $.guzzle, { returnObjects: true });
 const puzzle = example as GuzzlePuzzle;
 
 // This helper finds a square by its row and column, so the test does not depend on the label end.
@@ -41,19 +42,21 @@ describe("guzzle board feedback", () => {
 
     // Step 2: T in the top-left square is red.
     await user.click(square(1, 1));
-    await user.click(screen.getByRole("button", { name: words.key("T", 1) }));
+    await user.click(screen.getByRole("button", { name: "Put T in the selected square. 1 left" }));
     expect(square(1, 1)).toHaveAttribute("data-mark", "absent");
-    expect(screen.getByText(words.mistakes(1))).toBeInTheDocument();
+    expect(screen.getByText("1 mistake")).toBeInTheDocument();
 
     // Step 3: N in the top-left square is yellow.
-    await user.click(screen.getByRole("button", { name: words.key("N", 1) }));
+    await user.click(screen.getByRole("button", { name: "Put N in the selected square. 1 left" }));
     expect(square(1, 1)).toHaveAttribute("data-mark", "present");
-    expect(screen.getByText(words.mistakes(2))).toBeInTheDocument();
+    expect(screen.getByText("2 mistakes")).toBeInTheDocument();
 
     // Step 4: N in the bottom-right square is green. The bank does not show N now.
     // Before the move, the N key has the "inWord" hint, because N was yellow in the same word.
     await user.click(square(3, 3));
-    await user.click(screen.getByRole("button", { name: words.key("N", 1, "inWord") }));
+    await user.click(
+      screen.getByRole("button", { name: "Put N in the selected square. 1 left. In this word" }),
+    );
     expect(square(3, 3)).toHaveAttribute("data-mark", "correct");
     expect(bank).toHaveTextContent("BCGMPRT");
   });
@@ -93,10 +96,8 @@ describe("guzzle board result", () => {
     await user.click(square(1, 1));
     await user.keyboard("t");
     await user.keyboard("t");
-    expect(screen.getByText(words.mistakes(1))).toBeInTheDocument();
-    expect(
-      screen.getByText(words.status.absent("T", words.lines.diagonalDown)),
-    ).toBeInTheDocument();
+    expect(screen.getByText("1 mistake")).toBeInTheDocument();
+    expect(screen.getByText("The diagonal from the top left does not have T.")).toBeInTheDocument();
   });
 });
 
@@ -104,9 +105,9 @@ describe("guzzle board direction and clues", () => {
   it("shows an arrow on the first square of each word", () => {
     render(<Board puzzle={puzzle} />);
     expect(square(1, 1)).toHaveAccessibleName(
-      `Row 1, column 1, empty, ${words.start(words.lines.diagonalDown)}`,
+      `Row 1, column 1, empty, start of the ${words.lines.diagonalDown}`,
     );
-    expect(square(3, 1)).toHaveTextContent(words.symbols.arrows.diagonalUp);
+    expect(square(3, 1)).toHaveTextContent(symbols.guzzle.arrows.diagonalUp);
     expect(square(3, 3)).toHaveAccessibleName("Row 3, column 3, empty");
   });
 
@@ -120,7 +121,7 @@ describe("guzzle board direction and clues", () => {
     const clues = screen.getByRole("list", { name: words.cluesLabel });
     const current = clues.querySelector('[aria-current="true"]');
     expect(current).toHaveTextContent(words.clueLines.diagonalUp);
-    expect(current).toHaveTextContent(words.position(3, 3));
+    expect(current).toHaveTextContent("letter 3 of 3");
     expect(current).toHaveTextContent(puzzle.clues.diagonalUp);
     expect(square(3, 1)).toHaveAttribute("data-in-word", "true");
     expect(square(1, 1)).toHaveAttribute("data-in-word", "false");
@@ -139,13 +140,17 @@ describe("guzzle board key hints", () => {
       [1, 1, "N"],
     ]);
     await user.click(square(3, 3));
-    expect(screen.getByRole("button", { name: words.key("T", undefined, "wrong") })).toBeVisible();
-    expect(screen.getByRole("button", { name: words.key("N", undefined, "inWord") })).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: "Put T in the selected square. Not in this square" }),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: "Put N in the selected square. In this word" }),
+    ).toBeVisible();
 
     // T in the bottom-right square is red, but the player already knew that. The mistakes stay at 2.
     await user.keyboard("t");
     expect(square(3, 3)).toHaveAttribute("data-mark", "absent");
-    expect(screen.getByText(words.mistakes(2))).toBeInTheDocument();
+    expect(screen.getByText("2 mistakes")).toBeInTheDocument();
   });
 });
 
@@ -161,7 +166,7 @@ describe("guzzle board keyboard", () => {
     await user.keyboard("b");
     expect(square(1, 2)).toHaveAttribute("data-mark", "correct");
     expect(square(1, 1)).toHaveAttribute("data-mark", "none");
-    expect(screen.getByText(words.mistakes(0))).toBeInTheDocument();
+    expect(screen.getByText("0 mistakes")).toBeInTheDocument();
   });
 
   it("moves the focus to the next open square after a correct letter", async () => {

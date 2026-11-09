@@ -2,12 +2,12 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { useAppStore } from "../../../shared/state/store";
-import { text } from "../../../text/en";
+import { t } from "../../../test/i18n";
 import { Board } from "./Board";
 import example from "./examples/latics-0000.json";
 import type { LaticsPuzzle } from "./puzzle";
 
-const words = text.latics;
+const words = t(($) => $.latics, { returnObjects: true });
 const easy = example as LaticsPuzzle;
 
 // A medium board: the beam goes right along row 1. A tray mirror at row 1, column 7 sends it down to the monster.
@@ -54,20 +54,20 @@ describe("latics board on easy", () => {
     // Step 1: the beam goes along the horizontal mirror and off the board.
     expect(square(1, 1)).toHaveAccessibleName("Row 1, column 1, laser, points right");
     expect(square(1, 4)).toHaveAccessibleName("Row 1, column 4, horizontal mirror");
-    expect(status).toHaveTextContent(words.ends.edge(words.at(1, 5)));
+    expect(status).toHaveTextContent("The beam goes off the board after row 1, column 5.");
 
     // Step 2: the first mirror sends the beam down, along the vertical mirror and off the board.
     await user.click(square(1, 4));
     expect(square(1, 4)).toHaveAccessibleName(
       "Row 1, column 4, mirror from top left to bottom right",
     );
-    expect(status).toHaveTextContent(words.ends.edge(words.at(5, 4)));
+    expect(status).toHaveTextContent("The beam goes off the board after row 5, column 4.");
 
     // Steps 3 and 4: the second mirror sends the beam left, then up and back to the laser.
     await user.click(square(5, 4));
-    expect(status).toHaveTextContent(words.ends.edge(words.at(5, 1)));
+    expect(status).toHaveTextContent("The beam goes off the board after row 5, column 1.");
     await user.click(square(5, 4));
-    expect(status).toHaveTextContent(words.ends.laser());
+    expect(status).toHaveTextContent(words.ends.laser);
 
     // Step 5: the beam hits the monster.
     await user.click(square(5, 4));
@@ -90,8 +90,8 @@ describe("latics board on easy", () => {
   it("gives the path of the beam in words", () => {
     render(<Board puzzle={easy} />);
     const path = screen.getByText(words.pathLabel).closest("details");
-    expect(path).toHaveTextContent(words.path.move(words.directions.E, 4));
-    expect(path).toHaveTextContent(words.ends.edge(words.at(1, 5)));
+    expect(path).toHaveTextContent("The beam goes right 4 squares.");
+    expect(path).toHaveTextContent("The beam goes off the board after row 1, column 5.");
   });
 });
 
@@ -100,24 +100,30 @@ describe("latics board on medium", () => {
     const user = userEvent.setup();
     render(<Board puzzle={medium} />);
     const fire = screen.getByRole("button", { name: words.fire });
-    expect(screen.getByText(words.status.plan({ tray: true, aim: false }))).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Plan the path: turn the mirrors and put mirrors from the tray on empty squares. Then fire the laser.",
+      ),
+    ).toBeInTheDocument();
 
     // A shot shows the beam and adds a miss. The same shot again is not possible.
     await user.click(fire);
-    expect(screen.getByText(words.misses(1))).toBeInTheDocument();
+    expect(screen.getByText("1 miss")).toBeInTheDocument();
     // The end of the beam shows in the status and in the path, thus the query looks only at the status.
     expect(
-      screen.getByText(words.ends.edge(words.at(1, 7)), { selector: "output" }),
+      screen.getByText("The beam goes off the board after row 1, column 7.", {
+        selector: "output",
+      }),
     ).toBeInTheDocument();
     expect(fire).toBeDisabled();
 
     // A tray mirror goes on the empty square. Two turns make it send the beam down.
     await user.click(square(1, 7));
-    expect(screen.getByText(words.tray(0))).toBeInTheDocument();
+    expect(screen.getByText("Mirrors in the tray: 0")).toBeInTheDocument();
     expect(fire).toBeEnabled();
     await selectTimes(user, square(1, 7), 2);
     await user.click(fire);
-    expect(screen.getByText(words.status.solvedWithMisses(1))).toBeInTheDocument();
+    expect(screen.getByText("You solved the puzzle with 1 miss.")).toBeInTheDocument();
   });
 
   it("puts a tray mirror back in the tray after four turns", async () => {
@@ -131,7 +137,7 @@ describe("latics board on medium", () => {
     expect(square(2, 2)).toHaveAttribute("aria-disabled", "true");
     await selectTimes(user, square(1, 7), 4);
     expect(square(1, 7)).toHaveAccessibleName("Row 1, column 7, empty");
-    expect(screen.getByText(words.tray(1))).toBeInTheDocument();
+    expect(screen.getByText("Mirrors in the tray: 1")).toBeInTheDocument();
   });
 });
 
@@ -139,11 +145,15 @@ describe("latics board on hard", () => {
   it("lets the player turn the laser", async () => {
     const user = userEvent.setup();
     render(<Board puzzle={hard} />);
-    expect(screen.getByText(words.status.plan({ tray: true, aim: true }))).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Plan the path: turn the mirrors, put mirrors from the tray on empty squares and turn the lasers. Then fire the laser.",
+      ),
+    ).toBeInTheDocument();
     await user.click(square(1, 1));
     expect(square(1, 1)).toHaveAccessibleName("Row 1, column 1, laser, points down and right");
     await user.click(screen.getByRole("button", { name: words.fire }));
-    expect(screen.getByText(words.status.solvedWithMisses(0))).toBeInTheDocument();
+    expect(screen.getByText("You solved the puzzle with 0 misses.")).toBeInTheDocument();
   });
 });
 

@@ -2,13 +2,14 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { useAppStore } from "../../../shared/state/store";
-import { text } from "../../../text/en";
+import { t } from "../../../test/i18n";
+import { symbols } from "../../../text/symbols";
 import { Board } from "./Board";
 import example from "./examples/numpuz-0000.json";
 import type { NumpuzPuzzle } from "./puzzle";
 import type { Operator } from "./rules-check";
 
-const words = text.numpuz;
+const words = t(($) => $.numpuz, { returnObjects: true });
 // The example is the rules.md example: 6 _ 3 _ 2, target 7.
 const puzzle = example as NumpuzPuzzle;
 
@@ -19,7 +20,9 @@ function blank(position: number): HTMLElement {
 
 // This helper finds the key of an operator.
 function key(operator: Operator): HTMLElement {
-  return screen.getByRole("button", { name: words.key(words.operatorNames[operator]) });
+  return screen.getByRole("button", {
+    name: t(($) => $.numpuz.key, { name: t(($) => $.numpuz.operatorNames[operator]) }),
+  });
 }
 
 function checkButton(): HTMLElement {
@@ -33,7 +36,7 @@ describe("numpuz board example", () => {
     const status = screen.getByRole("status");
     expect(status).toHaveTextContent(words.status.start);
     expect(blank(1)).toHaveAccessibleName("Blank 1, empty");
-    expect(blank(1)).toHaveTextContent(words.symbols.empty);
+    expect(blank(1)).toHaveTextContent(symbols.numpuz.empty);
 
     // Select blank 1. It gets the "selected" style.
     await user.click(blank(1));
@@ -47,9 +50,9 @@ describe("numpuz board example", () => {
     expect(blank(1)).toHaveAttribute("data-filled", "true");
     expect(blank(2)).toHaveAttribute("data-selected", "true");
     await user.click(key("×"));
-    expect(blank(2)).toHaveTextContent(words.symbols.operators["×"]);
+    expect(blank(2)).toHaveTextContent(symbols.numpuz.operators["×"]);
     await user.click(checkButton());
-    expect(status).toHaveTextContent(words.status.wrong(1));
+    expect(status).toHaveTextContent(t(($) => $.numpuz.status.wrong, { count: 1 }));
     expect(status).toHaveAttribute("data-wrong", "true");
     // The same wrong guess cannot be checked again.
     expect(checkButton()).toBeDisabled();
@@ -60,7 +63,9 @@ describe("numpuz board example", () => {
     expect(status).toHaveTextContent(words.status.start);
     expect(screen.queryByTestId("confetti")).not.toBeInTheDocument();
     await user.click(checkButton());
-    expect(status).toHaveTextContent(words.status.solved(1));
+    expect(status).toHaveTextContent(
+      "You solved the puzzle with 1 mistake. The equation is equal to the target.",
+    );
     expect(screen.getByTestId("confetti")).toBeInTheDocument();
 
     // The play session saves the solve with one mistake. "Random puzzle" skips a solved puzzle.
@@ -86,7 +91,9 @@ describe("numpuz board mistakes", () => {
     await user.click(key("+"));
     await user.click(key("-"));
     await user.click(checkButton());
-    expect(screen.getByRole("status")).toHaveTextContent(words.status.solved(0));
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "You solved the puzzle with 0 mistakes. The equation is equal to the target.",
+    );
     expect(useAppStore.getState().results.at(-1)?.mistakes).toBe(0);
   });
 });

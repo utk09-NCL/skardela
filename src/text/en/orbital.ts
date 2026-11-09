@@ -1,18 +1,6 @@
 // The text of the Orbital puzzle type.
 import type { KeyItem, Rule } from "../../shared/RuleList";
 
-// "miss", "misses". The misses are the score of Orbital.
-const missWord = (count: number) => (count === 1 ? "miss" : "misses");
-
-// "1 miss", "2 misses".
-const missCount = (count: number) => `${count} ${missWord(count)}`;
-
-// "1 unit", "8 units".
-const unitCount = (count: number) => `${count} ${count === 1 ? "unit" : "units"}`;
-
-// "Big" from "big", for the start of a sentence.
-const capital = (word: string) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`;
-
 export const orbital = {
   name: "Orbital",
   summary: "Launch the probe past the planets and into the ring.",
@@ -37,39 +25,47 @@ export const orbital = {
     ] satisfies Rule[],
   },
   // The score of a solve: the number of misses. The home page and the result card show it.
-  score: missCount,
-  scoreWord: missWord,
+  score_one: "{{count}} miss",
+  score_other: "{{count}} misses",
+  scoreWord_one: "miss",
+  scoreWord_other: "misses",
   boardLabel: "Orbital board",
   // The list of the items on the board, for a screen reader. "at" is a position, see "at" below.
   itemsLabel: "Items on the board",
   items: {
-    probe: (at: string) => `Probe at ${at}.`,
-    ring: (at: string) => `Ring at ${at}.`,
-    planet: (size: string, at: string) => `${capital(size)} planet at ${at}.`,
+    probe: "Probe at {{at}}.",
+    ring: "Ring at {{at}}.",
+    planets: {
+      small: "Small planet at {{at}}.",
+      medium: "Medium planet at {{at}}.",
+      big: "Big planet at {{at}}.",
+    },
   },
   // A position on the board in units, for example "x 12, y 40".
-  at: (x: number, y: number) => `x ${x}, y ${y}`,
+  at: "x {{x}}, y {{y}}",
   sizes: { small: "small", medium: "medium", big: "big" },
   // The misses above the board and at the end of the status, for example "Misses: 2."
-  misses: (count: number) => `Misses: ${count}.`,
+  misses: "Misses: {{count}}.",
   controlsLabel: "Aim and launch",
   angle: "Angle",
   power: "Power",
   // The value of the angle slider, for example "40°".
-  degrees: (angle: number) => `${angle}°`,
+  degrees: "{{angle}}°",
   launch: "Launch",
   status: {
     start: "Set the angle and the power, then select Launch. Or drag back from the probe.",
     // The text at the end of a flight, for example
     // "Angle 40°, power 6. The probe hit the big planet at x 50, y 45. Closest to the ring: 8 units. Misses: 2."
-    aim: (angle: number, power: number) => `Angle ${angle}°, power ${power}.`,
+    aim: "Angle {{angle}}°, power {{power}}.",
     ends: {
       ring: "The probe reached the ring.",
-      planet: (size: string, at: string) => `The probe hit the ${size} planet at ${at}.`,
+      planet: "The probe hit the {{size}} planet at {{at}}.",
       edge: "The probe went off the board.",
-      time: (seconds: number) => `The probe flew for ${seconds} s and stopped.`,
+      time: "The probe flew for {{seconds}} s and stopped.",
     },
-    closest: (units: number) => `Closest to the ring: ${unitCount(units)}.`,
-    solved: (count: number) => `You solved the puzzle with ${missCount(count)}.`,
+    closest_one: "Closest to the ring: {{count}} unit.",
+    closest_other: "Closest to the ring: {{count}} units.",
+    // "misses" is the score, for example "2 misses".
+    solved: "You solved the puzzle with {{misses}}.",
   },
 };

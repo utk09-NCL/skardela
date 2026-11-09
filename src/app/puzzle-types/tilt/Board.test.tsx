@@ -1,15 +1,17 @@
+/* oxlint-disable import/max-dependencies -- the test needs the text, the symbols and the board modules. */
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { useAppStore } from "../../../shared/state/store";
-import { text } from "../../../text/en";
+import { t } from "../../../test/i18n";
+import { symbols } from "../../../text/symbols";
 import { Board } from "./Board";
 import example from "./examples/tilt-0000.json";
 import { slideTime } from "./motion";
 import type { TiltPuzzle } from "./puzzle";
 import type { Direction } from "./rules-check";
 
-const words = text.tilt;
+const words = t(($) => $.tilt, { returnObjects: true });
 // The example is the rules.md example: a medium board with a red ball and a blue ball. The fewest tilts are 5.
 const puzzle = example as TiltPuzzle;
 
@@ -18,7 +20,7 @@ afterEach(() => {
 });
 
 function board(size = 6): HTMLElement {
-  return screen.getByRole("group", { name: words.boardLabel(size) });
+  return screen.getByRole("group", { name: t(($) => $.tilt.boardLabel, { size }) });
 }
 
 // This helper finds a square by its full name, for example "Row 2, column 3, red ball".
@@ -27,7 +29,7 @@ function square(name: string): HTMLElement {
 }
 
 function arrow(direction: Direction): HTMLElement {
-  return screen.getByRole("button", { name: words.tiltButton(direction) });
+  return screen.getByRole("button", { name: t(($) => $.tilt.tiltButton, { direction }) });
 }
 
 function counts(): HTMLElement {
@@ -113,8 +115,8 @@ describe("tilt board example", () => {
     expect(square("Row 2, column 1, wall")).toBeInTheDocument();
     expect(square("Row 1, column 1, empty")).toBeInTheDocument();
     // The ball and its hole show the same icon, so colour is not the only signal.
-    expect(square("Row 3, column 2, red hole")).toHaveTextContent(words.symbols.colours.red);
-    expect(square("Row 6, column 4, blue hole")).toHaveTextContent(words.symbols.colours.blue);
+    expect(square("Row 3, column 2, red hole")).toHaveTextContent(symbols.tilt.colours.red);
+    expect(square("Row 6, column 4, blue hole")).toHaveTextContent(symbols.tilt.colours.blue);
   });
 
   it("follows the steps of the rules.md example", async () => {
@@ -125,7 +127,7 @@ describe("tilt board example", () => {
     await playStepsFiveToSeven(user, status);
     // A hole with its ball shows ✓.
     expect(container.querySelector('[data-colour="red"][data-in-hole="true"]')).toHaveTextContent(
-      words.symbols.full,
+      symbols.tilt.full,
     );
 
     // The play session saves the solve with the extra tilts as the mistakes.
@@ -150,7 +152,7 @@ describe("tilt board score", () => {
     render(<Board puzzle={puzzle} />);
     board().focus();
     await user.keyboard("{ArrowDown}{ArrowLeft}{ArrowUp}{ArrowDown}{ArrowRight}");
-    expect(screen.getByRole("status")).toHaveTextContent(words.status.solved(0));
+    expect(screen.getByRole("status")).toHaveTextContent(words.status.perfect);
     expect(useAppStore.getState().results.at(-1)?.mistakes).toBe(0);
   });
 });
@@ -198,8 +200,8 @@ describe("tilt board key hint", () => {
   it("shows a key hint that tells the player to click the board", async () => {
     const user = userEvent.setup();
     render(<Board puzzle={puzzle} />);
-    const idle = `${words.symbols.keyboard} ${words.keyHint.idle}`;
-    const active = `${words.symbols.keyboard} ${words.keyHint.active}`;
+    const idle = `${symbols.tilt.keyboard} ${words.keyHint.idle}`;
+    const active = `${symbols.tilt.keyboard} ${words.keyHint.active}`;
     // The hint has both texts. The CSS shows one of them, from the focus. The test environment has no CSS.
     // The board has its own help text for a screen reader, thus the hint is hidden from it.
     expect(screen.getByText(idle).closest("p")).toHaveAttribute("aria-hidden", "true");
@@ -212,7 +214,7 @@ describe("tilt board key hint", () => {
     // After the solve, the arrow keys do nothing, thus the hint does not show.
     board().focus();
     await user.keyboard("{ArrowDown}{ArrowLeft}{ArrowUp}{ArrowDown}{ArrowRight}");
-    expect(screen.getByRole("status")).toHaveTextContent(words.status.solved(0));
+    expect(screen.getByRole("status")).toHaveTextContent(words.status.perfect);
     expect(screen.queryByText(active)).not.toBeInTheDocument();
   });
 });

@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { text } from "../text/en";
+import { useTranslation } from "react-i18next";
 import { getLogger } from "./logger";
 import { sendText, type ShareOutcome } from "./share";
 
-const words = text.share;
 const log = getLogger("ui.share");
 
 // The time that the button shows "Copied" or "Not copied". Then it shows its label again.
@@ -21,6 +20,7 @@ type ShareButtonProps = {
 // A button that shares a result: the share menu on a phone, or a copy to the clipboard on a computer.
 // After a copy, the button shows "Copied" for a short time. The status message tells a screen reader the result.
 export function ShareButton({ getText, label, accessibleName, className }: ShareButtonProps) {
+  const { t } = useTranslation();
   const [outcome, setOutcome] = useState<ShareOutcome | null>(null);
   useEffect(() => {
     if (outcome === null) return;
@@ -38,13 +38,17 @@ export function ShareButton({ getText, label, accessibleName, className }: Share
     setOutcome(result);
   };
   const messages: Record<ShareOutcome, string> = {
-    copied: words.copiedMessage,
-    shared: words.sharedMessage,
+    copied: t(($) => $.share.copiedMessage),
+    shared: t(($) => $.share.sharedMessage),
     cancelled: "",
-    failed: words.failedMessage,
+    failed: t(($) => $.share.failedMessage),
   };
   const buttonText =
-    outcome === "copied" ? words.copied : outcome === "failed" ? words.failed : label;
+    outcome === "copied"
+      ? t(($) => $.share.copied)
+      : outcome === "failed"
+        ? t(($) => $.share.failed)
+        : label;
 
   return (
     <>

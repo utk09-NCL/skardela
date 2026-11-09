@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import shared from "../../../shared/Board.module.css";
 import { Confetti } from "../../../shared/Confetti";
 import { Controls } from "./Controls";
@@ -12,6 +13,7 @@ import { useGame } from "./useGame";
 // The game is in one state machine. See "machine.ts". The flight animation is in "motion.ts",
 // and the drag is in "input.ts". The puzzle is solved when the probe reaches the ring.
 export function Board({ puzzle }: { puzzle: OrbitalPuzzle }) {
+  const { t } = useTranslation();
   const log = getOrbitalLog();
   const meta = {
     puzzleId: puzzle.id,
@@ -32,7 +34,7 @@ export function Board({ puzzle }: { puzzle: OrbitalPuzzle }) {
 
       {/* The status box is a live region. A screen reader tells each flight at its end. See "status.ts". */}
       <output className={shared.status} data-solved={game.isSolved}>
-        {statusText(game)}
+        {statusText(t, game)}
       </output>
 
       {game.isSolved && <Confetti />}

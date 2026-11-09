@@ -1,15 +1,13 @@
 import { Fragment } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import shared from "../../../shared/Board.module.css";
 import { bestResult, formatDuration } from "../../../shared/state/progress";
 import type { SolveResult } from "../../../shared/state/saved-data";
-import { marksText, prefersShareMenu } from "../../../shared/share";
+import { marksText, prefersShareMenu, puzzleShareText } from "../../../shared/share";
 import { ShareButton } from "../../../shared/ShareButton";
-import { text } from "../../../text/en";
 import { puzzleNumber, type LoadedPuzzle } from "../../puzzles";
 import styles from "./PuzzlePage.module.css";
-
-const words = text.puzzlePage.result;
 
 type ResultShareProps = {
   loaded: LoadedPuzzle;
@@ -22,7 +20,8 @@ type ResultShareProps = {
 
 // The share text of the solve, and its line of squares. A puzzle of today shows the date and the squares
 // of all levels of today. A different puzzle shows only its own square.
-function shareTextOf({ loaded, solve, results, solved, day }: ResultShareProps) {
+function useShareText({ loaded, solve, results, solved, day }: ResultShareProps) {
+  const { t } = useTranslation();
   const { type, puzzle, today } = loaded;
   const isToday = today.some(({ id }) => id === puzzle.id);
   const levelResults: (SolveResult | undefined)[] = isToday
@@ -31,14 +30,15 @@ function shareTextOf({ loaded, solve, results, solved, day }: ResultShareProps) 
       )
     : [solve];
   const marks = marksText(levelResults);
-  const shareText = text.share.puzzle({
+  const { mistakes } = solve;
+  const shareText = puzzleShareText(t, {
     day: isToday ? day : undefined,
-    typeName: text[type].name,
+    typeName: t(($) => $[type].name),
     number: puzzleNumber(puzzle.id),
-    level: text.levels[puzzle.difficulty],
+    level: t(($) => $.levels[puzzle.difficulty]),
     marks,
     time: formatDuration(solve.seconds),
-    score: solve.mistakes === undefined ? undefined : text[type].score(solve.mistakes),
+    score: mistakes === undefined ? undefined : t(($) => $[type].score, { count: mistakes }),
   });
   return { shareText, marks };
 }
@@ -64,28 +64,36 @@ function ShownText({ shareText, marks }: { shareText: string; marks: string }) {
 // and the link to today's first level of this type that the player did not solve.
 export function ResultShare(props: ResultShareProps) {
   const { loaded, solved } = props;
-  const name = text[loaded.type].name;
-  const { shareText, marks } = shareTextOf(props);
+  const { t } = useTranslation();
+  const name = t(($) => $[loaded.type].name);
+  const { shareText, marks } = useShareText(props);
   const next = loaded.today.find(({ id }) => id !== loaded.puzzle.id && !solved.includes(id));
   return (
     <>
       <div className={styles.shareBox}>
-        <h3 className={styles.shareHeading}>{words.shareHeading}</h3>
+        <h3 className={styles.shareHeading}>{t(($) => $.puzzlePage.result.shareHeading)}</h3>
         <ShownText shareText={shareText} marks={marks} />
       </div>
       <div className={styles.solvedActions}>
         <ShareButton
           getText={() => shareText}
-          label={prefersShareMenu() ? words.share : words.copy}
+          label={
+            prefersShareMenu()
+              ? t(($) => $.puzzlePage.result.share)
+              : t(($) => $.puzzlePage.result.copy)
+          }
           className={`${shared.button} ${styles.copy}`}
         />
         {next !== undefined && (
           <Link
             className={`${shared.button} ${shared.boxed} ${styles.nextLink}`}
             to={`/puzzles/${next.id}`}
-            aria-label={words.nextLabel(name, text.levels[next.difficulty])}
+            aria-label={t(($) => $.puzzlePage.result.nextLabel, {
+              typeName: name,
+              level: t(($) => $.levels[next.difficulty]),
+            })}
           >
-            {words.next(text.levels[next.difficulty])}
+            {t(($) => $.puzzlePage.result.next, { level: t(($) => $.levels[next.difficulty]) })}
           </Link>
         )}
       </div>

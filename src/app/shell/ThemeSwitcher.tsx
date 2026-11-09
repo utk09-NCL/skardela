@@ -1,13 +1,14 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { applyTheme, isTheme, themes } from "../../shared/state/theme";
 import { getLogger } from "../../shared/logger";
 import { useAppStore } from "../../shared/state/store";
-import { text } from "../../text/en";
 import styles from "./ThemeSwitcher.module.css";
 
 // This list lets the player select the system theme, the light theme or the dark theme.
 // A native <select> works with a keyboard and a screen reader without more code.
 export function ThemeSwitcher() {
+  const { t } = useTranslation();
   const theme = useAppStore((state) => state.theme);
   const setTheme = useAppStore((state) => state.setTheme);
   const log = getLogger("ui.theme-switcher");
@@ -19,7 +20,7 @@ export function ThemeSwitcher() {
 
   return (
     <label className={styles.switcher}>
-      <span className="visually-hidden">{text.theme.label}</span>
+      <span className="visually-hidden">{t(($) => $.theme.label)}</span>
       {/* The name lets the browser identify the field, for example for autofill. */}
       <select
         name="theme"
@@ -35,7 +36,7 @@ export function ThemeSwitcher() {
       >
         {themes.map((option) => (
           <option key={option} value={option}>
-            {text.theme.options[option]}
+            {t(($) => $.theme.options[option])}
           </option>
         ))}
       </select>

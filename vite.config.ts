@@ -3,8 +3,8 @@ import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import babel from "@rolldown/plugin-babel";
 import { defineConfig, type Plugin } from "vite";
 // The import has the file extension, because Vite loads the config with native imports.
-import { cipherAnswer } from "./src/shared/cipher.ts";
-
+import { cipherAnswer } from "./src/shared/cipher.ts"; 
+  
 // The files in "puzzles/" have readable answers, so contributors can easily write and check puzzles.
 // This plugin ciphers each answer when Vite loads a puzzle file, in the build, the dev server and the tests.
 // Thus the browser gets no readable answers. "src/shared/cipher.ts" tells how the cipher works.

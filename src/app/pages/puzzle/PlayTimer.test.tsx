@@ -5,7 +5,7 @@ import { RouterProvider } from "react-router/dom";
 import { describe, expect, it } from "vitest";
 import { usePlaySession } from "../../../shared/state/playSession";
 import { useAppStore } from "../../../shared/state/store";
-import { text } from "../../../text/en";
+import { t } from "../../../test/i18n";
 import { routes } from "../../routes";
 
 describe("puzzle page timer", () => {
@@ -17,7 +17,7 @@ describe("puzzle page timer", () => {
         router={createMemoryRouter(routes, { initialEntries: ["/puzzles/guzzle-0001"] })}
       />,
     );
-    const mode = await screen.findByRole("button", { name: text.guzzle.modes.bank });
+    const mode = await screen.findByRole("button", { name: t(($) => $.guzzle.modes.bank) });
     expect(usePlaySession.getState()).toMatchObject({ puzzleId: "guzzle-0001", startedAt: null });
     expect(screen.getByRole("timer")).toHaveTextContent("0:00");
     await user.click(mode);
@@ -31,7 +31,7 @@ describe("puzzle page timer", () => {
         router={createMemoryRouter(routes, { initialEntries: ["/puzzles/latics-0001"] })}
       />,
     );
-    await screen.findByRole("group", { name: text.latics.boardLabel });
+    await screen.findByRole("group", { name: t(($) => $.latics.boardLabel) });
     expect(usePlaySession.getState()).toMatchObject({ puzzleId: "latics-0001" });
     expect(usePlaySession.getState().startedAt).not.toBeNull();
   });

@@ -3,10 +3,10 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { umami } from "../../shared/analytics";
 import { useAppStore } from "../../shared/state/store";
-import { text } from "../../text/en";
+import { t } from "../../test/i18n";
 import { AnalyticsNotice } from "./AnalyticsNotice";
 
-const words = text.analyticsNotice;
+const words = t(($) => $.analyticsNotice, { returnObjects: true });
 
 function analyticsScript() {
   return document.head.querySelector(`script[src="${umami.src}"]`);

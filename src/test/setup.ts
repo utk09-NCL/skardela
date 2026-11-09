@@ -1,6 +1,8 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
 import { afterEach } from "vitest";
+// The components read their text with i18next, as in the app. The tests check the English text.
+import { i18n } from "../i18n/config";
 import { emptySession, usePlaySession } from "../shared/state/playSession";
 import { useAppStore } from "../shared/state/store";
 
@@ -20,6 +22,8 @@ function close(this: HTMLDialogElement) {
 function scrollIntoView() {
   // jsdom has no layout, thus there is nothing to scroll.
 }
+
+await i18n.changeLanguage("en");
 
 if (typeof Element.prototype.scrollIntoView !== "function") {
   Element.prototype.scrollIntoView = scrollIntoView;

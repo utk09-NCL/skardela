@@ -1,15 +1,14 @@
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import shared from "../../../shared/Board.module.css";
 import { ConfirmQuestion } from "../../../shared/ConfirmQuestion";
 import { getLogger } from "../../../shared/logger";
 import { useAppStore } from "../../../shared/state/store";
 import { useConfirm } from "../../../shared/useConfirm";
-import { text } from "../../../text/en";
 import type { LoadedPuzzle } from "../../puzzles";
 import styles from "./PuzzleActions.module.css";
 import { randomPuzzleId } from "./randomPuzzle";
 
-const page = text.puzzlePage;
 const buttonClass = `${shared.button} ${shared.boxed}`;
 const log = getLogger("ui.puzzle-page");
 
@@ -29,6 +28,7 @@ function logRestart({ type, puzzle }: LoadedPuzzle) {
 type PuzzleActionsProps = { loaded: LoadedPuzzle; onRestart: () => void };
 
 export function PuzzleActions({ loaded, onRestart }: PuzzleActionsProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { puzzle, others } = loaded;
   // The question belongs to one puzzle. A different puzzle, for example after the Back button, closes it.
@@ -50,9 +50,9 @@ export function PuzzleActions({ loaded, onRestart }: PuzzleActionsProps) {
     <div className={styles.bar}>
       {isOpen ? (
         <ConfirmQuestion
-          question={page.restartQuestion}
-          yes={page.restartYes}
-          no={page.restartNo}
+          question={t(($) => $.puzzlePage.restartQuestion)}
+          yes={t(($) => $.puzzlePage.restartYes, { returnObjects: true })}
+          no={t(($) => $.puzzlePage.restartNo, { returnObjects: true })}
           yesRef={yesRef}
           onYes={restart}
           onNo={close}
@@ -60,12 +60,12 @@ export function PuzzleActions({ loaded, onRestart }: PuzzleActionsProps) {
       ) : (
         <>
           <button ref={buttonRef} type="button" className={buttonClass} onClick={open}>
-            {page.restart}
+            {t(($) => $.puzzlePage.restart)}
           </button>
           {/* A level with only one puzzle has no other puzzle to open. */}
           {others.length > 0 && (
             <button type="button" className={buttonClass} onClick={openRandom}>
-              {page.random}
+              {t(($) => $.puzzlePage.random)}
             </button>
           )}
         </>

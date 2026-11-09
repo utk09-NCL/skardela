@@ -1,14 +1,13 @@
 import { useEffect, useRef, type KeyboardEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { Confetti } from "../../../shared/Confetti";
 import { gridStyle } from "../../../shared/grid";
 import shared from "../../../shared/Board.module.css";
-import { text } from "../../../text/en";
+import { symbols } from "../../../text/symbols";
 import styles from "./Board.module.css";
 import { lineOf, lineStartingAt, type Line } from "./puzzle";
 import { isPlayable, type Guess } from "./rules-check";
 import type { Game } from "./useGame";
-
-const words = text.guzzle;
 
 // This helper reads a letter from a physical keyboard. Other keys and shortcuts give no letter.
 function letterFromKey(event: KeyboardEvent): string | undefined {
@@ -85,13 +84,13 @@ function SquareButton({
     >
       {start !== undefined && (
         <span aria-hidden="true" className={styles.arrow}>
-          {words.symbols.arrows[start]}
+          {symbols.guzzle.arrows[start]}
         </span>
       )}
       <span aria-hidden="true">{letter}</span>
       {guess !== undefined && (
         <span aria-hidden="true" className={styles.symbol}>
-          {words.symbols[guess.mark]}
+          {symbols.guzzle[guess.mark]}
         </span>
       )}
     </button>
@@ -103,6 +102,7 @@ type GameProps = { answer: readonly string[]; size: number; game: Game };
 // One square of the grid: the fixed center letter, a square on a word or a gap.
 // A gap is a square that is not on a word. It keeps the shape of the grid.
 function GridSquare({ answer, size, game, index }: GameProps & { index: number }) {
+  const { t } = useTranslation();
   const isCenter = index === (size * size - 1) / 2;
   if (!isCenter && !isPlayable(index, size)) {
     return <span className={styles.gap} aria-hidden="true" />;
@@ -111,14 +111,21 @@ function GridSquare({ answer, size, game, index }: GameProps & { index: number }
   const letter = isCenter ? (answer[index] ?? "") : (guess?.letter ?? "");
   const start = lineStartingAt(index, size);
   const selectedLine = game.selected === null ? undefined : lineOf(game.selected, size);
-  const label = words.square({
-    row: Math.floor(index / size) + 1,
-    column: (index % size) + 1,
-    letter,
-    mark: guess === undefined ? "" : words.marks[guess.mark],
-    isFixed: isCenter,
-    start: start === undefined ? "" : words.start(words.lines[start]),
-  });
+  // The parts of the label, for example "Row 1, column 1, A, green, correct, start of the across word".
+  const label = [
+    t(($) => $.guzzle.square.position, {
+      row: Math.floor(index / size) + 1,
+      column: (index % size) + 1,
+    }),
+    letter === "" ? t(($) => $.guzzle.square.empty) : letter,
+    guess === undefined ? "" : t(($) => $.guzzle.marks[guess.mark]),
+    isCenter ? t(($) => $.guzzle.square.fixed) : "",
+    start === undefined
+      ? ""
+      : t(($) => $.guzzle.square.start, { line: t(($) => $.guzzle.lines[start]) }),
+  ]
+    .filter((part) => part !== "")
+    .join(", ");
   return (
     <SquareButton
       label={label}

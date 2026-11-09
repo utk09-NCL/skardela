@@ -1,0 +1,38 @@
+import { symbols } from "../symbols";
+
+// The text of the puzzle page in Hindi. See "src/text/en/puzzle-page.ts" for the English text and the comments.
+export const puzzlePage = {
+  title: "{{typeName}} {{id}} | {{siteName}}",
+  detailsLabel: "पहेली की जानकारी",
+  puzzleNumber: "#{{number}}",
+  author: "{{author}} द्वारा",
+  nowPlaying: "अभी खेल रहे हैं",
+  timerLabel: "समय",
+  close: "पहेली बंद करें और आज की पहेलियों पर जाएँ",
+  result: {
+    title: "हल हो गई",
+    puzzle: "{{typeName}}, {{level}}, #{{number}}",
+    numbersLabel: "आपका परिणाम",
+    time: "समय",
+    faster: "औसत से तेज़",
+    slower: "औसत से धीमा",
+    same: "औसत के बराबर",
+    first: "पहली",
+    firstLabel: "{{level}} स्तर का हल",
+    shareHeading: "शेयर करने का टेक्स्ट",
+    copy: "परिणाम कॉपी करें",
+    share: "परिणाम शेयर करें",
+    next: `अगली: {{level}} ${symbols.puzzlePage.next}`,
+    nextLabel: "अगली पहेली: {{typeName}} {{level}}",
+  },
+  rulesHeading: "कैसे खेलें",
+  keyLabel: "संकेत",
+  loading: "पहेली लोड हो रही है...",
+  loadingBoard: "बोर्ड लोड हो रहा है...",
+  boardError: "एक त्रुटि के कारण बोर्ड रुक गया। फिर से कोशिश करने के लिए पेज दोबारा लोड करें।",
+  restart: "फिर से शुरू करें",
+  restartQuestion: "पहेली फिर से शुरू करें?",
+  restartYes: { text: "हाँ", label: "हाँ, पहेली फिर से शुरू करें" },
+  restartNo: { text: "नहीं", label: "नहीं, खेलते रहें" },
+  random: "कोई भी पहेली",
+};
