@@ -12,12 +12,26 @@
   border: 0;
 }
 
+/* The stage under a board: a soft panel with round corners. The board is in its middle.
+   It is a different element from the board, because some boards put items on the board with "position".
+   On a narrow phone, the padding is 0, so a 9 × 9 board keeps squares of 24 px or more. It grows to 1.25rem. */
+.stage {
+  justify-self: center;
+  display: grid;
+  justify-items: center;
+  box-sizing: border-box;
+  width: min(100%, 34rem);
+  padding: clamp(0rem, (100vw - 20rem) / 8, 1.25rem);
+  border-radius: var(--radius-lg);
+  background-color: var(--stage);
+}
+
 /* The board component sets "--size" to the number of squares in one row. */
 .grid {
   display: grid;
   grid-template-columns: repeat(var(--size), minmax(0, 1fr));
   gap: clamp(0.25rem, 1.2vw, 0.4rem);
-  width: min(100%, calc(var(--size) * 4.5rem), 32rem);
+  width: min(100%, calc(var(--size) * 3.5rem), 30rem);
   margin-inline: auto;
   container-type: inline-size;
 }
@@ -39,13 +53,15 @@
 /* The base of each square. A puzzle type sets the colours of a square with three values:
    "--fill" (the background), "--fill-edge" (the border) and "--on-fill" (the text and the symbol). */
 .square {
+  /* A thin edge. A drawing that covers the full square, its edge too, uses "--edge-width". */
+  --edge-width: 1.5px;
   position: relative;
   display: grid;
   place-items: center;
   aspect-ratio: 1;
   min-width: 0;
-  border: 2px solid var(--fill-edge, var(--line));
-  border-radius: var(--radius-md);
+  border: var(--edge-width) solid var(--fill-edge, var(--line));
+  border-radius: var(--radius-sm);
   background-color: var(--fill, var(--surface));
   color: var(--on-fill, var(--text-h));
   font-size: clamp(0.9rem, calc(40cqi / var(--size)), 1.75rem);
@@ -78,6 +94,33 @@
 
 .square[aria-disabled="false"]:hover {
   border-color: var(--ring);
+}
+
+/* The Latics monster: a round head with two eyes. The rules key of Latics shows the same monster.
+   "data-colour" gives its colour. A hit monster is green, and its square shows a symbol too,
+   so the colour is not the only signal. */
+.monster {
+  --body: var(--monster);
+  position: relative;
+  display: block;
+  width: 52%;
+  aspect-ratio: 11 / 10;
+  border-radius: 50% 50% 20% 20% / 58% 58% 22% 22%;
+  background:
+    radial-gradient(circle at 32% 52%, var(--surface) 0 9%, transparent 10%),
+    radial-gradient(circle at 68% 52%, var(--surface) 0 9%, transparent 10%), var(--body);
+}
+
+.monster[data-colour="red"] {
+  --body: var(--red);
+}
+
+.monster[data-colour="blue"] {
+  --body: var(--blue);
+}
+
+.monster[data-hit="true"] {
+  --body: var(--success);
 }
 
 /* The status text is in a box. It has a minimum height, so the page does not move when the text changes. */

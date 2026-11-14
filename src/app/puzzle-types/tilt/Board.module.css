@@ -70,11 +70,17 @@
   }
 }
 
-/* A wall has a pattern of lines, so the colour is not the only signal. It is the same as a Latics wall. */
+/* A square of the Tilt board is not a control: the player tilts the full board. Thus its edge is quiet.
+   The walls, the holes and the balls show the board. */
+.square {
+  --fill: transparent;
+  --fill-edge: var(--grid-line);
+}
+
+/* A wall has a pattern of fine lines, so the colour is not the only signal. It is the same as a Latics wall. */
 .square[data-wall="true"] {
-  --fill: var(--surface-muted);
-  --fill-edge: var(--line);
-  background-image: repeating-linear-gradient(45deg, var(--line) 0 2px, transparent 2px 8px);
+  --fill: var(--surface);
+  background-image: repeating-linear-gradient(45deg, var(--line) 0 1px, transparent 1px 6px);
 }
 
 /* The colours of the holes and the balls. "--ink" is the colour of a hole outline and its icon.
@@ -110,13 +116,13 @@
   --on-ball: var(--on-colour);
 }
 
-/* A hole is the outline of a circle with the icon of its colour. */
+/* A hole is the dashed outline of a circle with the icon of its colour. */
 .hole {
   display: grid;
   place-items: center;
-  width: 84%;
+  width: 80%;
   aspect-ratio: 1;
-  border: 3px solid var(--ink);
+  border: 2.5px dashed var(--ink);
   border-radius: 50%;
   color: var(--ink);
 }
@@ -136,17 +142,16 @@
   pointer-events: none;
 }
 
-/* The ball is a full circle. It is smaller than a hole, so a ball on a hole of a different colour shows inside
-   the outline of the hole. */
+/* The ball is a flat full circle. It is smaller than a hole, so a ball on a hole of a different colour shows
+   inside the outline of the hole. The thin dark edge keeps a yellow ball clear on a light page. */
 .disc {
   display: grid;
   place-items: center;
-  width: 62%;
+  width: 60%;
   aspect-ratio: 1;
-  border: 2px solid var(--colour-edge);
+  border: 1.5px solid var(--colour-edge);
   border-radius: 50%;
   background-color: var(--colour);
-  box-shadow: var(--shadow-sm);
   color: var(--on-ball);
   font-size: clamp(0.75rem, calc(32cqi / var(--size)), 1.4rem);
   font-weight: 700;
@@ -155,9 +160,8 @@
 
 /* A hole with its ball is a full circle with ✓. It fills the outline of the hole. */
 .ball[data-in-hole="true"] .disc {
-  width: 84%;
-  border-width: 3px;
-  box-shadow: none;
+  width: 80%;
+  border-width: 2.5px;
 }
 
 /* The tilts and the fewest tilts, above the board. */
@@ -173,7 +177,7 @@
    The buttons are in a fieldset, thus the first lines remove its default styles. */
 .arrows {
   display: grid;
-  grid-template-columns: repeat(3, 3.5rem);
+  grid-template-columns: repeat(3, 3rem);
   grid-template-areas:
     ". up ."
     "left . right"
@@ -185,11 +189,29 @@
   border: 0;
 }
 
-/* The ".arrows >" part makes this rule stronger than the shared "button" rule, in any order of the files. */
+/* The ".arrows >" part makes this rule stronger than the shared "button" rule, in any order of the files.
+   A thin button: no fill, a thin edge and small corners, as the squares of the board. Each button is 48 px. */
 .arrows > .arrow {
   justify-self: stretch;
+  min-height: 3rem;
   padding: 0;
-  font-size: 1.5rem;
+  border-color: var(--line);
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  font-size: 1.25rem;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+/* The button of the last tilt lights up for a short time. See "usePressedArrow" in "input.ts".
+   The light comes on at once, and it fades out after the time, so the full light shows for all of the time. */
+.arrows > .arrow[data-pressed="true"] {
+  border-color: var(--accent);
+  background-color: var(--accent-bg);
+  color: var(--accent-text);
+  transition-duration: 0s;
 }
 
 .arrow[data-direction="up"] {

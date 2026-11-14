@@ -24,17 +24,18 @@ export const orbital = {
   ] satisfies Rule[],
   rulesKey: [] satisfies KeyItem[],
   moreRules: {
-    label: "More rules: the flight, the misses and the controls",
+    label: "More rules: the flight and the controls",
     rules: [
       "0° points right, 90° points up, 180° points left and 270° points down.",
       "The flight stops when the probe reaches the ring, hits a planet, goes off the board or flies for 4 s.",
-      "Each launch starts from the launch point. A launch that does not reach the ring is a miss.",
-      "The same angle and power always give the same path. The board keeps the paths of your earlier launches.",
+      "Each launch starts from the launch point. The same angle and power always give the same path. The board keeps the paths of your earlier launches.",
       "A launch straight at the ring never gets there. Use the pull of the planets.",
-      "Keyboard: the arrow keys change the angle and the power. Then press Enter or Space on Launch.",
-      "Mouse and touch: drag back from the probe to aim, as with a slingshot. Let go to launch.",
-      "Your score is the misses. 0 is a perfect solve.",
     ] satisfies Rule[],
+    controls: [
+      "Mouse and touch: drag back from the probe to aim, as with a slingshot. Let go to launch.",
+      "Keyboard: the arrow keys change the angle and the power. Then press Enter or Space on Launch.",
+    ] satisfies Rule[],
+    scoreRule: "Score: each launch that does not reach the ring. 0 is a perfect solve.",
   },
   // The score of a solve: the number of misses. The home page and the result card show it.
   score: missCount,

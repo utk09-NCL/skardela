@@ -25,13 +25,18 @@ export const colourBinary = {
     { text: "three times: empty", sample: { fill: "empty", symbol: "" } },
   ] satisfies KeyItem[],
   moreRules: {
-    label: "More rules: given squares, keys, hints",
+    label: "More rules: given squares, hints and keys",
     rules: [
+      "Each puzzle has exactly one answer. You can find each square by reason, so you never need to guess.",
       "A square with a white dot is given. You cannot change it.",
-      "With a keyboard: the arrow keys move between the squares. R makes a square red, B makes it blue and Space makes it empty.",
       "Undo removes your last change.",
-      "Hint shows one square that the rules decide, and the reason. Each hint counts in your result.",
+      "Hint shows one square that the rules decide, and the reason. While a hint shows, Hint does nothing.",
     ] satisfies Rule[],
+    controls: [
+      "Mouse and touch: tap a square to change its colour.",
+      "Keyboard: the arrow keys move between the squares. R makes a square red, B makes it blue and Space makes it empty.",
+    ] satisfies Rule[],
+    scoreRule: "Score: each hint that shows a square. 0 is a perfect solve.",
   },
   // The name of the board grid, for example "Colour Binary, 6 by 6".
   boardLabel: (size: number) => `Colour Binary, ${size} by ${size}`,

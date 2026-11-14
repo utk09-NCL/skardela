@@ -4,6 +4,7 @@ import { text } from "../../../text/en";
 import styles from "./Board.module.css";
 import { Controls, KeyHint } from "./Controls";
 import { Grid } from "./Grid";
+import { usePressedArrow } from "./input";
 import type { TiltPuzzle } from "./puzzle";
 import { statusText } from "./status";
 import { useGame } from "./useGame";
@@ -15,6 +16,8 @@ const words = text.tilt;
 // and the status of a tilt that moves no ball. The puzzle is solved when all coloured balls are in their holes.
 export function Board({ puzzle }: { puzzle: TiltPuzzle }) {
   const game = useGame(puzzle);
+  // Each tilt from a key, a button or a swipe also lights up its arrow button.
+  const arrow = usePressedArrow(game.tilt, game.isSolved);
 
   return (
     // "styles.game" lets the CSS of the key hint see when the board or an arrow button has the focus.
@@ -24,9 +27,11 @@ export function Board({ puzzle }: { puzzle: TiltPuzzle }) {
       {/* After the solve, the arrow keys do nothing, thus the key hint does not show. */}
       {!game.isSolved && <KeyHint />}
 
-      <Grid game={game} />
+      <div className={shared.stage}>
+        <Grid game={game} onTilt={arrow.tilt} />
+      </div>
 
-      <Controls game={game} />
+      <Controls game={game} pressed={arrow.pressed} onTilt={arrow.tilt} />
 
       {/* The status box is a live region. A screen reader tells each tilt. See "status.ts". */}
       <output className={shared.status} data-solved={game.isSolved}>

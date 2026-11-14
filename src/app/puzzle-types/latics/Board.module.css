@@ -1,22 +1,33 @@
 /* The base and the states of a square are in "src/shared/Board.module.css".
    This file sets the pieces and the beam. The board uses both "square" classes. */
 
-/* A wall has a pattern of lines, so the colour is not the only signal. */
+/* A wall has a pattern of fine lines, so the colour is not the only signal. The lines have 3.6:1 or more. */
 .square[data-square="#"] {
-  --fill: var(--surface-muted);
+  --fill: var(--surface);
   --fill-edge: var(--line);
-  background-image: repeating-linear-gradient(45deg, var(--line) 0 2px, transparent 2px 8px);
+  background-image: repeating-linear-gradient(45deg, var(--line) 0 1px, transparent 1px 6px);
 }
 
-/* Water has a soft blue fill and thin lines across, like small waves, so the colour is not the only signal. */
+/* An area of water is one shape under its squares: a soft blue fill with a blue outline around the full area.
+   The outline shows the area as a shape, so the colour is not the only signal. It covers the gaps around its
+   squares too. It does not catch clicks. The outline has 3.4:1 or more on the fill and on the stage. */
+.waterArea {
+  margin: -0.2rem;
+  border: 1.5px solid var(--blue);
+  border-radius: var(--radius-md);
+  background-color: color-mix(in srgb, var(--blue) 14%, transparent);
+  pointer-events: none;
+}
+
+/* A square in water shows the area under it. A square that the player cannot change is not a control,
+   thus its edge is quiet. A square that the player can change keeps the edge of a control. */
 .square[data-water="true"] {
-  --fill: color-mix(in srgb, var(--blue) 16%, var(--surface));
-  --fill-edge: color-mix(in srgb, var(--blue) 50%, var(--line));
-  background-image: repeating-linear-gradient(
-    0deg,
-    transparent 0 8px,
-    color-mix(in srgb, var(--blue) 35%, transparent) 8px 9px
-  );
+  --fill: transparent;
+  --fill-edge: color-mix(in srgb, var(--blue) 35%, transparent);
+}
+
+.square[data-water="true"][aria-disabled="false"] {
+  --fill-edge: var(--line);
 }
 
 /* A mirror from the tray has a dashed edge, so the player can see which mirrors can go back to the tray. */
@@ -24,19 +35,20 @@
   border-style: dashed;
 }
 
-/* The monster turns green when the beam hits it. The hit symbol shows this as a shape too. */
+/* The monster turns green when the beam hits it, on a soft green square. The hit symbol shows this as a shape too.
+   See ".monster" in "src/shared/Board.module.css". */
 .square[data-hit="true"] {
-  --fill: var(--green);
-  --fill-edge: var(--green-edge);
+  --fill: color-mix(in srgb, var(--success) 14%, var(--surface));
+  --fill-edge: var(--success);
 }
 
 /* The drawing covers the full square, with its edge too. The beam lines go a little past the edge,
    so the lines of two squares meet in the gap. The drawing does not catch clicks. */
 .art {
   position: absolute;
-  inset: -2px;
-  width: calc(100% + 4px);
-  height: calc(100% + 4px);
+  inset: calc(-1 * var(--edge-width));
+  width: calc(100% + 2 * var(--edge-width));
+  height: calc(100% + 2 * var(--edge-width));
   overflow: visible;
   pointer-events: none;
 }
@@ -44,7 +56,7 @@
 /* Each colour of the beam has its own pattern too: the white beam is solid, the red beam has dashes,
    and the blue beam has dots. The white beam has the colour of the laser, so it shows on each theme. */
 .beam line {
-  stroke-width: 7;
+  stroke-width: 5;
   stroke-linecap: round;
 }
 
@@ -60,14 +72,14 @@
 .beam[data-colour="blue"] line {
   stroke: var(--blue);
   stroke-dasharray: 1 12;
-  stroke-width: 9;
+  stroke-width: 7;
 }
 
 /* A prism is a triangle with a soft fill. */
 .prism {
   fill: color-mix(in srgb, var(--text-h) 14%, transparent);
   stroke: var(--text-h);
-  stroke-width: 5;
+  stroke-width: 4;
   stroke-linejoin: round;
 }
 
@@ -88,13 +100,13 @@
 
 .mirror line {
   stroke: var(--text-h);
-  stroke-width: 8;
+  stroke-width: 6;
   stroke-linecap: round;
 }
 
 .laser line {
   stroke: var(--accent);
-  stroke-width: 12;
+  stroke-width: 8;
   stroke-linecap: round;
 }
 
@@ -133,13 +145,6 @@
 
 .shape[data-colour="blue"] {
   color: var(--blue);
-}
-
-/* The monster is above the beam, so the beam seems to hit it. */
-.monster {
-  position: relative;
-  font-size: 1.4em;
-  line-height: 1;
 }
 
 .hit {

@@ -5,7 +5,8 @@ import { squareAfterArrow } from "./grid";
 // The Tab key goes past the board in one step, and the arrow keys move between the squares.
 // Each square calls "focus" when it gets the focus, also after a click, thus the Tab stop follows the focus.
 // Each square uses "useFocusWhen(tabStop === index)", so the focus follows an arrow key.
-export function useTabStop(size: number) {
+// "isGap" tells the places that are not squares. The arrow keys go past them. See "squareAfterArrow".
+export function useTabStop(size: number, isGap?: (place: number) => boolean) {
   const [tabStop, setTabStop] = useState(0);
   return {
     tabStop,
@@ -14,7 +15,7 @@ export function useTabStop(size: number) {
     // A key with Ctrl, Alt or Meta is a shortcut of the browser, thus the board does not use it.
     arrowKey: (index: number, event: KeyboardEvent): boolean => {
       if (event.ctrlKey || event.metaKey || event.altKey) return false;
-      const target = squareAfterArrow(index, event.key, size);
+      const target = squareAfterArrow(index, event.key, size, isGap);
       if (target === undefined) return false;
       event.preventDefault();
       setTabStop(target);

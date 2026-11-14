@@ -2,7 +2,7 @@
 
 ## Rules
 
-Hit each monster 👾 with a laser beam. The beam goes in a straight line: across, up and down, or diagonally. It goes through the middle of each square. A board can have more than one laser. All lasers fire at the same time.
+Hit each monster with a laser beam. The beam goes in a straight line: across, up and down, or diagonally. It goes through the middle of each square. A board can have more than one laser. All lasers fire at the same time.
 
 A mirror turns the beam. The angle in is the same as the angle out (the law of reflection). A beam that goes along a mirror does not change. A wall stops the beam. The beam also stops when it goes off the board or back into a laser.
 
@@ -13,10 +13,12 @@ Select a mirror to turn it 45° clockwise. Make the fewest misses.
 Some boards have materials that bend light, as in real optics.
 
 - **Water.** A straight beam goes through water and does not change. A diagonal beam that goes into water turns straight, square to the edge of the water that it crosses: up or down through the top or the bottom edge, left or right through a side edge, and up or down through a corner. When the beam leaves the water, it turns back to its direction from before the water, as light through a glass block. Thus water moves a diagonal beam to the side.
-- **Critical angle.** A diagonal beam in water cannot get out. At the edge of the water, it reflects back in. The beam reflects at the corner of the square, thus it goes on in the square next to it. Only a beam from a laser in the water can be diagonal in water, because water has no mirrors.
+- **Critical angle.** A diagonal beam in water cannot get out. At the edge of the water, it reflects back in. The edge of the board is an edge of the water too. The beam reflects at the corner of the square, thus it goes on in the square next to it. Only a beam from a laser in the water can be diagonal in water, because water has no mirrors.
 - **Prism.** A prism bends red light less than blue light. In the game, red light turns 45° to the right and blue light turns 45° to the left. Thus a white beam splits into a red beam and a blue beam. A red beam or a blue beam only turns.
 - **Filter.** A red filter lets only red light through, and a blue filter lets only blue light through. A white beam goes through and gets the colour of the filter. A beam of the other colour stops.
 - **Colours.** A laser has a white, red or blue beam. The monster with no colour needs a beam of any colour. A red monster needs a red beam, and a blue monster needs a blue beam. A beam of a different colour stops at it.
+- **Loop.** A part of the beam that comes back to a square in the same direction and with the same colour goes around in a loop. In water, its direction from before the water must be the same too. It stops there, because the rest of its path is the same.
+- **Join.** A part of the beam that comes to a square in the same direction and with the same colour as a different part of the beam stops there. In water, its direction from before the water must be the same too. The rest of its path is the same as the path of the other part.
 
 Prisms and filters do not change. The player cannot put a tray mirror on water. On the board, a red piece has a circle ● and a blue piece has a square ■. The white beam is solid, the red beam has dashes and the blue beam has dots, so colour is not the only signal.
 
@@ -27,6 +29,16 @@ Prisms and filters do not change. The player cannot put a tray mirror on water. 
 | Hard   | 9 × 9 | Turn the mirrors and the lasers. Put 1 or 2 tray mirrors. | Shows when the player fires. |
 
 On medium and hard, the player plans the path and then fires the lasers. A shot that does not hit all monsters is a miss. To put a mirror from the tray, select an empty square. A tray mirror goes back to the tray after four turns.
+
+## Controls
+
+- Mouse and touch: select a square to turn its mirror 45° clockwise. On hard, select a laser to turn it 45° clockwise. On medium and hard, select an empty square to put a mirror from the tray there.
+- Keyboard: the board is one Tab stop. The arrow keys move between the squares. Enter or Space selects the square with the focus.
+- "Path of the beam" under the board tells the path of the beam in words.
+
+## Score
+
+- Score: each shot on medium and hard that does not hit all monsters. 0 is a perfect solve. Easy has no shots, thus its score is always 0.
 
 ## Puzzle data
 

@@ -39,6 +39,8 @@ export const puzzlePage = {
   },
   // The rules beside the board: three short rules, a key, and the other rules under "More rules".
   rulesHeading: "How to play",
+  // The three groups under "More rules". Each puzzle type has its text for each group.
+  ruleGroups: { rules: "Rules", controls: "Controls", score: "Score" },
   keyLabel: "Key",
   loading: "The puzzle is loading...",
   loadingBoard: "The board is loading...",

@@ -32,7 +32,21 @@ export function PuzzleRules({ type }: { type: PuzzleType }) {
         }}
       >
         <summary>{words.moreRules.label}</summary>
-        <RuleList rules={words.moreRules.rules} />
+        {/* Each puzzle type has the same three groups, so a player knows where to look. */}
+        <div className={styles.ruleGroups}>
+          <section>
+            <h3>{page.ruleGroups.rules}</h3>
+            <RuleList rules={words.moreRules.rules} />
+          </section>
+          <section>
+            <h3>{page.ruleGroups.controls}</h3>
+            <RuleList rules={words.moreRules.controls} />
+          </section>
+          <section>
+            <h3>{page.ruleGroups.score}</h3>
+            <p>{words.moreRules.scoreRule}</p>
+          </section>
+        </div>
       </details>
     </section>
   );

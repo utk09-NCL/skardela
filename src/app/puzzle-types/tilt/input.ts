@@ -1,4 +1,4 @@
-import { useRef, type KeyboardEvent, type TouchEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type TouchEvent } from "react";
 import { directionOfKey, swipeDirection } from "./keys";
 import type { Direction } from "./rules-check";
 
@@ -35,6 +35,34 @@ export function useSwipe(tilt: (direction: Direction) => void) {
     },
     onTouchCancel: () => {
       start.current = null;
+    },
+  };
+}
+
+// The time that the arrow button of a tilt stays lit, in milliseconds.
+export const pressTime = 200;
+
+// The arrow button of the last tilt lights up for a short time, also after an arrow key or a swipe.
+// Then the player sees which way the board tilted. A new tilt starts the time again.
+// "tilt" tilts the board and lights up its arrow button. After the solve, nothing tilts, thus nothing lights up.
+// The timer is a system outside React, thus it is in an effect.
+export function usePressedArrow(tiltBoard: (direction: Direction) => void, isSolved: boolean) {
+  const [pressed, setPressed] = useState<{ readonly direction: Direction } | null>(null);
+  useEffect(() => {
+    if (pressed === null) return;
+    const timer = setTimeout(() => {
+      setPressed(null);
+    }, pressTime);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [pressed]);
+  return {
+    pressed: pressed?.direction ?? null,
+    tilt: (direction: Direction) => {
+      // Each press makes a new object, so the same direction two times starts the time again.
+      if (!isSolved) setPressed({ direction });
+      tiltBoard(direction);
     },
   };
 }

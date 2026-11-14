@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { useAppStore } from "../../../shared/state/store";
@@ -249,5 +249,29 @@ describe("tilt board motion", () => {
     board().focus();
     await user.keyboard("{ArrowDown}{ArrowLeft}");
     expect(counts()).toHaveTextContent("Tilts: 2. Fewest: 5.");
+  });
+});
+
+describe("tilt board arrow light", () => {
+  // The arrow button of each tilt lights up for a short time, also after an arrow key on the board.
+  // Then the player sees which way the board tilted.
+  it("lights up the arrow button of an arrow key on the board for a short time", () => {
+    vi.useFakeTimers();
+    render(<Board puzzle={puzzle} />);
+    expect(arrow("left")).toHaveAttribute("data-pressed", "false");
+    fireEvent.keyDown(board(), { key: "ArrowLeft" });
+    expect(arrow("left")).toHaveAttribute("data-pressed", "true");
+    expect(arrow("right")).toHaveAttribute("data-pressed", "false");
+    act(() => {
+      vi.runOnlyPendingTimers();
+    });
+    expect(arrow("left")).toHaveAttribute("data-pressed", "false");
+    vi.useRealTimers();
+  });
+
+  it("lights up the arrow button that the player clicks", () => {
+    render(<Board puzzle={puzzle} />);
+    fireEvent.click(arrow("down"));
+    expect(arrow("down")).toHaveAttribute("data-pressed", "true");
   });
 });

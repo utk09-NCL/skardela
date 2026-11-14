@@ -80,7 +80,7 @@ describe("colour-binary board undo and keys", () => {
     const user = userEvent.setup();
     render(<Board puzzle={puzzle} />);
     const undo = screen.getByRole("button", { name: words.undoButton });
-    expect(undo).toBeDisabled();
+    expect(undo).toHaveAttribute("aria-disabled", "true");
     await user.click(square(1, 1));
     await user.click(square(1, 1));
     await user.click(square(1, 2));
@@ -90,7 +90,9 @@ describe("colour-binary board undo and keys", () => {
     await user.click(undo);
     await user.click(undo);
     expect(square(1, 1)).toHaveAccessibleName("Row 1, column 1: empty");
-    expect(undo).toBeDisabled();
+    expect(undo).toHaveAttribute("aria-disabled", "true");
+    // The last Undo keeps the focus on Undo, so a keyboard user does not lose the place.
+    expect(undo).toHaveFocus();
   });
 
   it("moves with the arrow keys, and sets a colour with R, B and Space", async () => {
@@ -168,11 +170,34 @@ describe("colour-binary board solve", () => {
     await user.click(screen.getByRole("button", { name: words.hintButton }));
     await fillAnswer(user);
     expect(screen.getByRole("status")).toHaveTextContent(words.status.solved);
-    expect(screen.getByRole("button", { name: words.hintButton })).toBeDisabled();
-    expect(screen.getByRole("button", { name: words.undoButton })).toBeDisabled();
+    expect(screen.getByRole("button", { name: words.hintButton })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+    expect(screen.getByRole("button", { name: words.undoButton })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
     expect(screen.getByTestId("confetti")).toBeInTheDocument();
     // "Random puzzle" skips a solved puzzle.
     expect(useAppStore.getState().solved).toEqual([puzzle.id]);
+    expect(useAppStore.getState().results[0]?.mistakes).toBe(1);
+  });
+});
+
+describe("colour-binary board hint", () => {
+  // rules.md: "While a hint shows, Hint does nothing." The button keeps the focus, so a keyboard user can go on.
+  it("keeps the focus on Hint while a hint shows", async () => {
+    const user = userEvent.setup();
+    render(<Board puzzle={puzzle} />);
+    const hint = screen.getByRole("button", { name: words.hintButton });
+    hint.focus();
+    await user.keyboard("{Enter}");
+    expect(hint).toHaveAttribute("aria-disabled", "true");
+    expect(hint).toHaveFocus();
+    await user.keyboard("{Enter}");
+    // The second Hint does not count. Thus the solve saves 1 hint.
+    await fillAnswer(user);
     expect(useAppStore.getState().results[0]?.mistakes).toBe(1);
   });
 });

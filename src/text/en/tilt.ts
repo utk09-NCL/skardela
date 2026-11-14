@@ -31,18 +31,20 @@ export const tilt = {
     { text: "ball in its hole", sample: { fill: "empty", symbol: symbols.tilt.full } },
   ] satisfies KeyItem[],
   moreRules: {
-    label: "More rules: walls, holes, the grey ball and the controls",
+    label: "More rules: walls, holes and the grey ball",
     rules: [
       "A ball stops at a wall, at the edge of the board, at another ball or at a full hole.",
       "A ball in its hole does not move again. A full hole stops the other balls, as a wall does.",
       "A ball rolls over an empty hole of a different colour. It can also stop on it. Then it stops the other balls.",
       "When two balls are in one line, the front ball moves first. The ball behind it stops next to it.",
       "Hard: the grey ball has no hole. It only stops the other balls. You need it to solve the puzzle.",
-      "A tilt that moves no ball does not count.",
-      "Your score is the extra tilts: your tilts minus the fewest tilts. 0 is a perfect solve.",
+    ] satisfies Rule[],
+    controls: [
       "Keyboard: the arrow keys tilt the board. Mouse and touch: use the arrow buttons, or swipe on the board.",
       "There is no undo. Restart puts the balls back at the start.",
     ] satisfies Rule[],
+    scoreRule:
+      "Score: your tilts minus the fewest tilts. A tilt that moves no ball does not count. 0 is a perfect solve.",
   },
   // The score of a solve: the number of extra tilts. The home page and the result card show it.
   score: extraCount,

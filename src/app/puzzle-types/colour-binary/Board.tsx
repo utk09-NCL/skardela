@@ -26,7 +26,9 @@ export function Board({ puzzle }: { puzzle: ColourBinaryPuzzle }) {
 
   return (
     <div className={shared.game}>
-      <Grid game={game} />
+      <div className={shared.stage}>
+        <Grid game={game} />
+      </div>
 
       <div className={styles.legend}>
         <KeyList items={legend} label={words.legend.label} />

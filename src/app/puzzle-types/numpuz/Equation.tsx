@@ -58,7 +58,7 @@ function Blank({ game, index }: { game: Game; index: number }) {
 // The equation shows the numbers, the blanks between them, and the target.
 export function Equation({ game }: { game: Game }) {
   return (
-    <fieldset className={shared.board}>
+    <fieldset className={`${shared.board} ${shared.stage}`}>
       <legend className="visually-hidden">{words.boardLabel}</legend>
       <div className={styles.equation}>
         {game.numbers.map((number, index) => (

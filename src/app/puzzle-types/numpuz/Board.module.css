@@ -26,8 +26,8 @@
   place-items: center;
   inline-size: var(--cell);
   block-size: var(--cell);
-  border: 2px dashed var(--line);
-  border-radius: var(--radius-md);
+  border: 1.5px dashed var(--line);
+  border-radius: var(--radius-sm);
   background-color: var(--surface);
   color: var(--text-h);
   font-size: clamp(1.25rem, 5vw, 1.75rem);

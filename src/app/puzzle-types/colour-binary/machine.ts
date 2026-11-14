@@ -68,7 +68,7 @@ export function isSolved(state: GameState): boolean {
 //   playing --tap-----> playing, or solved when the board obeys all rules (the tap hides the hint)
 //   playing --set-----> the same as tap, but the square gets the colour of the key
 //   playing --undo----> playing, or solved, with the last change removed (the undo hides the hint)
-//   playing --askHint--> playing (the hint shows, or the text tells that there is no hint)
+//   playing --askHint--> playing (the hint shows, or the text tells that there is no hint). Only when no hint shows.
 //   solved: final. It accepts no event.
 const accepts: Record<Phase, Record<GameEvent["type"], boolean>> = {
   playing: { tap: true, set: true, undo: true, askHint: true },
@@ -106,8 +106,10 @@ export function canUndo(state: GameState): boolean {
   return accepts[phaseOf(state)].undo && state.changes.length > 0;
 }
 
+// rules.md: "While a hint shows, Hint does nothing. Your next change hides the hint, and then Hint works again."
+// The same hint two times does not count two times.
 export function canAskHint(state: GameState): boolean {
-  return accepts[phaseOf(state)].askHint;
+  return accepts[phaseOf(state)].askHint && state.hint.status === "hidden";
 }
 
 // The score: the number to keep low. For Colour Binary, it is the hints that the player got.

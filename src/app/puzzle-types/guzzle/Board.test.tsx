@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { usePlaySession } from "../../../shared/state/playSession";
 import { useAppStore } from "../../../shared/state/store";
 import { text } from "../../../text/en";
+import { puzzleTypes } from "../registry";
 import { Board } from "./Board";
 import example from "./examples/guzzle-0000.json";
 import type { GuzzlePuzzle } from "./puzzle";
@@ -155,9 +156,9 @@ describe("guzzle board keyboard", () => {
     const user = userEvent.setup();
     render(<Board puzzle={puzzle} />);
     await user.click(screen.getByRole("button", { name: words.modes.noBank }));
-    // Row 1, column 1 is selected. The Tab key moves the focus to row 1, column 2, but not the selection.
+    // Row 1, column 1 is selected. The right arrow key moves the focus to row 1, column 2, but not the selection.
     await user.click(square(1, 1));
-    await user.tab();
+    await user.keyboard("{ArrowRight}");
     expect(square(1, 2)).toHaveFocus();
     await user.keyboard("b");
     expect(square(1, 2)).toHaveAttribute("data-mark", "correct");
@@ -179,6 +180,19 @@ describe("guzzle board keyboard", () => {
 });
 
 describe("guzzle board focus", () => {
+  // rules.md: "Keyboard: the board is one Tab stop. The arrow keys move between the squares."
+  it("has one Tab stop, and the arrow keys move the focus between the squares", async () => {
+    const user = userEvent.setup();
+    render(<Board puzzle={puzzle} />);
+    const grid = screen.getByRole("grid", { name: words.boardLabel });
+    const tabStops = [...grid.querySelectorAll("button")].filter((button) => button.tabIndex === 0);
+    expect(tabStops).toEqual([square(1, 1)]);
+    await user.tab();
+    expect(square(1, 1)).toHaveFocus();
+    await user.keyboard("{ArrowDown}{ArrowRight}");
+    expect(square(2, 2)).toHaveFocus();
+  });
+
   // The mode buttons go away after the choice. The focus must not go to the start of the page.
   it("moves the focus to the selected square after the player selects a mode with the keyboard", async () => {
     const user = userEvent.setup();
@@ -212,5 +226,49 @@ describe("guzzle board timer", () => {
     expect(usePlaySession.getState()).toMatchObject({ puzzleId: puzzle.id, startedAt: null });
     await user.click(screen.getByRole("button", { name: words.modes.noBank }));
     expect(usePlaySession.getState().startedAt).not.toBeNull();
+  });
+});
+
+describe("guzzle board focus after a letter", () => {
+  // rules.md: "After a green letter, the focus goes with the cursor to the next square."
+  // The next square can be selected already. The focus goes to it too.
+  it("moves the focus to the next square after a green letter, also when that square is selected", async () => {
+    const user = userEvent.setup();
+    render(<Board puzzle={puzzle} />);
+    await user.click(screen.getByRole("button", { name: words.modes.noBank }));
+    await user.click(square(3, 3));
+    await user.keyboard("{ArrowUp}{ArrowUp}{ArrowLeft}{ArrowLeft}");
+    expect(square(1, 1)).toHaveFocus();
+    await user.keyboard("r");
+    expect(square(1, 1)).toHaveAttribute("data-mark", "correct");
+    expect(square(3, 3)).toHaveFocus();
+  });
+
+  // After a letter key, the focus stays on the key. The Tab stop of the board goes to the new selected square,
+  // so Shift+Tab back to the board lands there.
+  it("moves the Tab stop to the new selected square after a letter key", async () => {
+    const user = userEvent.setup();
+    render(<Board puzzle={puzzle} />);
+    await user.click(screen.getByRole("button", { name: words.modes.bank }));
+    await user.click(square(1, 1));
+    await user.click(screen.getByRole("button", { name: /^Put R in/u }));
+    const selected = screen.getAllByRole("button", { pressed: true });
+    expect(selected).toHaveLength(1);
+    expect(selected[0]).not.toBe(square(1, 1));
+    expect(selected[0]).toHaveAttribute("tabindex", "0");
+  });
+
+  // rules.md: "The arrow keys move between the squares and go past the gaps."
+  it("goes past the gaps of a 5 by 5 board with the arrow keys", async () => {
+    const all = await puzzleTypes.guzzle.loadPuzzles();
+    const medium = all.find((item) => item.difficulty === "medium");
+    expect(medium).toBeDefined();
+    const user = userEvent.setup();
+    render(<Board puzzle={medium as GuzzlePuzzle} />);
+    await user.tab();
+    expect(square(1, 1)).toHaveFocus();
+    // Row 1, column 2 is a gap. The right arrow key goes to row 1, column 3.
+    await user.keyboard("{ArrowRight}");
+    expect(square(1, 3)).toHaveFocus();
   });
 });

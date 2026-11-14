@@ -16,9 +16,8 @@ export const symbols = {
     arrows: { across: "→", down: "↓", diagonalDown: "↘", diagonalUp: "↗" },
   },
   latics: {
-    monster: "👾",
-    // The monster shows this symbol too when the beam hits it.
-    hit: "💥",
+    // A hit monster is green and shows this symbol too, so the colour is not the only signal.
+    hit: "✓",
     // The symbol of a prism in the rules key. The board draws the prism as a triangle.
     prism: "▲",
     // A red filter, a red monster and a red laser show a circle. Blue ones show a square, as in Colour Binary.

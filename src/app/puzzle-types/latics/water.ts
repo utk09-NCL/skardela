@@ -12,6 +12,7 @@ export type Layout = { readonly squares: readonly Square[]; readonly water: read
 //   up or down through the top or the bottom edge, left or right through a side edge, and up or down through a corner.
 // - When the beam leaves the water, it turns back to its direction from before the water.
 // - Critical angle: a diagonal beam in water cannot get out. At the edge of the water, it reflects back in.
+//   The edge of the board is an edge of the water too.
 //   Only a beam from a laser in the water can be diagonal in water, because water has no mirrors.
 // The water areas are rectangles that do not touch. See "findPuzzleProblems".
 
@@ -84,11 +85,14 @@ export function crossing(
   const ahead = neighbour(index, direction, size);
   const plain = { exit: direction, next: ahead, arrive: direction, memory, turnTo: null };
   if (isWet(layout, index)) {
-    if (ahead === null || isWet(layout, ahead)) return plain;
+    if (isWet(layout, ahead)) return plain;
+    // The edge of the board is an edge of the water too, thus a diagonal beam reflects there as well.
     if (isDiagonal(direction)) {
       const reflected = reflectInWater(layout, index, direction);
       return { ...plain, next: reflected.next, arrive: reflected.direction };
     }
+    // A straight beam goes off the board at the edge of the board.
+    if (ahead === null) return plain;
     // A straight beam leaves the water and turns back to its direction from before the water.
     const exit = memory ?? direction;
     return { exit, next: neighbour(index, exit, size), arrive: exit, memory: null, turnTo: null };
@@ -98,4 +102,34 @@ export function crossing(
     return { ...plain, memory: direction, turnTo };
   }
   return { ...plain, memory: null };
+}
+
+// One area of water: its first and its last row and column, from 0.
+export type WaterArea = {
+  readonly top: number;
+  readonly left: number;
+  readonly bottom: number;
+  readonly right: number;
+};
+
+// The areas of water of a board, in reading order. The board draws each area as one shape.
+// Each area is a rectangle, thus its first square, its width and its height give the full area.
+export function waterAreas(water: readonly boolean[], size: number): WaterArea[] {
+  const areas: WaterArea[] = [];
+  const isInArea = (row: number, column: number) =>
+    areas.some(
+      (area) =>
+        row >= area.top && row <= area.bottom && column >= area.left && column <= area.right,
+    );
+  for (const [index, inWater] of water.entries()) {
+    const row = Math.floor(index / size);
+    const column = index % size;
+    if (!inWater || isInArea(row, column)) continue;
+    let right = column;
+    while (right + 1 < size && water[row * size + right + 1] === true) right += 1;
+    let bottom = row;
+    while (bottom + 1 < size && water[(bottom + 1) * size + column] === true) bottom += 1;
+    areas.push({ top: row, left: column, bottom, right });
+  }
+  return areas;
 }

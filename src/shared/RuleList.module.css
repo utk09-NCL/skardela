@@ -53,6 +53,15 @@
   box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--blue) 60%, transparent);
 }
 
+/* The Latics monster in an empty square. The monster is a part of "src/shared/Board.module.css". */
+.sample[data-fill="monster"] {
+  box-shadow: inset 0 0 0 1.5px var(--line);
+}
+
+.sample[data-fill="monster"] > span {
+  width: 76%;
+}
+
 /* An empty square is an outline, as an empty square on the board. */
 .sample[data-fill="empty"] {
   box-shadow: inset 0 0 0 1.5px var(--line);

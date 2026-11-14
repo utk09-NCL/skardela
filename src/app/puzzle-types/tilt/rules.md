@@ -80,7 +80,7 @@ Tilt the board to roll each ball into the hole of its colour. Use the fewest til
 
 ## Score
 
-- The score is the extra tilts: your tilts minus the fewest possible tilts. 0 is a perfect solve.
+- Score: your tilts minus the fewest possible tilts. A tilt that moves no ball does not count. 0 is a perfect solve.
 - The board shows your tilts and the fewest possible tilts, for example "Tilts: 7. Fewest: 5."
 - Before the solve, the extra tilts are your tilts minus the fewest tilts. They are 0 when your tilts are fewer than the fewest tilts.
 

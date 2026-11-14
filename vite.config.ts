@@ -31,6 +31,30 @@ export default defineConfig({
   plugins: [cipherPuzzleAnswers(), react(), babel({ presets: [reactCompilerPreset()] })],
   build: {
     sourcemap: false,
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name: "react",
+              test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/u,
+              priority: 20,
+            },
+            {
+              name: "router",
+              test: /node_modules[\\/]react-router[\\/]/u,
+              priority: 15,
+            },
+            {
+              name: "vendor",
+              test: /node_modules[\\/]/u,
+              tags: ["$initial"],
+              priority: 10,
+            },
+          ],
+        },
+      },
+    },
   },
   test: {
     restoreMocks: true,
