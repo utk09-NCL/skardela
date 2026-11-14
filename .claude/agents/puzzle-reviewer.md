@@ -44,6 +44,8 @@ For each "Rule not clear" or "Contract problem", give:
 
 When the main session sends you the answers, fix the code and the tests so that they agree with the new `rules.md`.
 
+A `// Rule question:` comment in the code is out of date when `rules.md` answers the question. Change it to a quote of the rule, for example `// rules.md: "A swipe shorter than 20 px does nothing."`.
+
 ## Checks
 
 1. Run `npm run test -- <dir>`.

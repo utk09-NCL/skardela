@@ -19,7 +19,7 @@ Before you open a pull request, run `npm run fix && npm run check`. CI runs the 
 | `npm run fix`                    | Formats the code and fixes lint problems that a tool can fix.                                                             |
 | `npm run check`                  | Runs the format, lint, type, build, unit test and data checks.                                                            |
 | `npm run test`                   | Runs the unit tests in `src/`.                                                                                            |
-| `npm run validate`               | Checks all puzzle files in `puzzles/` and the tools in `tools/`. See `tools/puzzles.test.ts`.                             |
+| `npm run validate`               | Checks all puzzle files in `puzzles/`, the tools in `tools/` and the two skill folders. See `tools/puzzles.test.ts`.      |
 | `npm run generate:colour-binary` | Makes new Colour Binary puzzles and adds them to `puzzles/colour-binary.json`. See `tools/generate-colour-binary.gen.ts`. |
 | `npm run generate:latics`        | Makes new Latics puzzles and adds them to `puzzles/latics.json`. See `tools/generate-latics.gen.ts`.                      |
 | `npm run generate:orbital`       | Makes new Orbital puzzles and adds them to `puzzles/orbital.json`. See `tools/generate-orbital.gen.ts`.                   |
@@ -44,6 +44,7 @@ src/
     shell/                   The frame of each page: the header, the notices, the footer and the route error.
       AnalyticsNotice.tsx    The notice for new players. Analytics loads only after the OK.
       useReloadAtMidnight.ts Loads the puzzles of the new day after midnight, on each page.
+      reloadAfterRelease.ts  Loads the page again when an open tab asks for a file of an old release.
     pages/                   One file or one folder for each page.
       home/                  The home page: today's progress, today's puzzles, the stats and the questions.
       puzzle/                The puzzle page ("Now playing"), with the timer, Restart and Random puzzle.
@@ -59,11 +60,15 @@ src/
       playSession.ts         The game that the player plays now: the timer and the saving of a solve.
       progress.ts            Pure functions for the stats: streaks, the calendar and personal bests.
     share.ts                 The squares of a share text, and the copy or the share menu. See ShareButton.tsx.
-    usePuzzleTracking.ts     The logs of the start and the solve, the timer and the saved solve of each puzzle type.
+    usePuzzleTracking.ts     The logs, the timer and the saved solve of each puzzle type. "useGame" calls it.
+    useTabStop.ts            One Tab stop for a board of squares, and the arrow keys. See also "useFocusWhen.ts".
+    useReducedMotion.ts      The "reduce motion" setting, for an animation that the game logic needs.
   text/
     en/                      All UI text. "index.ts" puts the parts together. One file for each page and puzzle type.
-    es/                      Spanish text, with the same structure. The app does not use it yet.
+    es/                      Spanish text, with the same structure. The app does not use it yet. It has only a part
+                             of the text. A type check makes sure that each field has the same type as in "en".
     symbols.ts               All emoji symbols.
+  test/                      The test setup, and "deepFreeze" for the machine tests.
 ```
 
 ### A puzzle type folder
@@ -89,6 +94,9 @@ src/app/puzzle-types/<type>/
   *.test.ts(x)               Tests next to the code that they test.
 ```
 
+A type can have more files, each with one job. For example `motion.ts` for an animation, `input.ts` for a drag or
+a swipe, and `hint.ts` for the hint of Colour Binary.
+
 Put pure logic in `.ts` files and keep React components small. When a component file gets long, move
 parts into their own files. See `guzzle/` for an example: `useGame.ts`, `Grid.tsx`, `Controls.tsx`, `status.ts`.
 
@@ -106,12 +114,14 @@ parts into their own files. See `guzzle/` for an example: `useGame.ts`, `Grid.ts
    - `src/app/pages/home/PuzzleIcon.tsx`: the small icon of your type on the home page.
    - `tools/puzzles.test.ts`: your example and your data check.
 6. Put emoji symbols in `src/text/symbols.ts`, not in other files.
-7. In `useGame.ts`, call `usePuzzleTracking` from `src/shared/` with `isSolved` and `scoreOf` of your machine.
-   It logs the start and the solve, starts the timer and saves each solve, for the stats and for "Random puzzle".
-   Give the log that it gives back to `createMoveLog` in `log.ts`, and the move log to `useMoveLog`.
+7. In `useGame.ts`, call `usePuzzleTracking` from `src/shared/`. Give it `isSolved` and `scoreOf` of your machine,
+   the moves of the state, and `createMoveLog` from your `log.ts`.
+   It logs each move, the start and the solve. It starts the timer and saves each solve, for the stats and for "Random puzzle".
    `scoreOf` gives the score to keep low, for example the misses of Latics. The solve saves it as `mistakes`. The result card and the share text show it. See `latics/useGame.ts`.
+   For a board of squares, use one Tab stop and the arrow keys: `useTabStop` and `useFocusWhen` from `src/shared/`. See `latics/Grid.tsx`.
 8. Add tests for your rule logic and your board.
-9. Run `npm run fix && npm run check`.
+9. Add your type to the table of puzzle types in `README.md`.
+10. Run `npm run fix && npm run check`.
 
 ## Rules for code
 

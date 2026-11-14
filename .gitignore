@@ -36,3 +36,6 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+# temp
+scratchpad-tmp

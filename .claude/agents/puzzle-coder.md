@@ -30,7 +30,7 @@ In this file, `<type>` is the type name and `<dir>` is `src/app/puzzle-types/<ty
 2. Do steps 2 to 7 of "Add a new puzzle type" in `CONTRIBUTING.md`. These steps include the puzzle data in `puzzles/<type>.json`, the registry, the board, the text, the icon and the data check.
 3. Make the number of puzzles that "## Puzzles" in `rules.md` gives. Make sure that each puzzle in `puzzles/<type>.json` obeys `rules.md` and has a solution. If the rules permit only one answer, make sure that each puzzle has only one answer.
 4. For step 8 of "Add a new puzzle type", write only the tests that are not rule tests: `Board.test.tsx`, `useGame.test.ts` and, if you make one, `keys.test.ts`.
-5. Make the board work with only the keyboard. Give each control an accessible name. Do not use colour as the only sign of a state.
+5. Make the board work with only the keyboard. Give each control an accessible name. Do not use colour as the only sign of a state. For a board of squares, use one Tab stop and the arrow keys: `useTabStop` and `useFocusWhen` in `src/shared/`. See `latics/Grid.tsx`.
 6. Write comments in Simplified Technical English.
 
 ## Generator

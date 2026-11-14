@@ -78,7 +78,7 @@ Do not use these yet. Their availability is limited: `interpolate-size`, `calc-s
 
 ## When JavaScript is correct
 
-- The game logic needs the value. For example, Tilt ignores a tilt during the slide. Thus `tilt/motion.ts` reads "reduce motion" in JavaScript.
+- The game logic needs the value. For example, Tilt ignores a tilt during the slide. Thus `tilt/motion.ts` reads "reduce motion" in JavaScript, with `useReducedMotion` in `src/shared/`.
 - The value changes what the code does, not only the look. For example, `src/shared/share.ts` reads `(pointer: coarse)` to select the share menu or the copy.
 - A screen reader must read the text, or the text comes from `src/text/en/`. Put text in the DOM, not in CSS `content`.
 - The CSS feature is not available in enough browsers, and no fallback works.

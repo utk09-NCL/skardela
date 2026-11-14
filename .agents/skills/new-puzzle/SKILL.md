@@ -87,5 +87,5 @@ Do not write function bodies, React components, puzzle data or tests in this ste
 Do not run the rule tests. The author runs them. Tell the author the next steps:
 
 1. Run the tests: `npm run test`
-2. If a test fails, run `/review-puzzle <type>`.
+2. If a test fails, run `/review-puzzle <type>`. Run it also when all tests pass but the coder wrote `// Rule question:` comments. The reviewer changes each answered comment to a quote of the rule.
 3. Check the puzzle in a browser with `/verify-puzzle <type>`.

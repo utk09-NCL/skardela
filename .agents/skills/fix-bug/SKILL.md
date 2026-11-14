@@ -13,7 +13,7 @@ Fix the cause of the bug, not only its symptom. Do not change the code before yo
 ## Step 1: Get the facts
 
 1. If the argument is an issue number, run `gh issue view <number> --comments`.
-2. Write down the steps, the expected result, the actual result, the page, the puzzle type, the level, the browser and the device. These are the fields of `.github/ISSUE_TEMPLATE/bug_report.yml`.
+2. Write down the steps, the expected result, the actual result, the page, the puzzle type, the level, the browser and the device. Most of these are fields of `.github/ISSUE_TEMPLATE/bug_report.yml`. The puzzle link gives the puzzle type, and the puzzle page shows the level.
 3. If you do not have a fact that you need, ask the author.
 4. If the bug is in a puzzle type, find the rule in its `rules.md` that tells the expected result.
 

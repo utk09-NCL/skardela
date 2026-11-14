@@ -19,11 +19,12 @@ Obey "Puzzle workflow" in `AGENTS.md` in all steps.
 
 1. Run `npm run test`. Keep the output of each failed test.
 2. Look for a report of the `puzzle-browser-checker` agent in this conversation. Keep each finding with the result "Fail".
-3. If no test fails and there are no findings, go to step 3.
+3. Search `<dir>` for `// Rule question:` comments. Keep each comment that `rules.md` answers now. The reviewer changes it to a quote of the rule.
+4. If no test fails, there are no findings and there are no comments to change, go to step 3.
 
 ## Step 2: Start the reviewer
 
-1. Start the `puzzle-reviewer` agent. Give it the type name, the output of the failed tests and the browser findings.
+1. Start the `puzzle-reviewer` agent. Give it the type name, the output of the failed tests, the browser findings and the `// Rule question:` comments from step 1.
 2. Wait for its report.
 3. If the report has questions for the author:
    1. Ask the author each question with the AskUserQuestion tool. Use the options from the report.

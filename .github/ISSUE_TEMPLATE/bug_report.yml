@@ -13,7 +13,7 @@ body:
     attributes:
       label: Description
       description: Tell us what the problem is.
-      placeholder: When I click the reset button, the puzzle does not clear.
+      placeholder: When I select Restart and then Yes, the board does not go back to the start.
     validations:
       required: true
   - type: textarea
@@ -23,10 +23,18 @@ body:
       description: Write the steps that cause the problem.
       placeholder: |
         1. Go to the home page.
-        2. Click "Start".
-        3. See the error.
+        2. Select "Play today's puzzles".
+        3. Open the easy Tilt puzzle.
+        4. See the error.
     validations:
       required: true
+  # The link of a puzzle gives the puzzle type and its number. The page of the puzzle shows its level.
+  - type: input
+    id: page
+    attributes:
+      label: Page or puzzle link
+      description: Copy the address of the page where the problem occurs.
+      placeholder: https://skardela.netlify.app/puzzles/tilt-0031
   - type: textarea
     id: expected
     attributes:

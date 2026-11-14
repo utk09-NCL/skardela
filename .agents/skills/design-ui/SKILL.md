@@ -42,7 +42,7 @@ Obey these rules:
 - Make each touch target 44 × 44 px or more when there is space. It must never be smaller than 24 × 24 px.
 - The page has no horizontal scroll at 320 px width.
 - Use `rem` for type. Use `clamp()` for type that changes with the screen size. The text must fit at 200% zoom.
-- Keep each animation short: 200 ms or less for feedback. `src/index.css` stops the CSS animations when "reduce motion" is on. A JavaScript animation must obey "reduce motion" too, as `tilt/motion.ts` does.
+- Keep each animation short: 200 ms or less for feedback. `src/index.css` stops the CSS animations when "reduce motion" is on. A JavaScript animation must obey "reduce motion" too: use `useReducedMotion` in `src/shared/useReducedMotion.ts`, as `tilt/motion.ts` does.
 - Show a state with a `data-*` or an `aria-*` attribute, and give it a style in CSS. Then a unit test can check the attribute.
 - Do not use colour as the only signal. Add a symbol, a shape or a text.
 - Put text in `src/text/en/` and emoji symbols in `src/text/symbols.ts`.
