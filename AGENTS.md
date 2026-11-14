@@ -32,7 +32,7 @@ Use the npm scripts. Do not use `npx`. To run a script on some files only, put t
 | `npm run typecheck`             | Checks the types of all files.                                                                    |
 | `npm run lint:check -- <files>` | Finds the lint problems in some files.                                                            |
 | `npm run format:fix -- <files>` | Formats some files.                                                                               |
-| `npm run validate`              | Checks all puzzle files in `puzzles/`.                                                            |
+| `npm run validate`              | Checks all puzzle files in `puzzles/` and runs the tests in `tools/`.                             |
 
 ## Project rules
 

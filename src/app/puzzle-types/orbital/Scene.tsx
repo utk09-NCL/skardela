@@ -88,7 +88,7 @@ function ItemList({ game }: { game: Game }) {
 // During a flight, the probe moves along its path. The animation sends "land" at the end. See "motion.ts".
 export function Scene({ game, drag }: { game: Game; drag: DragState }) {
   const { board, flying } = game;
-  const step = useFlightStep(flying, game.land);
+  const step = useFlightStep(flying, game.instant, game.land);
   const probe = flying === null ? game.probe : (flying.path[step] ?? board.launch);
   return (
     <figure className={styles.board} aria-label={words.boardLabel}>

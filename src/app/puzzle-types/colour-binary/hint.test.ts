@@ -15,6 +15,13 @@ describe("colour-binary hint", () => {
     });
   });
 
+  // Row 1 already breaks a rule: three red squares. Red at column 5 is not one of them, thus it is not a hint.
+  it("gives no hint from a rule that the board breaks at a different square", () => {
+    expect(findHint(toSquares(["RRRB....", ...Array.from({ length: 7 }, () => "........")]))).toBe(
+      undefined,
+    );
+  });
+
   it("finds a square that makes three of the same colour next to each other", () => {
     // Red in row 1, column 3 makes three red squares in row 1, but the row is not half red.
     expect(

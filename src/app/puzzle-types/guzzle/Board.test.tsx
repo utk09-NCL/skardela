@@ -1,6 +1,7 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
+import { usePlaySession } from "../../../shared/state/playSession";
 import { useAppStore } from "../../../shared/state/store";
 import { text } from "../../../text/en";
 import { Board } from "./Board";
@@ -174,5 +175,42 @@ describe("guzzle board keyboard", () => {
     // the center square is fixed, thus the next open square is row 3, column 3.
     expect(square(3, 3)).toHaveFocus();
     expect(square(3, 3)).toHaveAttribute("aria-pressed", "true");
+  });
+});
+
+describe("guzzle board focus", () => {
+  // The mode buttons go away after the choice. The focus must not go to the start of the page.
+  it("moves the focus to the selected square after the player selects a mode with the keyboard", async () => {
+    const user = userEvent.setup();
+    render(<Board puzzle={puzzle} />);
+    screen.getByRole("button", { name: words.modes.bank }).focus();
+    await user.keyboard("{Enter}");
+    const selected = screen.getAllByRole("button", { pressed: true });
+    expect(selected).toHaveLength(1);
+    expect(selected[0]).toHaveFocus();
+  });
+
+  // A key of the bank goes away when its letter is green. The focus goes to the key that is now at its place.
+  it("keeps the focus in the bank when the key with the focus goes away", async () => {
+    const user = userEvent.setup();
+    render(<Board puzzle={puzzle} />);
+    await user.click(screen.getByRole("button", { name: words.modes.bank }));
+    await user.click(square(3, 3));
+    screen.getByRole("button", { name: words.key("N", 1) }).focus();
+    await user.keyboard("{Enter}");
+    const bank = screen.getByRole("group", { name: words.bankLabel });
+    expect(bank).toHaveTextContent("BCGMPRT");
+    expect(within(bank).getByRole("button", { name: /^Put P in/u })).toHaveFocus();
+  });
+});
+
+describe("guzzle board timer", () => {
+  // rules.md: "Before you start, select a mode. The timer starts when you select it."
+  it("starts the timer when the player selects a mode, and not before", async () => {
+    const user = userEvent.setup();
+    render(<Board puzzle={puzzle} />);
+    expect(usePlaySession.getState()).toMatchObject({ puzzleId: puzzle.id, startedAt: null });
+    await user.click(screen.getByRole("button", { name: words.modes.noBank }));
+    expect(usePlaySession.getState().startedAt).not.toBeNull();
   });
 });

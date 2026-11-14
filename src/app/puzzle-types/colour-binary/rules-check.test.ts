@@ -22,6 +22,19 @@ describe("colour-binary rules check", () => {
     expect(isPossible("R.RR")).toBe(false);
   });
 
+  // rules.md: "No three squares of the same colour can be next to each other in a row or a column."
+  // On 4 by 4, three squares of one colour are also more than half. Thus these lines have 6 squares.
+  it("finds three squares of one colour next to each other in a line that is half red", () => {
+    expect(isPossible("BBBRRR")).toBe(false);
+    expect(isPossible("BRBRRB")).toBe(true);
+  });
+
+  it("refuses a full board with three squares of one colour next to each other", () => {
+    // Each row and each column is half red. Each row has three red squares next to each other.
+    const board = toSquares(["BBBRRR", "RRRBBB", "BBBRRR", "RRRBBB", "BBBRRR", "RRRBBB"]);
+    expect(obeysRules(board)).toBe(false);
+  });
+
   it("accepts only a full board that obeys the rules", () => {
     expect(obeysRules(answer)).toBe(true);
     expect(obeysRules(toSquares(example.start))).toBe(false);
@@ -67,5 +80,13 @@ describe("colour-binary broken rule of a square", () => {
       number: 1,
       colour: "B",
     });
+  });
+
+  it("tells three squares next to each other only for a square of the three", () => {
+    // Row 1 has three red squares at columns 1 to 3. The red square at column 5 is not one of them.
+    const board = toSquares(["RRRBR...", ...Array.from({ length: 7 }, () => "........")]);
+    expect(brokenRuleAt(board, 4)).toBeUndefined();
+    expect(brokenRuleAt(board, 0)).toMatchObject({ reason: "three", line: "row", number: 1 });
+    expect(brokenRuleAt(board, 2)).toMatchObject({ reason: "three", line: "row", number: 1 });
   });
 });

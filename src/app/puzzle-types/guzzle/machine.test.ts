@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { deepFreeze } from "../../../test/deep-freeze";
 import { makeRandom } from "../../../shared/random";
 import { puzzleTypes } from "../registry";
 import example from "./examples/guzzle-0000.json";
@@ -21,8 +22,7 @@ import { toSquares, type GuzzlePuzzle } from "./puzzle";
 import { checkLetter, isPlayable } from "./rules-check";
 
 // The example from rules.md: CAT across, BAG down, RAN and MAP on the diagonals. The center is A.
-const answer = toSquares(example.answer);
-const start = initialState({ answer, size: 3 });
+const start = initialState(example);
 const modes: readonly Mode[] = ["bank", "noBank"];
 
 // The puzzle file has ciphered answers, thus the tests load it as the app does.
@@ -34,15 +34,6 @@ const puzzles: readonly GuzzlePuzzle[] = [
 // This helper applies the events one after the other, as "useReducer" does.
 function play(state: GameState, events: readonly GameEvent[]): GameState {
   return events.reduce((current, event) => transition(current, event), state);
-}
-
-// This helper freezes the state and each object in it. Then a change in place throws an error.
-function deepFreeze<Value>(value: Value): Value {
-  if (typeof value === "object" && value !== null && !Object.isFrozen(value)) {
-    Object.freeze(value);
-    for (const inner of Object.values(value)) deepFreeze(inner);
-  }
-  return value;
 }
 
 describe("guzzle machine phases", () => {
@@ -193,9 +184,7 @@ function randomEvent(state: GameState, random: () => number): GameEvent {
 // This plays a random game and gives each broken rule, and each phase that the game reached.
 function fuzz(puzzle: GuzzlePuzzle, seed: number) {
   const random = makeRandom(seed);
-  let state = deepFreeze(
-    initialState({ answer: toSquares(puzzle.answer), size: puzzle.answer.length }),
-  );
+  let state = deepFreeze(initialState(puzzle));
   const problems = brokenInvariants(state);
   const phases = new Set<Phase>([phaseOf(state)]);
   for (let step = 0; step < 250; step += 1) {
@@ -223,11 +212,10 @@ describe("guzzle machine rules for each state", () => {
   it("solves each puzzle in each mode when the player types the answer", () => {
     const results = puzzles.flatMap((puzzle) =>
       modes.map((mode) => {
-        const config = { answer: toSquares(puzzle.answer), size: puzzle.answer.length };
-        const typed = config.answer.map(
+        const typed = toSquares(puzzle.answer).map(
           (letter, index) => ({ type: "typeLetter", index, letter }) as const,
         );
-        const end = play(initialState(config), [{ type: "chooseMode", mode }, ...typed]);
+        const end = play(initialState(puzzle), [{ type: "chooseMode", mode }, ...typed]);
         return { id: puzzle.id, mode, phase: phaseOf(end), mistakes: end.mistakes };
       }),
     );

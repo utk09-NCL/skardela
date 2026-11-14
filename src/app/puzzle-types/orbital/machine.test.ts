@@ -1,15 +1,17 @@
 /* oxlint-disable max-lines, max-lines-per-function -- one file holds all machine tests. */
 import { describe, expect, it } from "vitest";
+import { deepFreeze } from "../../../test/deep-freeze";
 import example from "./examples/orbital-0000.json";
 import {
+  applyInput,
   canAim,
   canLand,
   canLaunch,
   initialState,
   isSolved,
-  missesOf,
   phaseOf,
   probePosition,
+  scoreOf,
   transition,
   type GameEvent,
   type GameState,
@@ -54,15 +56,6 @@ function shoot(state: GameState, angle: number, power = 5): GameState {
   return play(state, [aim(angle, power), launch, land]);
 }
 
-// This helper freezes the state and each object in it. Then a change in place throws an error.
-function deepFreeze<Value>(value: Value): Value {
-  if (typeof value === "object" && value !== null && !Object.isFrozen(value)) {
-    Object.freeze(value);
-    for (const inner of Object.values(value)) deepFreeze(inner);
-  }
-  return value;
-}
-
 // The state after the four launches of the example.
 function solvedState(): GameState {
   return [0, 82, 95, 92].reduce((state, angle) => shoot(state, angle), initialState(easy));
@@ -75,7 +68,7 @@ describe("orbital machine start", () => {
     expect(state.aim).toEqual(startAim);
     expect(state.flying).toBeNull();
     expect(state.flights).toEqual([]);
-    expect(missesOf(state)).toBe(0);
+    expect(scoreOf(state)).toBe(0);
     expect(phaseOf(state)).toBe("aiming");
     expect(isSolved(state)).toBe(false);
     expect(probePosition(state)).toEqual({ x: 30, y: 10 });
@@ -148,7 +141,7 @@ describe("orbital machine launch", () => {
     expect(state.flying?.aim).toEqual({ angle: 82, power: 5 });
     expect(state.aim).toEqual({ angle: 82, power: 5 });
     expect(state.flights).toEqual([]);
-    expect(missesOf(state)).toBe(0);
+    expect(scoreOf(state)).toBe(0);
     expect(phaseOf(state)).toBe("flying");
   });
 
@@ -177,7 +170,7 @@ describe("orbital machine land", () => {
     expect(state.flights).toHaveLength(1);
     expect(state.flights[0]?.end.type).toBe("edge");
     expect(state.flights[0]?.closest).toBe(69);
-    expect(missesOf(state)).toBe(1);
+    expect(scoreOf(state)).toBe(1);
     expect(phaseOf(state)).toBe("aiming");
     expect(isSolved(state)).toBe(false);
   });
@@ -213,28 +206,28 @@ describe("orbital machine land", () => {
   it("counts a flight that stops with time as a miss", () => {
     const state = shoot(initialState(timeOut), 0, 1);
     expect(state.flights[0]?.end.type).toBe("time");
-    expect(missesOf(state)).toBe(1);
+    expect(scoreOf(state)).toBe(1);
   });
 
   // Rule: "The flight stops when ... hits a planet" and a launch that does not reach the ring is a miss.
   it("counts a flight that hits a planet as a miss", () => {
     const state = shoot(initialState(easy), 82);
     expect(state.flights[0]?.end.type).toBe("planet");
-    expect(missesOf(state)).toBe(1);
+    expect(scoreOf(state)).toBe(1);
   });
 
   // Rule: "A launch with the same angle and power as an earlier launch has the same path. If it misses, it is a miss again."
   it("counts a repeated aim as a miss again with the same path", () => {
     const state = [0, 0].reduce((current, angle) => shoot(current, angle), initialState(easy));
-    expect(missesOf(state)).toBe(2);
+    expect(scoreOf(state)).toBe(2);
     expect(state.flights[1]?.path).toEqual(state.flights[0]?.path);
   });
 
   // Rule: "The status and the misses change at the end of the flight."
   it("changes the misses only at the end of the flight", () => {
     const flying = transition(shoot(initialState(easy), 0), launch);
-    expect(missesOf(flying)).toBe(1);
-    expect(missesOf(transition(flying, land))).toBe(2);
+    expect(scoreOf(flying)).toBe(1);
+    expect(scoreOf(transition(flying, land))).toBe(2);
   });
 });
 
@@ -242,18 +235,18 @@ describe("orbital machine example", () => {
   // Rule: Example, steps 1 to 4: three misses, then a solve with 3 misses.
   it("plays the example step by step", () => {
     let state = initialState(easy);
-    expect(missesOf(state)).toBe(0);
+    expect(scoreOf(state)).toBe(0);
 
     // Step 1: 0° and power 5 goes off the board.
     state = shoot(state, 0);
     expect(state.flights.at(-1)?.end.type).toBe("edge");
-    expect(missesOf(state)).toBe(1);
+    expect(scoreOf(state)).toBe(1);
 
     // Step 2: 82° and power 5 hits the big planet.
     state = shoot(state, 82);
     expect(state.flights.at(-1)?.end).toEqual({ type: "planet", planet: easy.planets[0] });
     expect(state.flights.at(-1)?.closest).toBe(36);
-    expect(missesOf(state)).toBe(2);
+    expect(scoreOf(state)).toBe(2);
 
     // Step 3: 95° goes off the top edge. A launch during the flight does nothing.
     state = play(state, [aim(95), launch]);
@@ -261,13 +254,13 @@ describe("orbital machine example", () => {
     state = transition(state, land);
     expect(state.flights.at(-1)?.end.type).toBe("edge");
     expect(state.flights.at(-1)?.closest).toBe(2);
-    expect(missesOf(state)).toBe(3);
+    expect(scoreOf(state)).toBe(3);
 
     // Step 4: 92° reaches the ring.
     state = shoot(state, 92);
     expect(state.flights.at(-1)?.end.type).toBe("ring");
     expect(state.flights).toHaveLength(4);
-    expect(missesOf(state)).toBe(3);
+    expect(scoreOf(state)).toBe(3);
     expect(phaseOf(state)).toBe("solved");
     expect(isSolved(state)).toBe(true);
   });
@@ -278,7 +271,7 @@ describe("orbital machine solve", () => {
   it("has 0 misses after a solve with the first launch", () => {
     const state = shoot(initialState(startSolves), 0, 5);
     expect(isSolved(state)).toBe(true);
-    expect(missesOf(state)).toBe(0);
+    expect(scoreOf(state)).toBe(0);
   });
 
   // Rule: "The puzzle is solved when the probe reaches the ring."
@@ -311,7 +304,7 @@ describe("orbital machine solve", () => {
 
   it("keeps the misses after the solve", () => {
     const state = solvedState();
-    expect(missesOf(transition(state, launch))).toBe(3);
+    expect(scoreOf(transition(state, launch))).toBe(3);
   });
 });
 
@@ -324,5 +317,24 @@ describe("orbital machine purity", () => {
     const landed = transition(deepFreeze(flying), land);
     expect(start.flights).toEqual([]);
     expect(landed.flights).toHaveLength(1);
+  });
+});
+
+describe("orbital input reducer", () => {
+  it("lands the flight at once when the flight shows at once", () => {
+    const state = applyInput(initialState(easy), { type: "launch", instant: true });
+    expect(state.flying).toBeNull();
+    expect(state.flights).toHaveLength(1);
+  });
+
+  it("keeps the flight in the air until the end of the animation", () => {
+    const flying = applyInput(initialState(easy), { type: "launch", instant: false });
+    expect(flying.flying?.end).toEqual({ type: "edge" });
+    expect(flying.flights).toHaveLength(0);
+    // A launch during the flight does not land the flight in the air, also when the flight would show at once.
+    expect(applyInput(flying, { type: "launch", instant: true })).toBe(flying);
+    const landed = applyInput(flying, { type: "land" });
+    expect(landed.flying).toBeNull();
+    expect(landed.flights).toEqual([flying.flying]);
   });
 });

@@ -1,5 +1,7 @@
-import { gridStyle } from "../../../shared/grid";
+import { gridStyle, positionOf } from "../../../shared/grid";
 import shared from "../../../shared/Board.module.css";
+import { useFocusWhen } from "../../../shared/useFocusWhen";
+import { useTabStop } from "../../../shared/useTabStop";
 import { text } from "../../../text/en";
 import styles from "./Board.module.css";
 import {
@@ -113,14 +115,16 @@ type SquareProps = {
   index: number;
   lines: readonly BeamLine[];
   laser: LaserData | undefined;
+  tabStop: ReturnType<typeof useTabStop>;
 };
 
 // The label of a square for a screen reader, for example "Row 1, column 1, laser, points right".
 function squareLabel(game: Game, index: number, laser: LaserData | undefined, isHit: boolean) {
   const square = game.squares[index] ?? ".";
+  const { row, column } = positionOf(index, game.size);
   return words.square({
-    row: Math.floor(index / game.size) + 1,
-    column: (index % game.size) + 1,
+    row: row + 1,
+    column: column + 1,
     piece: laser === undefined ? words.pieces[square] : words.laserName(laser.colour),
     laser: laser === undefined ? "" : words.directions[laser.direction],
     isFromTray: game.fromTray.includes(index),
@@ -129,9 +133,12 @@ function squareLabel(game: Game, index: number, laser: LaserData | undefined, is
   });
 }
 
-// Each square is a button. The player selects a square to change its piece.
+// Each square is a button in a grid cell. The player selects a square to change its piece.
 // A square that the player cannot change has "aria-disabled", so a screen reader can still read it.
-function SquareButton({ game, index, lines, laser }: SquareProps) {
+// The board has one Tab stop, and the arrow keys move the focus. See "useTabStop.ts".
+function SquareButton({ game, index, lines, laser, tabStop }: SquareProps) {
+  const isTabStop = tabStop.tabStop === index;
+  const ref = useFocusWhen(isTabStop);
   const square = game.squares[index] ?? ".";
   const isHit = isMonster(square) && game.beam?.hits.includes(index) === true;
   // A red piece shows a circle and a blue piece shows a square, as in Colour Binary.
@@ -139,7 +146,9 @@ function SquareButton({ game, index, lines, laser }: SquareProps) {
 
   return (
     <button
+      ref={ref}
       type="button"
+      tabIndex={isTabStop ? 0 : -1}
       className={`${shared.square} ${styles.square}`}
       data-square={square}
       data-water={game.config.water[index] === true}
@@ -149,6 +158,12 @@ function SquareButton({ game, index, lines, laser }: SquareProps) {
       aria-disabled={!game.canSelect(index)}
       onClick={() => {
         game.select(index);
+      }}
+      onFocus={() => {
+        tabStop.focus(index);
+      }}
+      onKeyDown={(event) => {
+        tabStop.arrowKey(index, event);
       }}
     >
       <SquareArt square={square} laser={laser} lines={lines} />
@@ -172,24 +187,36 @@ function SquareButton({ game, index, lines, laser }: SquareProps) {
 }
 
 // The grid shows all squares in rows and columns, with the beam when the game shows it.
+// The board is a grid with rows, so a screen reader can tell the row and the column of each square.
 export function Grid({ game }: { game: Game }) {
+  const { size } = game;
+  const tabStop = useTabStop(size);
   const lines = game.beam === null ? new Map<number, BeamLine[]>() : beamLines(game.beam);
   const lasers = laserSquares(game.squares);
+  const all = Array.from({ length: size }, (_, position) => position);
   return (
-    <div className={shared.grid} style={gridStyle(game.size)}>
-      {game.squares.map((_, index) => {
-        const number = lasers.indexOf(index);
-        return (
-          <SquareButton
-            // oxlint-disable-next-line react/no-array-index-key -- the index is the identity of a square. The squares never move.
-            key={index}
-            game={game}
-            index={index}
-            lines={lines.get(index) ?? []}
-            laser={number === -1 ? undefined : game.lasers[number]}
-          />
-        );
-      })}
+    <div role="grid" aria-label={words.boardLabel} className={shared.grid} style={gridStyle(size)}>
+      {all.map((row) => (
+        // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a table with a CSS grid loses its table role in some browsers.
+        <div key={row} role="row" className={shared.row}>
+          {all.map((column) => {
+            const index = row * size + column;
+            const number = lasers.indexOf(index);
+            return (
+              // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a table with a CSS grid loses its table role in some browsers.
+              <div key={column} role="gridcell" className={shared.cell}>
+                <SquareButton
+                  game={game}
+                  index={index}
+                  lines={lines.get(index) ?? []}
+                  laser={number === -1 ? undefined : game.lasers[number]}
+                  tabStop={tabStop}
+                />
+              </div>
+            );
+          })}
+        </div>
+      ))}
     </div>
   );
 }

@@ -5,6 +5,10 @@ import type { Move } from "./machine";
 import type { NumpuzPuzzle } from "./puzzle";
 import { useGame } from "./useGame";
 
+// The test replaces the move log, so it can check each move that the hook gives to the log.
+const { onMove } = vi.hoisted(() => ({ onMove: vi.fn<(move: Move) => void>() }));
+vi.mock(import("./log"), () => ({ createMoveLog: () => onMove }));
+
 // The example is the rules.md example: 6 _ 3 _ 2, target 7. The answer is 6 + 3 − 2.
 const puzzle = example as NumpuzPuzzle;
 
@@ -29,13 +33,13 @@ describe("numpuz game hook with many events in one React batch", () => {
       result.current.check();
       result.current.check();
     });
-    expect(result.current.mistakes).toBe(1);
+    expect(result.current.score).toBe(1);
     expect(result.current.canCheck).toBe(false);
   });
 
   it("logs each move once and in order", () => {
-    const onMove = vi.fn<(move: Move) => void>();
-    const { result } = renderHook(() => useGame(puzzle, onMove));
+    onMove.mockClear();
+    const { result } = renderHook(() => useGame(puzzle));
     act(() => {
       result.current.fill("+", 0);
       result.current.fill("-", 1);

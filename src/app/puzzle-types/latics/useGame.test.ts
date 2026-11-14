@@ -5,6 +5,10 @@ import type { Move } from "./machine";
 import type { LaticsPuzzle } from "./puzzle";
 import { useGame } from "./useGame";
 
+// The test replaces the move log, so it can check each move that the hook gives to the log.
+const { onMove } = vi.hoisted(() => ({ onMove: vi.fn<(move: Move) => void>() }));
+vi.mock(import("./log"), () => ({ createMoveLog: () => onMove }));
+
 const easy = example as LaticsPuzzle;
 
 // The medium board from the board tests: the beam goes right along row 1, and the tray has one mirror.
@@ -36,13 +40,13 @@ describe("latics game hook with many events in one React batch", () => {
       result.current.fire();
       result.current.fire();
     });
-    expect(result.current.misses).toBe(1);
+    expect(result.current.score).toBe(1);
     expect(result.current.canFire).toBe(false);
   });
 
   it("logs each move once and in order", () => {
-    const onMove = vi.fn<(move: Move) => void>();
-    const { result } = renderHook(() => useGame(medium, onMove));
+    onMove.mockClear();
+    const { result } = renderHook(() => useGame(medium));
     act(() => {
       result.current.select(6);
       result.current.select(6);

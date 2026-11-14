@@ -2,17 +2,21 @@ import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import example from "./examples/guzzle-0000.json";
 import type { Move } from "./machine";
-import { toSquares } from "./puzzle";
+import type { GuzzlePuzzle } from "./puzzle";
 import { useGame } from "./useGame";
 
+// The test replaces the move log, so it can check each move that the hook gives to the log.
+const { onMove } = vi.hoisted(() => ({ onMove: vi.fn<(move: Move) => void>() }));
+vi.mock(import("./log"), () => ({ createMoveLog: () => onMove }));
+
 // The example from rules.md: CAT across, BAG down, RAN and MAP on the diagonals.
-const answer = toSquares(example.answer);
+const puzzle = example as GuzzlePuzzle;
 
 // In these tests, all calls in one "act" use the same render, as fast clicks or fast typing can do.
 // Each event must still apply to the latest state.
 describe("guzzle game hook with many events in one React batch", () => {
   it("puts each letter in the square that is selected at the time of the letter", () => {
-    const { result } = renderHook(() => useGame(answer, 3));
+    const { result } = renderHook(() => useGame(puzzle));
     act(() => {
       result.current.chooseMode("noBank");
     });
@@ -26,12 +30,12 @@ describe("guzzle game hook with many events in one React batch", () => {
       { letter: "R", mark: "correct" },
       { letter: "N", mark: "correct" },
     ]);
-    expect(result.current).toMatchObject({ selected: 6, mistakes: 0 });
+    expect(result.current).toMatchObject({ selected: 6, score: 0 });
   });
 
   it("logs each move once and in order", () => {
-    const onMove = vi.fn<(move: Move) => void>();
-    const { result } = renderHook(() => useGame(answer, 3, onMove));
+    onMove.mockClear();
+    const { result } = renderHook(() => useGame(puzzle));
     act(() => {
       result.current.chooseMode("bank");
       result.current.putLetter("T");

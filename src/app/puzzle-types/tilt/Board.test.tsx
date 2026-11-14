@@ -224,7 +224,7 @@ describe("tilt board motion", () => {
       addEventListener: () => {},
       removeEventListener: () => {},
     }));
-    const now = vi.spyOn(Date, "now").mockReturnValue(1000);
+    const now = vi.spyOn(performance, "now").mockReturnValue(1000);
     const user = userEvent.setup();
     render(<Board puzzle={puzzle} />);
     expect(board().style.getPropertyValue("--slide")).toBe(`${slideTime}ms`);

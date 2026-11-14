@@ -182,3 +182,17 @@ describe("latics water data", () => {
     ]);
   });
 });
+
+describe("latics beam into a laser", () => {
+  // rules.md: "The beam also stops when it goes off the board or back into a laser."
+  it("stops each beam at a different laser", () => {
+    const board = boardOf(["L...L", ".....", ".....", ".....", "....."], noWater(5), [
+      white("E"),
+      white("W"),
+    ]);
+    const beam = traceBeam(board);
+    expect(beam.parts.map((part) => part.end)).toEqual(["laser", "laser"]);
+    // The beam of the first laser stops at the second laser, and the beam of the second laser at the first.
+    expect([steps(beam, 0)?.at(-1), steps(beam, 1)?.at(-1)]).toEqual([4, 0]);
+  });
+});

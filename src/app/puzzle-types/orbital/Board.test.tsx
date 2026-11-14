@@ -310,3 +310,55 @@ describe("orbital board motion", () => {
     expect(launchButton()).toHaveAttribute("aria-disabled", "false");
   });
 });
+
+describe("orbital board reduce motion", () => {
+  // rules.md: "When "reduce motion" is on, the full path shows at once, with no flight."
+  it("ends the flight at once when the player turns on reduce motion during the flight", async () => {
+    stubFrames();
+    // A "reduce motion" setting that the test can change, as the player changes the setting of the system.
+    let isReduced = false;
+    const listeners = new Set<() => void>();
+    vi.stubGlobal("matchMedia", () => ({
+      get matches() {
+        return isReduced;
+      },
+      addEventListener: (_type: string, listener: () => void) => listeners.add(listener),
+      removeEventListener: (_type: string, listener: () => void) => listeners.delete(listener),
+    }));
+    const user = userEvent.setup();
+    const { container } = render(<Board puzzle={puzzle} />);
+    setAngle(95);
+    await user.click(launchButton());
+    expect(paths(container, "current")).toHaveLength(1);
+
+    act(() => {
+      isReduced = true;
+      for (const listener of listeners) listener();
+    });
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Angle 95°, power 5. The probe went off the board. Closest to the ring: 2 units. Misses: 1.",
+    );
+    expect(paths(container, "current")).toHaveLength(0);
+  });
+});
+
+describe("orbital board flight time", () => {
+  // rules.md: "The other reasons for the stop are ... "The probe flew for 4 s and stopped.""
+  it("tells that the probe flew for 4 s when the flight stops at the maximum time", async () => {
+    // A board with no planet. A launch at 0° and power 1 does not leave the board in 4 s.
+    const timeOut: OrbitalPuzzle = {
+      ...puzzle,
+      launch: { x: 10, y: 10 },
+      ring: { x: 90, y: 50 },
+      planets: [],
+    };
+    const user = userEvent.setup();
+    render(<Board puzzle={timeOut} />);
+    fireEvent.change(slider(words.power), { target: { value: "1" } });
+    await user.click(launchButton());
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Angle 0°, power 1. The probe flew for 4 s and stopped.",
+    );
+    expect(screen.getByText("Misses: 1.")).toBeInTheDocument();
+  });
+});

@@ -1,5 +1,9 @@
 import type { Difficulty } from "../../../shared/difficulty";
+import { toSquares } from "../../../shared/grid";
 import type { PuzzleBase } from "../../../shared/puzzle";
+
+// The squares of the rows, row by row, so each square has one index. A square is one letter or ".".
+export { toSquares };
 
 // The four words cross at the center square.
 // "diagonalDown" starts at the top left. "diagonalUp" starts at the bottom left.
@@ -17,12 +21,6 @@ export const lineNames: readonly Line[] = ["across", "down", "diagonalDown", "di
 
 // The word length is set by level. The length is odd, so each board has one center square.
 export const sizes: Record<Difficulty, number> = { easy: 3, medium: 5, hard: 7 };
-
-// The puzzle data is stored as row strings.
-// This helper turns the rows into a flat array, so each square has one index.
-export function toSquares(rows: readonly string[]): string[] {
-  return [...rows.join("")];
-}
 
 // This helper finds the word that goes through a square.
 // The center square is on all four words, thus it gets no single word.

@@ -7,7 +7,7 @@ const words = text.tilt;
 
 // The text of a tilt for the status and the screen reader: the tilt, what each ball did, and the tilts.
 // For example "Tilt left. The red ball rolls 3 squares. The blue ball falls into its hole. Tilts: 4."
-export function moveText(move: Move): string {
+function moveText(move: Move): string {
   return [
     words.status.tilt(words.directions[move.direction]),
     ...move.balls.map((ball) => {
@@ -25,7 +25,7 @@ export function statusText(game: Game): string {
   if (game.blocked !== null) return words.status.noMove(words.directions[game.blocked]);
   if (game.lastMove === null) return words.status.start;
   const tilt = moveText(game.lastMove);
-  return game.isSolved ? `${tilt} ${words.status.solved(game.extraTilts)}` : tilt;
+  return game.isSolved ? `${tilt} ${words.status.solved(game.score)}` : tilt;
 }
 
 // What is on a square, in words: a wall, a ball, a hole, a ball on a hole, or nothing.

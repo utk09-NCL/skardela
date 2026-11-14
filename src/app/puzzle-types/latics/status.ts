@@ -56,7 +56,7 @@ export function statusText(game: Game): string {
   const [first] = game.beam?.parts ?? [];
   const isSimple = monsters === 1 && game.beam?.parts.length === 1;
   if (game.isSolved) {
-    if (!game.config.liveBeam) return words.status.solvedWithMisses(game.misses);
+    if (!game.config.liveBeam) return words.status.solvedWithMisses(game.score);
     return isSimple ? words.status.solved : words.status.solvedAll;
   }
   if (game.beam !== null) {

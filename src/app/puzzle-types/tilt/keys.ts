@@ -24,11 +24,10 @@ export const shortestSwipe = 20;
 // The tilt is in the main direction of the swipe: the longer of the across part and the up-down part.
 // A swipe shorter than "shortestSwipe" gives undefined.
 export function swipeDirection(across: number, upDown: number): Direction | undefined {
-  // Rule question: is the length of a swipe the straight distance from the start to the end, or the length of
-  // its main part? This code uses the straight distance.
+  // rules.md: "The length of a swipe is the straight distance from its start to its end."
   if (Math.hypot(across, upDown) < shortestSwipe) return undefined;
-  // Rule question: which tilt does a swipe give when its across part and its up-down part have the same length?
-  // Then the swipe has no main direction, and this code does nothing.
+  // rules.md: "A swipe with an across part and an up-down part of the same length has no main direction.
+  // It does nothing."
   if (Math.abs(across) === Math.abs(upDown)) return undefined;
   if (Math.abs(across) > Math.abs(upDown)) return across > 0 ? "right" : "left";
   return upDown > 0 ? "down" : "up";

@@ -1,3 +1,4 @@
+import { positionOf } from "../../../shared/grid";
 import type { Square } from "./puzzle";
 
 export function lines(squares: readonly Square[]): string[] {
@@ -24,7 +25,7 @@ export function obeysRules(squares: readonly Square[]): boolean {
 export const nextSquare: Record<Square, Square> = { ".": "R", R: "B", B: "." };
 
 // A rule that a square breaks in its row or its column.
-// "half": the line has more than half of its squares in this colour. "three": the line has three squares
+// "half": the line has more than half of its squares in this colour. "three": the square is one of three squares
 // of this colour next to each other.
 export type BrokenRule = {
   readonly reason: "half" | "three";
@@ -42,15 +43,18 @@ export function brokenRuleAt(squares: readonly Square[], index: number): BrokenR
   if (colour !== "R" && colour !== "B") return undefined;
   const size = Math.sqrt(squares.length);
   const all = lines(squares);
-  const row = Math.floor(index / size);
-  const column = index % size;
+  const { row, column } = positionOf(index, size);
+  // "position" is the place of the square in the line.
   const own = [
-    { line: "row", number: row + 1, text: all[row] ?? "" },
-    { line: "column", number: column + 1, text: all[size + column] ?? "" },
+    { line: "row", number: row + 1, text: all[row] ?? "", position: column },
+    { line: "column", number: column + 1, text: all[size + column] ?? "", position: row },
   ] as const;
-  for (const { line, number, text } of own) {
+  for (const { line, number, text, position } of own) {
     if (count(text, colour) > size / 2) return { reason: "half", line, number, colour };
-    if (text.includes(colour.repeat(3))) return { reason: "three", line, number, colour };
+    // Three squares next to each other that include this square are in the 5 squares around it.
+    // Three squares at a different place in the line are not a rule that this square breaks.
+    const around = text.slice(Math.max(0, position - 2), position + 3);
+    if (around.includes(colour.repeat(3))) return { reason: "three", line, number, colour };
   }
   return undefined;
 }
