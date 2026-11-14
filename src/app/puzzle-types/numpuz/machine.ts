@@ -61,6 +61,11 @@ export function isSolved(state: GameState): boolean {
   return state.checked === "correct";
 }
 
+// The score: the number to keep low. For Numpuz, it is the checks with a wrong answer.
+export function scoreOf(state: GameState): number {
+  return state.mistakes;
+}
+
 function isBlank(state: GameState, index: number): boolean {
   return Number.isInteger(index) && index >= 0 && index < state.guess.length;
 }

@@ -8,9 +8,9 @@ const words = text.numpuz;
 export function statusText(game: Game): string {
   switch (game.checked) {
     case "correct":
-      return words.status.solved(game.mistakes);
+      return words.status.solved(game.score);
     case "wrong":
-      return words.status.wrong(game.mistakes);
+      return words.status.wrong(game.score);
     case "incomplete":
       return words.status.incomplete;
     case null:

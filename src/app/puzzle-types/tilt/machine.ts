@@ -79,10 +79,10 @@ export function canTilt(state: GameState, direction: Direction): boolean {
   return tiltResult(state, direction) !== null;
 }
 
-// The score: the tilts minus the fewest tilts. 0 is a perfect solve. See "## Score".
-// Before the solve, the result is 0 when the tilts are fewer than the fewest tilts.
+// The score: the number to keep low. For Tilt, it is the tilts minus the fewest tilts. 0 is a perfect solve.
+// See "## Score". Before the solve, the result is 0 when the tilts are fewer than the fewest tilts.
 // The result is 0 when "fewest" is "null".
-export function extraTilts(state: GameState): number {
+export function scoreOf(state: GameState): number {
   if (state.fewest === null) return 0;
   return Math.max(0, state.tilts - state.fewest);
 }
@@ -104,4 +104,38 @@ export function transition(state: GameState, event: GameEvent): GameState {
       { type: "tilt", direction: event.direction, balls: result.moves, tilts },
     ],
   };
+}
+
+// The state of the board: the game of the machine, and two parts that only the UI needs.
+export type Play = {
+  readonly game: GameState;
+  // The direction of the last tilt when that tilt moved no ball. The status then says "No ball can move left."
+  // It is "null" at the start and after a tilt that moved one or more balls.
+  readonly blocked: Direction | null;
+  // The moment when the slide of the last tilt ends, in milliseconds. See "## Motion" in "rules.md".
+  readonly slideEnd: number;
+};
+
+// A tilt from the UI. "at" is the moment of the tilt and "slide" is the time of the slide, in milliseconds.
+// The input has the moment, thus "applyInput" stays pure.
+export type TiltInput = {
+  readonly direction: Direction;
+  readonly at: number;
+  readonly slide: number;
+};
+
+export function startPlay(puzzle: TiltPuzzle): Play {
+  return { game: initialState(puzzle), blocked: null, slideEnd: 0 };
+}
+
+// The reducer of the board. "transition" applies the rules of a tilt. This function adds the slide and the status:
+// - "The game ignores a tilt during the slide." A tilt before "slideEnd" gives the same object back.
+// - A tilt that moves no ball keeps its direction in "blocked", for the status text. After the solve,
+//   "the game ignores all tilts", thus the state does not change.
+export function applyInput(current: Play, input: TiltInput): Play {
+  if (input.at < current.slideEnd) return current;
+  const game = transition(current.game, { type: "tilt", direction: input.direction });
+  if (game !== current.game) return { game, blocked: null, slideEnd: input.at + input.slide };
+  if (isSolved(current.game) || current.blocked === input.direction) return current;
+  return { ...current, blocked: input.direction };
 }

@@ -54,10 +54,11 @@ export function isSolved(state: GameState): boolean {
   return phaseOf(state) === "solved";
 }
 
-// The score: the flights in "flights" that did not reach the ring. See "## Score".
+// The score: the number to keep low. For Orbital, it is the flights in "flights" that did not reach the ring.
+// See "## Score".
 // A flight in the air is not a miss yet: "The status and the misses change at the end of the flight."
 // A launch with the same aim as an earlier miss is a miss again.
-export function missesOf(state: GameState): number {
+export function scoreOf(state: GameState): number {
   return state.flights.filter((flight) => flight.end.type !== "ring").length;
 }
 
@@ -111,4 +112,19 @@ export function transition(state: GameState, event: GameEvent): GameState {
     default:
       return state;
   }
+}
+
+// An event from the UI. It is a "GameEvent" of the machine, but a launch also tells if the flight shows at once.
+export type OrbitalInput =
+  | { readonly type: "aim"; readonly aim: Aim }
+  | { readonly type: "launch"; readonly instant: boolean }
+  | { readonly type: "land" };
+
+// The reducer of the board. "transition" applies the rules. This function adds one part:
+// when "reduce motion" is on, the full path shows at once ("## Motion"), thus the flight lands in the same event.
+// A launch that the machine ignores does not land the flight in the air.
+export function applyInput(state: GameState, event: OrbitalInput): GameState {
+  if (event.type !== "launch") return transition(state, event);
+  const launched = transition(state, { type: "launch" });
+  return event.instant && launched !== state ? transition(launched, { type: "land" }) : launched;
 }

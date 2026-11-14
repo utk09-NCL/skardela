@@ -1,4 +1,5 @@
 import { levels, type Difficulty } from "../../../shared/difficulty";
+import { toSquares as sharedToSquares } from "../../../shared/grid";
 import type { PuzzleBase } from "../../../shared/puzzle";
 
 // The beam goes in 8 directions, in steps of 45°.
@@ -76,11 +77,8 @@ export function isFilter(square: Square): square is Filter {
   return isOneOf(filters, square);
 }
 
-// The puzzle data is stored as row strings.
-// This helper turns the rows into a flat array, so each square has one index.
-export function toSquares(rows: readonly string[]): Square[] {
-  return [...rows.join("")] as Square[];
-}
+// The squares of the rows, row by row, so each square has one index.
+export const toSquares: (rows: readonly string[]) => Square[] = sharedToSquares;
 
 // "true" for each square in water. A puzzle without water gives "false" for each square.
 export function toWater(puzzle: Pick<LaticsPuzzle, "board" | "water">): boolean[] {

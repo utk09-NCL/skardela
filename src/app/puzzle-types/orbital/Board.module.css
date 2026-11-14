@@ -151,14 +151,3 @@
   outline: 3px solid var(--ring);
   outline-offset: 2px;
 }
-
-/* This rule turns off the shared hover rule for a button with "aria-disabled". */
-.launchRow > .launch[aria-disabled="true"]:hover:enabled {
-  border-color: var(--border);
-  background-color: var(--surface);
-}
-
-.launch[aria-disabled="true"] {
-  cursor: default;
-  opacity: 0.6;
-}

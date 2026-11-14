@@ -22,6 +22,20 @@
   container-type: inline-size;
 }
 
+/* A board with the role "grid" has rows and cells, so a screen reader can tell the row and the column of each
+   square. Each row uses the columns of the board grid (subgrid), so the squares stay in columns. */
+.row {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+}
+
+/* The grid cell holds the square button. The button fills the cell. */
+.cell {
+  display: grid;
+  min-width: 0;
+}
+
 /* The base of each square. A puzzle type sets the colours of a square with three values:
    "--fill" (the background), "--fill-edge" (the border) and "--on-fill" (the text and the symbol). */
 .square {
@@ -101,11 +115,15 @@
     border-color 150ms ease;
 }
 
-.button:hover:enabled {
+/* A button with "aria-disabled" keeps its place in the Tab order, for example a Launch button during a flight,
+   so a keyboard user keeps the focus. It looks disabled, and the hover does not change it.
+   ":where()" adds no specificity, so the hover rules of a puzzle type still win over these rules. */
+.button:hover:enabled:where(:not([aria-disabled="true"])) {
   background-color: var(--surface-muted-hover);
 }
 
-.button:disabled {
+.button:disabled,
+.button[aria-disabled="true"] {
   cursor: default;
   opacity: 0.6;
 }
@@ -117,7 +135,7 @@
   background-color: var(--surface);
 }
 
-.boxed:hover:enabled {
+.boxed:hover:enabled:where(:not([aria-disabled="true"])) {
   border-color: var(--line);
   background-color: var(--surface-muted);
 }

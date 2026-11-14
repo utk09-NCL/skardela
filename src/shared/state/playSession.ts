@@ -67,7 +67,7 @@ export function solveSession(
   });
 }
 
-// The lifecycle hook of each puzzle type calls this hook. It opens the session when the board starts,
+// "usePuzzleTracking" in "src/shared/usePuzzleTracking.ts" calls this hook. It opens the session when the board starts,
 // starts the timer when "isStarted" is true, and saves the solve with its mistakes when the board is solved.
 // Most boards start at once. Guzzle starts when the player selects a mode.
 // In React strict mode, the effects run two times, which is safe: each step changes the session one time.

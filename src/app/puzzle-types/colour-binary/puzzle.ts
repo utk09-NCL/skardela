@@ -1,4 +1,5 @@
 import type { Difficulty } from "../../../shared/difficulty";
+import { toSquares as sharedToSquares } from "../../../shared/grid";
 import type { PuzzleBase } from "../../../shared/puzzle";
 
 export type Square = "R" | "B" | ".";
@@ -12,10 +13,8 @@ export type ColourBinaryPuzzle = PuzzleBase & {
 // The board size is set by level so the same logic works for easy, medium and hard boards.
 export const sizes: Record<Difficulty, number> = { easy: 4, medium: 6, hard: 8 };
 
-// A row-based puzzle is flattened to a single array so the solver can work with a linear index.
-export function toSquares(rows: readonly string[]): Square[] {
-  return [...rows.join("")] as Square[];
-}
+// The squares of the rows, row by row, so the solver can work with one index for each square.
+export const toSquares: (rows: readonly string[]) => Square[] = sharedToSquares;
 
 // The solver expects a flat array, but the puzzle data is stored as row strings.
 // This helper turns the flat state back into rows for UI use.

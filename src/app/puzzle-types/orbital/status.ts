@@ -7,7 +7,7 @@ const words = text.orbital;
 
 // A position in words, for example "x 12, y 40". See "## Screen reader" in "rules.md".
 // A position of the probe after a flight is not a whole number, thus it is rounded.
-export function positionText(point: Point): string {
+function positionText(point: Point): string {
   return words.at(Math.round(point.x), Math.round(point.y));
 }
 
@@ -33,8 +33,8 @@ export function statusText(game: Game): string {
   const flight = game.lastFlight;
   if (flight === null) return words.status.start;
   const launch = `${words.status.aim(flight.aim.angle, flight.aim.power)} ${endText(flight)}`;
-  if (game.isSolved) return `${launch} ${words.status.solved(game.misses)}`;
-  return `${launch} ${words.status.closest(flight.closest)} ${words.misses(game.misses)}`;
+  if (game.isSolved) return `${launch} ${words.status.solved(game.score)}`;
+  return `${launch} ${words.status.closest(flight.closest)} ${words.misses(game.score)}`;
 }
 
 // The list of the items on the board for a screen reader, for example "Probe at x 12, y 40.",

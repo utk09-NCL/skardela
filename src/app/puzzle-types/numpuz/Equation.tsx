@@ -1,5 +1,6 @@
-import { Fragment, useEffect, useRef, type KeyboardEvent } from "react";
+import { Fragment, type KeyboardEvent } from "react";
 import shared from "../../../shared/Board.module.css";
+import { useFocusWhen } from "../../../shared/useFocusWhen";
 import { text } from "../../../text/en";
 import styles from "./Board.module.css";
 import { operatorOfKey } from "./keys";
@@ -14,27 +15,14 @@ function operatorFromKey(event: KeyboardEvent): Operator | undefined {
   return operatorOfKey(event.key);
 }
 
-// When the selection moves to a blank and the player uses the board with the keyboard,
-// the focus moves too. Then the player can type the next operator, and the page shows only one ring.
-function useFocusWhenSelected(isSelected: boolean) {
-  const ref = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    const button = ref.current;
-    if (!isSelected || button === null) return;
-    const focused = document.activeElement;
-    const isBoardFocused = focused !== button && button.parentElement?.contains(focused) === true;
-    if (isBoardFocused) button.focus();
-  }, [isSelected]);
-  return ref;
-}
-
 // Each blank is a button, so the player can select it with a tap, a click or the keyboard.
 // An operator key typed on a blank goes in that blank.
 // After the solve, the blank has "aria-disabled", so a screen reader can still read it.
 function Blank({ game, index }: { game: Game; index: number }) {
   const operator = game.guess[index] ?? null;
   const isSelected = game.selected === index;
-  const ref = useFocusWhenSelected(isSelected);
+  // When the selection moves, the focus moves too. Then the player can type the next operator.
+  const ref = useFocusWhen(isSelected);
   const label = words.blank({
     position: index + 1,
     operator: operator === null ? "" : words.operatorNames[operator],

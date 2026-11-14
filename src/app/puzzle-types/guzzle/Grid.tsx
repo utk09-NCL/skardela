@@ -1,7 +1,7 @@
-import { useEffect, useRef, type KeyboardEvent } from "react";
-import { Confetti } from "../../../shared/Confetti";
-import { gridStyle } from "../../../shared/grid";
+import type { KeyboardEvent } from "react";
+import { gridStyle, positionOf } from "../../../shared/grid";
 import shared from "../../../shared/Board.module.css";
+import { useFocusWhen } from "../../../shared/useFocusWhen";
 import { text } from "../../../text/en";
 import styles from "./Board.module.css";
 import { lineOf, lineStartingAt, type Line } from "./puzzle";
@@ -14,20 +14,6 @@ const words = text.guzzle;
 function letterFromKey(event: KeyboardEvent): string | undefined {
   if (event.ctrlKey || event.metaKey || event.altKey) return undefined;
   return /^[a-z]$/iu.test(event.key) ? event.key.toUpperCase() : undefined;
-}
-
-// When the selection moves to a square and the player uses the board with the keyboard,
-// the focus moves too. Then the player can type the next letter, and the page shows only one ring.
-function useFocusWhenSelected(isSelected: boolean) {
-  const ref = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    const button = ref.current;
-    if (!isSelected || button === null) return;
-    const focused = document.activeElement;
-    const isBoardFocused = focused !== button && button.parentElement?.contains(focused) === true;
-    if (isBoardFocused) button.focus();
-  }, [isSelected]);
-  return ref;
 }
 
 type SquareProps = {
@@ -47,6 +33,7 @@ type SquareProps = {
 // The symbol shows the colour as a shape too, so the colour is not the only signal.
 // The first square of a word shows an arrow. The arrow shows the direction to read the word.
 // "isInWord" marks the other squares of the selected word, so the player can see the full word.
+// When the selection moves, the focus moves too. Then the player can type the next letter.
 function SquareButton({
   label,
   letter,
@@ -59,7 +46,7 @@ function SquareButton({
   onSelect,
   onLetter,
 }: SquareProps) {
-  const ref = useFocusWhenSelected(isSelected);
+  const ref = useFocusWhen(isSelected);
 
   return (
     <button
@@ -98,11 +85,10 @@ function SquareButton({
   );
 }
 
-type GameProps = { answer: readonly string[]; size: number; game: Game };
-
 // One square of the grid: the fixed center letter, a square on a word or a gap.
 // A gap is a square that is not on a word. It keeps the shape of the grid.
-function GridSquare({ answer, size, game, index }: GameProps & { index: number }) {
+function GridSquare({ game, index }: { game: Game; index: number }) {
+  const { answer, size } = game;
   const isCenter = index === (size * size - 1) / 2;
   if (!isCenter && !isPlayable(index, size)) {
     return <span className={styles.gap} aria-hidden="true" />;
@@ -111,9 +97,10 @@ function GridSquare({ answer, size, game, index }: GameProps & { index: number }
   const letter = isCenter ? (answer[index] ?? "") : (guess?.letter ?? "");
   const start = lineStartingAt(index, size);
   const selectedLine = game.selected === null ? undefined : lineOf(game.selected, size);
+  const { row, column } = positionOf(index, size);
   const label = words.square({
-    row: Math.floor(index / size) + 1,
-    column: (index % size) + 1,
+    row: row + 1,
+    column: column + 1,
     letter,
     mark: guess === undefined ? "" : words.marks[guess.mark],
     isFixed: isCenter,
@@ -140,18 +127,13 @@ function GridSquare({ answer, size, game, index }: GameProps & { index: number }
 }
 
 // The grid shows all squares in rows and columns.
-// When the puzzle is solved, the confetti shows. It is next to the grid and not in it,
-// because the grid has "container-type" and then the confetti cannot cover the full window.
-export function Grid({ answer, size, game }: GameProps) {
+export function Grid({ game }: { game: Game }) {
   return (
-    <>
-      <div className={shared.grid} style={gridStyle(size)}>
-        {answer.map((_, index) => (
-          // oxlint-disable-next-line react/no-array-index-key -- the index is the identity of a square. The squares never move.
-          <GridSquare key={index} answer={answer} size={size} game={game} index={index} />
-        ))}
-      </div>
-      {game.isSolved && <Confetti />}
-    </>
+    <div className={shared.grid} style={gridStyle(game.size)}>
+      {game.answer.map((_, index) => (
+        // oxlint-disable-next-line react/no-array-index-key -- the index is the identity of a square. The squares never move.
+        <GridSquare key={index} game={game} index={index} />
+      ))}
+    </div>
   );
 }

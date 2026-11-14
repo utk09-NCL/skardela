@@ -29,7 +29,7 @@ Correctness:
 - Does each change of the game go through `transition` in `machine.ts`?
 - Does an illegal or no-op event return the exact same state reference (`return state`), not a shallow copy?
 - Does ray or beam tracing have a termination condition to prevent infinite loops (e.g. cyclic reflections)?
-- Can malformed or legacy data from `lz-string`, the URL, or storage throw an uncaught error or bypass `ajv` validation? Always fall back safely to default state.
+- Can malformed or legacy data from `lz-string`, the URL, or storage throw an uncaught error or skip the readers in `src/shared/state/saved-data.ts`? Always fall back safely to default state.
 
 Tests:
 

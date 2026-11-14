@@ -212,15 +212,3 @@
   outline: 3px solid var(--ring);
   outline-offset: 2px;
 }
-
-/* After the solve, the buttons use "aria-disabled", not "disabled". So the shared hover rule still works,
-   and this rule turns it off. */
-.arrows > .arrow[aria-disabled="true"]:hover:enabled {
-  border-color: var(--border);
-  background-color: var(--surface);
-}
-
-.arrow[aria-disabled="true"] {
-  cursor: default;
-  opacity: 0.6;
-}

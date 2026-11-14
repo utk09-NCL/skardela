@@ -31,6 +31,7 @@ Before you open a pull request, run `npm run fix && npm run check`. CI runs the 
 puzzles/                     Puzzle data. One JSON file for each puzzle type. The build ciphers the answers.
 tools/puzzles.test.ts        Checks all puzzle data.
 tools/react-compiler.test.ts Fails when React Compiler cannot compile a component or a hook in src/.
+tools/agent-skills.test.ts   Fails when ".claude/skills" and ".agents/skills" do not have the same files.
 tools/generator-script.ts    The parts that each puzzle generator shares: the plan, the search and the puzzle file.
 tools/<type>-generator.ts    Makes new puzzles of one type. "npm run generate:<type>" runs it.
 src/
@@ -58,6 +59,7 @@ src/
       playSession.ts         The game that the player plays now: the timer and the saving of a solve.
       progress.ts            Pure functions for the stats: streaks, the calendar and personal bests.
     share.ts                 The squares of a share text, and the copy or the share menu. See ShareButton.tsx.
+    usePuzzleTracking.ts     The logs of the start and the solve, the timer and the saved solve of each puzzle type.
   text/
     en/                      All UI text. "index.ts" puts the parts together. One file for each page and puzzle type.
     es/                      Spanish text, with the same structure. The app does not use it yet.
@@ -72,13 +74,17 @@ src/app/puzzle-types/<type>/
   examples/<type>-0000.json  The example from rules.md as puzzle data.
   puzzle.ts                  The puzzle data type and the data check "findPuzzleProblems".
   rules-check.ts             Pure rule logic. No React. Easy to test.
-  machine.ts                 The state machine: the game state, "transition" and the queries. Pure. No React.
+  machine.ts                 The state machine. Pure. No React. Each type exports "initialState(puzzle)", "transition",
+                             "isSolved", "scoreOf" (the number to keep low) and the queries. The state keeps its moves,
+                             for example "moves", or "flights" in Orbital.
   solver.ts                  The search, for example for the fewest moves. Only when the type needs a search.
-  useGame.ts                 The hook that connects the state machine to React. It has no rules of its own.
+  useGame.ts                 "useGame(puzzle)": the hook that connects the state machine to React, to the move log and
+                             to "usePuzzleTracking". It has no rules of its own.
   status.ts                  The status text for each state of the game.
-  log.ts                     The logs, and the lifecycle hook that starts the timer and saves each solve.
+  log.ts                     The log of each move: "createMoveLog".
   keys.ts                    The keys that the board reads. Only when the type has its own keys.
-  Board.tsx                  The board component.
+  Board.tsx                  The board component. It shows the game of "useGame" and has no logs of its own.
+  Controls.tsx               The buttons and the keys under the board.
   Board.module.css           Styles for this board only.
   *.test.ts(x)               Tests next to the code that they test.
 ```
@@ -100,9 +106,10 @@ parts into their own files. See `guzzle/` for an example: `useGame.ts`, `Grid.ts
    - `src/app/pages/home/PuzzleIcon.tsx`: the small icon of your type on the home page.
    - `tools/puzzles.test.ts`: your example and your data check.
 6. Put emoji symbols in `src/text/symbols.ts`, not in other files.
-7. In the lifecycle hook of your board, call `useLifecycleLog` from `src/shared/` and `usePlayTracking` from `src/shared/state/`.
-   `usePlayTracking` starts the timer and saves each solve, for the stats and for "Random puzzle".
-   Give it the score to keep low as `mistakes`, for example the misses of Latics. The result card and the share text show it. See the lifecycle hook in `log.ts` of an existing type, for example `latics/log.ts`.
+7. In `useGame.ts`, call `usePuzzleTracking` from `src/shared/` with `isSolved` and `scoreOf` of your machine.
+   It logs the start and the solve, starts the timer and saves each solve, for the stats and for "Random puzzle".
+   Give the log that it gives back to `createMoveLog` in `log.ts`, and the move log to `useMoveLog`.
+   `scoreOf` gives the score to keep low, for example the misses of Latics. The solve saves it as `mistakes`. The result card and the share text show it. See `latics/useGame.ts`.
 8. Add tests for your rule logic and your board.
 9. Run `npm run fix && npm run check`.
 
@@ -110,7 +117,7 @@ parts into their own files. See `guzzle/` for an example: `useGame.ts`, `Grid.ts
 
 - Use strict TypeScript. Do not use `any` or `@ts-ignore`.
 - Put all UI text in the `src/text/en/` folder. Put all emoji symbols in `src/text/symbols.ts`.
-- Use the shared code in `src/shared/` before you write new code. For example `RuleList`,
+- Use the shared code in `src/shared/` before you write new code. For example `RuleList`, `useTabStop`, `useFocusWhen`, `useReducedMotion`,
   `Board.module.css`, `gridStyle` and `PuzzleBase`.
 - Make each control work with a keyboard and a screen reader. Do not use colour as the only signal.
 - Write comments and UI text in simple, clear English.

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { deepFreeze } from "../../../test/deep-freeze";
 import puzzleFile from "../../../../puzzles/latics.json";
 import { makeRandom } from "../../../shared/random";
 import example from "./examples/latics-0000.json";
@@ -6,6 +7,8 @@ import {
   canFire,
   canSelect,
   initialState,
+  isSolved,
+  scoreOf,
   transition,
   trayLeft,
   visibleBeam,
@@ -40,15 +43,6 @@ function selects(index: number, count: number): GameEvent[] {
   return Array.from({ length: count }, () => ({ type: "select", index }) as const);
 }
 
-// This helper freezes the state and each object in it. Then a change in place throws an error.
-function deepFreeze<Value>(value: Value): Value {
-  if (typeof value === "object" && value !== null && !Object.isFrozen(value)) {
-    Object.freeze(value);
-    for (const inner of Object.values(value)) deepFreeze(inner);
-  }
-  return value;
-}
-
 describe("latics machine with a live beam", () => {
   it("starts in the phase playing, with no moves and no misses", () => {
     const state = initialState(easy);
@@ -61,6 +55,8 @@ describe("latics machine with a live beam", () => {
     // Row 1, column 4 is index 3. Row 5, column 4 is index 23. See rules.md.
     const solved = play(initialState(easy), [...selects(3, 1), ...selects(23, 3)]);
     expect(solved.phase).toBe("solved");
+    expect(isSolved(solved)).toBe(true);
+    expect(scoreOf(solved)).toBe(0);
     expect(solved.moves).toHaveLength(4);
     expect(visibleBeam(solved)?.parts[0]?.end).toBe("monster");
     expect(transition(solved, { type: "select", index: 3 })).toBe(solved);

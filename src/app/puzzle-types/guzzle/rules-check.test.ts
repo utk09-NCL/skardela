@@ -11,7 +11,7 @@ import {
 import {
   bankLetters,
   checkLetter,
-  isSolved,
+  isAnswerFound,
   keyHints,
   nextSquareInWord,
   type Guess,
@@ -112,8 +112,8 @@ describe("guzzle rules check", () => {
 
   it("is solved only when all playable squares are green", () => {
     const guesses = answer.map((letter): Guess => ({ letter, mark: "correct" }));
-    expect(isSolved(answer, guesses)).toBe(true);
-    expect(isSolved(answer, guesses.with(0, { letter: "N", mark: "present" }))).toBe(false);
+    expect(isAnswerFound(answer, guesses)).toBe(true);
+    expect(isAnswerFound(answer, guesses.with(0, { letter: "N", mark: "present" }))).toBe(false);
   });
 });
 

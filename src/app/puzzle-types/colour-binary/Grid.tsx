@@ -1,80 +1,64 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
-import { gridStyle } from "../../../shared/grid";
+import { useState, type KeyboardEvent } from "react";
+import { gridStyle, positionOf } from "../../../shared/grid";
 import shared from "../../../shared/Board.module.css";
+import { useFocusWhen } from "../../../shared/useFocusWhen";
+import { useTabStop } from "../../../shared/useTabStop";
 import { text } from "../../../text/en";
 import styles from "./Board.module.css";
-import { colourOfKey, squareAfterKey } from "./keys";
+import { colourOfKey } from "./keys";
 import type { Game } from "./useGame";
 
 const words = text["colour-binary"];
 
 // The keyboard of the board, as a grid: one square has the Tab stop, the arrow keys move the focus,
-// and R, B and Space set the colour of the square with the focus.
+// and R, B and Space set the colour of the square with the focus. See "useTabStop.ts".
 // A given square shakes when the player tries to change it. A solved board does not change, thus nothing shakes.
-function useBoardKeys(game: Game, size: number) {
-  const [focused, setFocused] = useState(0);
+function useBoardKeys(game: Game) {
+  const tabStop = useTabStop(game.size);
   const [shaking, setShaking] = useState<number | null>(null);
   const shake = (index: number) => {
     if (!game.isSolved) setShaking(index);
   };
   const onKeyDown = (index: number, event: KeyboardEvent<HTMLButtonElement>) => {
+    if (tabStop.arrowKey(index, event)) return;
     if (event.ctrlKey || event.metaKey || event.altKey) return;
-    const target = squareAfterKey(index, event.key, size);
-    if (target !== undefined) {
-      event.preventDefault();
-      setFocused(target);
-      return;
-    }
     const colour = colourOfKey(event.key);
     if (colour === undefined) return;
     event.preventDefault();
     if (game.isGiven(index)) shake(index);
     else game.set(index, colour);
   };
-  return { focused, setFocused, shaking, setShaking, shake, onKeyDown };
-}
-
-// When an arrow key moves the Tab stop to a square, and the focus is on the board, the focus moves too.
-function useFocusWhenTabStop(isTabStop: boolean) {
-  const ref = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    const button = ref.current;
-    if (!isTabStop || button === null) return;
-    const focused = document.activeElement;
-    const isBoardFocused =
-      focused !== button && button.closest('[role="grid"]')?.contains(focused) === true;
-    if (isBoardFocused) button.focus();
-  }, [isTabStop]);
-  return ref;
+  return { tabStop, shaking, setShaking, shake, onKeyDown };
 }
 
 type SquareProps = {
   game: Game;
   index: number;
-  size: number;
   keys: ReturnType<typeof useBoardKeys>;
 };
 
 // Each square is a button in a grid cell, so the user can tap a cell and cycle its colour.
 // A square that the player cannot tap has "aria-disabled", so a screen reader can still read it.
 // A tap on a given square does not change it. The square shakes a little.
-function SquareButton({ game, index, size, keys }: SquareProps) {
+function SquareButton({ game, index, keys }: SquareProps) {
   const square = game.squares[index] ?? ".";
   const isGiven = game.isGiven(index);
-  const ref = useFocusWhenTabStop(keys.focused === index);
+  const isTabStop = keys.tabStop.tabStop === index;
+  const ref = useFocusWhen(isTabStop);
+  const { row, column } = positionOf(index, game.size);
   const label = words.square({
-    row: Math.floor(index / size) + 1,
-    column: (index % size) + 1,
+    row: row + 1,
+    column: column + 1,
     colour: words.colours[square],
     isGiven,
   });
   return (
     // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a table with a CSS grid loses its table role in some browsers.
-    <div role="gridcell" className={styles.cell}>
+    <div role="gridcell" className={shared.cell}>
       <button
         ref={ref}
         type="button"
-        tabIndex={keys.focused === index ? 0 : -1}
+        tabIndex={isTabStop ? 0 : -1}
         className={`${shared.square} ${styles.square}`}
         data-colour={square}
         data-given={isGiven}
@@ -87,7 +71,7 @@ function SquareButton({ game, index, size, keys }: SquareProps) {
           else game.tap(index);
         }}
         onFocus={() => {
-          keys.setFocused(index);
+          keys.tabStop.focus(index);
         }}
         onKeyDown={(event) => {
           keys.onKeyDown(index, event);
@@ -108,8 +92,9 @@ function SquareButton({ game, index, size, keys }: SquareProps) {
 
 // The board is a grid with rows, so a screen reader can tell the row and the column of each square.
 // The rows use the columns of the board (subgrid), so the squares look the same as on the other boards.
-export function Grid({ game, size }: { game: Game; size: number }) {
-  const keys = useBoardKeys(game, size);
+export function Grid({ game }: { game: Game }) {
+  const { size } = game;
+  const keys = useBoardKeys(game);
   const all = Array.from({ length: size }, (_, position) => position);
   return (
     <div
@@ -120,15 +105,9 @@ export function Grid({ game, size }: { game: Game; size: number }) {
     >
       {all.map((row) => (
         // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- a table with a CSS grid loses its table role in some browsers.
-        <div key={row} role="row" className={styles.row}>
+        <div key={row} role="row" className={shared.row}>
           {all.map((column) => (
-            <SquareButton
-              key={column}
-              game={game}
-              index={row * size + column}
-              size={size}
-              keys={keys}
-            />
+            <SquareButton key={column} game={game} index={row * size + column} keys={keys} />
           ))}
         </div>
       ))}

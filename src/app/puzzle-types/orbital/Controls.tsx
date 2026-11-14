@@ -80,7 +80,7 @@ export function Controls({ game, aim }: { game: Game; aim: Aim }) {
         }}
       />
       <div className={styles.launchRow}>
-        <p className={styles.misses}>{words.misses(game.misses)}</p>
+        <p className={styles.misses}>{words.misses(game.score)}</p>
         <button
           type="button"
           className={`${shared.button} ${shared.boxed} ${styles.launch}`}

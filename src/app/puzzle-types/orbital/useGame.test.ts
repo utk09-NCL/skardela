@@ -1,10 +1,13 @@
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import example from "./examples/orbital-0000.json";
-import { initialState } from "./machine";
 import type { OrbitalPuzzle } from "./puzzle";
 import type { Flight } from "./rules-check";
-import { play, useGame } from "./useGame";
+import { useGame } from "./useGame";
+
+// The test replaces the move log, so it can check each move that the hook gives to the log.
+const { onMove } = vi.hoisted(() => ({ onMove: vi.fn<(flight: Flight) => void>() }));
+vi.mock(import("./log"), () => ({ createMoveLog: () => onMove }));
 
 // The example is the rules.md example. 0° and power 5 go off the board. 92° and power 5 reach the ring.
 const puzzle = example as OrbitalPuzzle;
@@ -22,25 +25,6 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe("orbital play reducer", () => {
-  it("lands the flight at once when the flight shows at once", () => {
-    const state = play(initialState(puzzle), { type: "launch", instant: true });
-    expect(state.flying).toBeNull();
-    expect(state.flights).toHaveLength(1);
-  });
-
-  it("keeps the flight in the air until the end of the animation", () => {
-    const flying = play(initialState(puzzle), { type: "launch", instant: false });
-    expect(flying.flying?.end).toEqual({ type: "edge" });
-    expect(flying.flights).toHaveLength(0);
-    // A launch during the flight does not land the flight in the air, also when the flight would show at once.
-    expect(play(flying, { type: "launch", instant: true })).toBe(flying);
-    const landed = play(flying, { type: "land" });
-    expect(landed.flying).toBeNull();
-    expect(landed.flights).toEqual([flying.flying]);
-  });
-});
-
 // In these tests, all calls in one "act" use the same render, as fast clicks can do.
 // Each event must still apply to the latest state.
 describe("orbital game hook with many events in one React batch", () => {
@@ -55,7 +39,7 @@ describe("orbital game hook with many events in one React batch", () => {
     });
     expect(result.current.isSolved).toBe(true);
     expect(result.current.flights).toHaveLength(1);
-    expect(result.current.misses).toBe(0);
+    expect(result.current.score).toBe(0);
   });
 
   it("sets the aim and launches at the release of a drag", () => {
@@ -78,12 +62,12 @@ describe("orbital game hook with many events in one React batch", () => {
     });
     expect(result.current.flying?.aim).toEqual({ angle: 0, power: 5 });
     expect(result.current.canLaunch).toBe(false);
-    expect(result.current.misses).toBe(0);
+    expect(result.current.score).toBe(0);
     act(() => {
       result.current.land();
     });
     expect(result.current.flying).toBeNull();
-    expect(result.current.misses).toBe(1);
+    expect(result.current.score).toBe(1);
     expect(result.current.aim).toEqual({ angle: 0, power: 5 });
   });
 });
@@ -91,8 +75,8 @@ describe("orbital game hook with many events in one React batch", () => {
 describe("orbital game hook moves", () => {
   it("logs each flight once and in order, at the end of the flight", () => {
     stubReduceMotion(true);
-    const onMove = vi.fn<(flight: Flight) => void>();
-    const { result } = renderHook(() => useGame(puzzle, onMove));
+    onMove.mockClear();
+    const { result } = renderHook(() => useGame(puzzle));
     act(() => {
       result.current.launch();
       result.current.launch();
@@ -104,6 +88,6 @@ describe("orbital game hook moves", () => {
       [0, "edge"],
       [92, "ring"],
     ]);
-    expect(result.current.misses).toBe(2);
+    expect(result.current.score).toBe(2);
   });
 });

@@ -2,7 +2,6 @@ import shared from "../../../shared/Board.module.css";
 import { Confetti } from "../../../shared/Confetti";
 import { Controls } from "./Controls";
 import { useDrag } from "./input";
-import { createMoveLog, getOrbitalLog, useOrbitalLifecycle } from "./log";
 import type { OrbitalPuzzle } from "./puzzle";
 import { Scene } from "./Scene";
 import { statusText } from "./status";
@@ -12,15 +11,7 @@ import { useGame } from "./useGame";
 // The game is in one state machine. See "machine.ts". The flight animation is in "motion.ts",
 // and the drag is in "input.ts". The puzzle is solved when the probe reaches the ring.
 export function Board({ puzzle }: { puzzle: OrbitalPuzzle }) {
-  const log = getOrbitalLog();
-  const meta = {
-    puzzleId: puzzle.id,
-    puzzleType: puzzle.type,
-    difficulty: puzzle.difficulty,
-  };
-  const game = useGame(puzzle, createMoveLog(log, meta));
-  // The lifecycle hook starts the timer and saves the solve with the misses. See "log.ts".
-  useOrbitalLifecycle(log, meta, game.isSolved, game.misses);
+  const game = useGame(puzzle);
   // The drawing and the sliders both show the aim of a drag. Thus the drag state is here.
   const drag = useDrag(game);
 

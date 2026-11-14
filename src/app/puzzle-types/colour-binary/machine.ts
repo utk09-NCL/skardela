@@ -1,5 +1,5 @@
 import { findHint, type Hint } from "./hint";
-import type { Square } from "./puzzle";
+import { toSquares, type ColourBinaryPuzzle, type Square } from "./puzzle";
 import { nextSquare, obeysRules } from "./rules-check";
 
 // The state machine of a Colour Binary game. It is pure: no React, no logs and no other side effects.
@@ -48,12 +48,18 @@ export type GameEvent =
 // The phase comes from the squares, thus it always matches the board.
 export type Phase = "playing" | "solved";
 
-export function initialState(start: readonly Square[]): GameState {
+export function initialState(puzzle: Pick<ColourBinaryPuzzle, "start">): GameState {
+  const start = toSquares(puzzle.start);
   return { start, squares: start, hint: { status: "hidden" }, changes: [], moves: [] };
 }
 
 export function phaseOf(state: GameState): Phase {
   return obeysRules(state.squares) ? "solved" : "playing";
+}
+
+// The board obeys all rules. The solve is final: no event changes the game after it.
+export function isSolved(state: GameState): boolean {
+  return phaseOf(state) === "solved";
 }
 
 // The transition table: the events that each phase accepts. This table is the only place with this rule.
@@ -104,8 +110,9 @@ export function canAskHint(state: GameState): boolean {
   return accepts[phaseOf(state)].askHint;
 }
 
-// The number of hints that the player got. A request without a hint does not count.
-export function hintsUsed(state: GameState): number {
+// The score: the number to keep low. For Colour Binary, it is the hints that the player got.
+// A request without a hint does not count.
+export function scoreOf(state: GameState): number {
   return state.moves.filter((move) => move.type === "hint" && move.hint !== null).length;
 }
 

@@ -1,3 +1,4 @@
+import { flushSync } from "react-dom";
 import shared from "../../../shared/Board.module.css";
 import { text } from "../../../text/en";
 import styles from "./Board.module.css";
@@ -13,6 +14,8 @@ type KeyProps = LetterKey & { hint: KeyHint | undefined; onPut: (letter: string)
 
 // One letter key. It shows what the player knows about its letter for the selected square,
 // from the earlier moves. The symbol shows the hint as a shape too, so the colour is not the only signal.
+// A key of the bank goes away when its last square is green. Then the focus goes to the key at its place,
+// so a keyboard user stays in the bank. "flushSync" removes the key before the focus moves.
 function KeyButton({ letter, count, hint, onPut }: KeyProps) {
   return (
     <button
@@ -20,8 +23,16 @@ function KeyButton({ letter, count, hint, onPut }: KeyProps) {
       className={`${shared.button} ${styles.key}`}
       data-hint={hint ?? "none"}
       aria-label={words.key(letter, count, hint)}
-      onClick={() => {
-        onPut(letter);
+      onClick={(event) => {
+        const key = event.currentTarget;
+        const group = key.closest("fieldset");
+        const place = [...(group?.querySelectorAll("button") ?? [])].indexOf(key);
+        flushSync(() => {
+          onPut(letter);
+        });
+        if (key.isConnected || group === null) return;
+        const keys = [...group.querySelectorAll("button")];
+        (keys[place] ?? keys.at(-1))?.focus();
       }}
     >
       {letter}
@@ -40,7 +51,9 @@ function KeyButton({ letter, count, hint, onPut }: KeyProps) {
   );
 }
 
-// Before the first move, the player selects a mode with these buttons.
+// Before the first move, the player selects a mode with these buttons. The buttons then go away,
+// thus the focus goes to the first open square, which the machine selects with the mode.
+// "flushSync" shows the selected square before the focus moves.
 function ModeButtons({ game }: { game: Game }) {
   return (
     <fieldset className={styles.modes}>
@@ -50,8 +63,12 @@ function ModeButtons({ game }: { game: Game }) {
           key={option}
           type="button"
           className={shared.button}
-          onClick={() => {
-            game.chooseMode(option);
+          onClick={(event) => {
+            const board = event.currentTarget.closest(`.${shared.game}`);
+            flushSync(() => {
+              game.chooseMode(option);
+            });
+            board?.querySelector<HTMLButtonElement>('[data-selected="true"]')?.focus();
           }}
         >
           {words.modes[option]}
@@ -63,10 +80,10 @@ function ModeButtons({ game }: { game: Game }) {
 
 // Before the first move, the player selects a mode. Then the player gets letter keys.
 // With the bank, the keys are the letters that are not green yet. Without the bank, the keys are A to Z.
-export function Controls({ answer, game }: { answer: readonly string[]; game: Game }) {
+export function Controls({ game }: { game: Game }) {
   if (game.mode === null) return <ModeButtons game={game} />;
 
-  const keys = game.mode === "bank" ? bankLetters(answer, game.guesses) : alphabet;
+  const keys = game.mode === "bank" ? bankLetters(game.answer, game.guesses) : alphabet;
   return (
     <fieldset className={styles.keys} disabled={!game.canUseKeys}>
       <legend className="visually-hidden">

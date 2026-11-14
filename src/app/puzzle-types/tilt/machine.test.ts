@@ -1,11 +1,14 @@
 /* oxlint-disable max-lines -- one file holds all machine tests. */
 import { describe, expect, it } from "vitest";
+import { deepFreeze } from "../../../test/deep-freeze";
 import example from "./examples/tilt-0000.json";
 import {
+  applyInput,
   canTilt,
-  extraTilts,
   initialState,
   isSolved,
+  scoreOf,
+  startPlay,
   transition,
   type GameEvent,
   type GameState,
@@ -44,15 +47,6 @@ function play(state: GameState, directions: readonly Direction[]): GameState {
   return directions.reduce((current, direction) => transition(current, tilt(direction)), state);
 }
 
-// This helper freezes the state and each object in it. Then a change in place throws an error.
-function deepFreeze<Value>(value: Value): Value {
-  if (typeof value === "object" && value !== null && !Object.isFrozen(value)) {
-    Object.freeze(value);
-    for (const inner of Object.values(value)) deepFreeze(inner);
-  }
-  return value;
-}
-
 function indexOfBall(state: GameState, colour: string): number | undefined {
   return state.balls.find((ball) => ball.colour === colour)?.index;
 }
@@ -65,7 +59,7 @@ describe("tilt machine start", () => {
     expect(state.moves).toEqual([]);
     expect(state.fewest).toBe(5);
     expect(isSolved(state)).toBe(false);
-    expect(extraTilts(state)).toBe(0);
+    expect(scoreOf(state)).toBe(0);
   });
 
   // Rule: "The red ball is at row 5, column 6 ... The blue ball is at row 2, column 2" (Example).
@@ -237,7 +231,7 @@ describe("tilt machine example end", () => {
     expect(state.tilts).toBe(5);
     expect(indexOfBall(state, "blue")).toBe(at(6, 1, 6));
     expect(isSolved(state)).toBe(false);
-    expect(extraTilts(state)).toBe(0);
+    expect(scoreOf(state)).toBe(0);
   });
 
   // Rule: Example, step 7. The puzzle is solved with 6 tilts. The score is 1 extra tilt.
@@ -248,7 +242,7 @@ describe("tilt machine example end", () => {
       { colour: "blue", from: at(6, 1, 6), to: at(6, 4, 6), squares: 3, fallsIn: true },
     ]);
     expect(isSolved(state)).toBe(true);
-    expect(extraTilts(state)).toBe(1);
+    expect(scoreOf(state)).toBe(1);
     // The tilt that moved no ball is not in the log.
     expect(state.moves).toHaveLength(6);
   });
@@ -258,7 +252,7 @@ describe("tilt machine example end", () => {
     const state = play(initialState(medium), ["down", "left", "up", "down", "right"]);
     expect(isSolved(state)).toBe(true);
     expect(state.tilts).toBe(5);
-    expect(extraTilts(state)).toBe(0);
+    expect(scoreOf(state)).toBe(0);
   });
 });
 
@@ -293,7 +287,7 @@ describe("tilt machine score", () => {
   it("gives 0 extra tilts for a perfect solve", () => {
     const state = play(initialState(small), ["right"]);
     expect(isSolved(state)).toBe(true);
-    expect(extraTilts(state)).toBe(0);
+    expect(scoreOf(state)).toBe(0);
   });
 
   // Rule: "The score is the extra tilts: your tilts minus the fewest possible tilts."
@@ -301,7 +295,7 @@ describe("tilt machine score", () => {
     const state = play(initialState(small), ["down", "up", "right"]);
     expect(isSolved(state)).toBe(true);
     expect(state.tilts).toBe(3);
-    expect(extraTilts(state)).toBe(2);
+    expect(scoreOf(state)).toBe(2);
   });
 
   // Rule: "Before the solve, the extra tilts are your tilts minus the fewest tilts. They are 0 when your tilts are fewer than the fewest tilts."
@@ -309,28 +303,28 @@ describe("tilt machine score", () => {
     const state = play(initialState(medium), ["up", "down"]);
     expect(state.tilts).toBe(2);
     expect(state.fewest).toBe(5);
-    expect(extraTilts(state)).toBe(0);
+    expect(scoreOf(state)).toBe(0);
   });
 
   // Rule: "Before the solve, the extra tilts are your tilts minus the fewest tilts."
   it("gives the tilts minus the fewest tilts before the solve when the tilts are more", () => {
     const state = play(initialState(small), ["down", "up"]);
     expect(isSolved(state)).toBe(false);
-    expect(extraTilts(state)).toBe(1);
+    expect(scoreOf(state)).toBe(1);
   });
 
   // Rule: "A tilt that moves no ball does not change the board and does not count."
   it("does not add an extra tilt for a tilt that moves no ball", () => {
     const state = play(initialState(small), ["up", "left", "up", "right"]);
     expect(state.tilts).toBe(1);
-    expect(extraTilts(state)).toBe(0);
+    expect(scoreOf(state)).toBe(0);
   });
 
   // Rule: "After the solve, the game ignores all tilts."
   it("does not add an extra tilt after the solve", () => {
     const solved = play(initialState(greyAside), ["right", "left", "up"]);
     expect(solved.tilts).toBe(1);
-    expect(extraTilts(solved)).toBe(0);
+    expect(scoreOf(solved)).toBe(0);
   });
 });
 
@@ -338,6 +332,40 @@ describe("tilt machine score edge cases", () => {
   // Contract: "The result is 0 when "fewest" is "null"."
   it("gives 0 when the fewest tilts are null", () => {
     const state = initialState(stuck);
-    expect(extraTilts(state)).toBe(0);
+    expect(scoreOf(state)).toBe(0);
+  });
+});
+
+describe("tilt input reducer", () => {
+  it("ignores a tilt during the slide, and accepts it after the slide", () => {
+    const start = startPlay(medium);
+    const first = applyInput(start, { direction: "down", at: 1000, slide: 180 });
+    expect(first.game.tilts).toBe(1);
+    expect(first.slideEnd).toBe(1180);
+    expect(applyInput(first, { direction: "left", at: 1179, slide: 180 })).toBe(first);
+    expect(applyInput(first, { direction: "left", at: 1180, slide: 180 }).game.tilts).toBe(2);
+  });
+
+  it("keeps the direction of a tilt that moves no ball, and clears it after the next move", () => {
+    const up = applyInput(startPlay(medium), { direction: "up", at: 0, slide: 0 });
+    const blocked = applyInput(up, { direction: "up", at: 1, slide: 0 });
+    expect(blocked.blocked).toBe("up");
+    expect(blocked.game).toBe(up.game);
+    // The same blocked tilt again does not change the state.
+    expect(applyInput(blocked, { direction: "up", at: 2, slide: 0 })).toBe(blocked);
+    const down = applyInput(blocked, { direction: "down", at: 3, slide: 0 });
+    expect(down.blocked).toBeNull();
+    expect(down.game.tilts).toBe(2);
+  });
+
+  it("ignores all tilts after the solve", () => {
+    let state = startPlay(medium);
+    for (const [time, direction] of (["down", "left", "up", "down", "right"] as const).entries()) {
+      state = applyInput(state, { direction, at: time, slide: 0 });
+    }
+    expect(state.game.tilts).toBe(5);
+    for (const direction of ["up", "down", "left", "right"] as const) {
+      expect(applyInput(state, { direction, at: 10, slide: 0 })).toBe(state);
+    }
   });
 });

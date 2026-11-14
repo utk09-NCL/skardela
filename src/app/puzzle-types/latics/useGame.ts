@@ -1,13 +1,15 @@
 import { useReducer } from "react";
-import { useMoveLog } from "../../../shared/useMoveLog";
+import { usePuzzleTracking } from "../../../shared/usePuzzleTracking";
+import { createMoveLog } from "./log";
 import {
   canFire,
   canSelect,
   initialState,
+  isSolved,
+  scoreOf,
   transition,
   trayLeft,
   visibleBeam,
-  type Move,
 } from "./machine";
 import type { LaticsPuzzle } from "./puzzle";
 
@@ -15,9 +17,14 @@ export type Game = ReturnType<typeof useGame>;
 
 // This hook connects the state machine in "machine.ts" to React. It has no game rules of its own.
 // All changes go through one reducer, thus each event applies to the latest state, also with fast clicks.
-export function useGame(puzzle: LaticsPuzzle, onMove?: (move: Move) => void) {
+export function useGame(puzzle: LaticsPuzzle) {
   const [state, dispatch] = useReducer(transition, puzzle, initialState);
-  useMoveLog(state.moves, onMove);
+  usePuzzleTracking(puzzle, {
+    isSolved: isSolved(state),
+    score: scoreOf(state),
+    moves: state.moves,
+    logMove: createMoveLog,
+  });
 
   return {
     config: state.config,
@@ -26,8 +33,8 @@ export function useGame(puzzle: LaticsPuzzle, onMove?: (move: Move) => void) {
     squares: state.squares,
     fromTray: state.fromTray,
     lasers: state.lasers,
-    misses: state.misses,
-    isSolved: state.phase === "solved",
+    score: scoreOf(state),
+    isSolved: isSolved(state),
     beam: visibleBeam(state),
     trayLeft: trayLeft(state),
     canFire: canFire(state),

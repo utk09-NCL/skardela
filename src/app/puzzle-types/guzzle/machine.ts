@@ -1,7 +1,8 @@
+import { toSquares, type GuzzlePuzzle } from "./puzzle";
 import {
   checkLetter,
   isPlayable,
-  isSolved,
+  isAnswerFound,
   keyHints,
   nextOpenSquare,
   nextSquareInWord,
@@ -54,7 +55,8 @@ export type GameEvent =
 // The phase comes from the state, thus it always matches the guesses.
 export type Phase = "choosing" | "playing" | "solved";
 
-export function initialState(config: GameConfig): GameState {
+export function initialState(puzzle: Pick<GuzzlePuzzle, "answer">): GameState {
+  const config = { answer: toSquares(puzzle.answer), size: puzzle.answer.length };
   return {
     config,
     mode: null,
@@ -67,7 +69,17 @@ export function initialState(config: GameConfig): GameState {
 
 export function phaseOf(state: GameState): Phase {
   if (state.mode === null) return "choosing";
-  return isSolved(state.config.answer, state.guesses) ? "solved" : "playing";
+  return isAnswerFound(state.config.answer, state.guesses) ? "solved" : "playing";
+}
+
+// All squares are green. The solve is final: no event changes the game after it.
+export function isSolved(state: GameState): boolean {
+  return phaseOf(state) === "solved";
+}
+
+// The score: the number to keep low. For Guzzle, it is the letters that were not correct.
+export function scoreOf(state: GameState): number {
+  return state.mistakes;
 }
 
 // The transition table: the events that each phase accepts. This table is the only place with this rule.

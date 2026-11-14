@@ -77,14 +77,14 @@ export function initialState(puzzle: LaticsPuzzle): GameState {
   const squares = toSquares(puzzle.board);
   const config = { liveBeam, canAim, tray: puzzle.tray, water: toWater(puzzle) };
   // The data checks do not allow a puzzle that is solved at the start. The phase is correct for one too.
-  const isSolved = liveBeam && hitsAll(config, { squares, lasers: puzzle.lasers });
+  const isHit = liveBeam && hitsAll(config, { squares, lasers: puzzle.lasers });
   return {
     config,
     squares,
     fromTray: [],
     lasers: puzzle.lasers,
     misses: 0,
-    phase: isSolved ? "solved" : "playing",
+    phase: isHit ? "solved" : "playing",
     moves: [],
   };
 }
@@ -104,6 +104,16 @@ const accepts: Record<Phase, Record<GameEvent["type"], boolean>> = {
 
 // The selectors below give the information that the UI shows. "transition" uses the same selectors,
 // thus the UI and the machine always agree. The tests check this for each square in many states.
+
+// The beam hits all monsters. The solve is final: no event changes the game after it.
+export function isSolved(state: GameState): boolean {
+  return state.phase === "solved";
+}
+
+// The score: the number to keep low. For Latics, it is the shots that did not hit all monsters.
+export function scoreOf(state: GameState): number {
+  return state.misses;
+}
 
 export function trayLeft(state: GameState): number {
   return state.config.tray - state.fromTray.length;
@@ -137,11 +147,11 @@ function afterChange(
   board: Pick<GameState, "squares" | "fromTray" | "lasers">,
   move: Move,
 ): GameState {
-  const isSolved = state.config.liveBeam && hitsAll(state.config, board);
+  const isHit = state.config.liveBeam && hitsAll(state.config, board);
   return {
     ...state,
     ...board,
-    phase: isSolved ? "solved" : "playing",
+    phase: isHit ? "solved" : "playing",
     moves: [...state.moves, move],
   };
 }

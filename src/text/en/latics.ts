@@ -157,7 +157,7 @@ export const latics = {
     otherMonster: (at: string) =>
       `The monster at ${at} needs a beam of a different colour. It stops the beam.`,
     wall: (at: string) => `A wall at ${at} stops the beam.`,
-    laser: () => "The beam comes back to the laser.",
+    laser: (at: string) => `A laser at ${at} stops the beam.`,
     edge: (at: string) => `The beam goes off the board after ${at}.`,
     loop: () => "The beam goes around in a loop.",
     join: () => "From here, the beam goes along the path of a different beam.",

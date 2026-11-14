@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
+import { deepFreeze } from "../../../test/deep-freeze";
 import example from "./examples/numpuz-0000.json";
 import {
   canCheck,
   canUseKeys,
   initialState,
   isSolved,
+  scoreOf,
   transition,
   type GameEvent,
   type GameState,
@@ -36,15 +38,6 @@ function fill(operator: Operator, index: number | null = null): GameEvent {
 
 const select = (index: number): GameEvent => ({ type: "select", index });
 const check: GameEvent = { type: "check" };
-
-// This helper freezes the state and each object in it. Then a change in place throws an error.
-function deepFreeze<Value>(value: Value): Value {
-  if (typeof value === "object" && value !== null && !Object.isFrozen(value)) {
-    Object.freeze(value);
-    for (const inner of Object.values(value)) deepFreeze(inner);
-  }
-  return value;
-}
 
 describe("numpuz machine start", () => {
   it("starts with empty blanks, no selection and no mistakes", () => {
@@ -119,6 +112,7 @@ describe("numpuz machine check", () => {
     const state = play(initialState(easy), [select(0), fill("+"), fill("×"), check]);
     expect(state.checked).toBe("wrong");
     expect(state.mistakes).toBe(1);
+    expect(scoreOf(state)).toBe(1);
     expect(canCheck(state)).toBe(false);
     expect(transition(state, check)).toBe(state);
   });

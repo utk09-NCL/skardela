@@ -31,7 +31,7 @@ describe("puzzle page timer", () => {
         router={createMemoryRouter(routes, { initialEntries: ["/puzzles/latics-0001"] })}
       />,
     );
-    await screen.findByRole("group", { name: text.latics.boardLabel });
+    await screen.findByRole("grid", { name: text.latics.boardLabel });
     expect(usePlaySession.getState()).toMatchObject({ puzzleId: "latics-0001" });
     expect(usePlaySession.getState().startedAt).not.toBeNull();
   });

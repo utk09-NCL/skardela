@@ -1,19 +1,6 @@
 /* The base and the states of a square are in "src/shared/Board.module.css".
-   This file sets the colours, the dot of a given square, the shake and the rows of the grid.
+   This file sets the colours, the dot of a given square and the shake.
    The board uses both "square" classes. */
-
-/* Each row of the grid uses the columns of the board grid (subgrid), so the squares stay in columns. */
-.row {
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: subgrid;
-}
-
-/* The grid cell holds the square button. The button fills the cell. */
-.cell {
-  display: grid;
-  min-width: 0;
-}
 
 .square {
   --on-fill: var(--on-colour);

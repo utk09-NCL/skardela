@@ -1,34 +1,46 @@
 import { useReducer } from "react";
-import { useMoveLog } from "../../../shared/useMoveLog";
+import { usePuzzleTracking } from "../../../shared/usePuzzleTracking";
+import { createMoveLog } from "./log";
 import {
   canSelect,
   canUseKeys,
   hintsFor,
   initialState,
+  isSolved,
   lastLetter,
-  phaseOf,
+  scoreOf,
   transition,
   type Mode,
-  type Move,
 } from "./machine";
+import type { GuzzlePuzzle } from "./puzzle";
 
 export type Game = ReturnType<typeof useGame>;
 
 // This hook connects the state machine in "machine.ts" to React. It has no game rules of its own.
 // All changes go through one reducer, thus each event applies to the latest state, also with fast clicks.
 // The machine ignores an event that is not possible, so the UI can send each event.
-export function useGame(answer: readonly string[], size: number, onMove?: (move: Move) => void) {
-  const [state, dispatch] = useReducer(transition, { answer, size }, initialState);
-  useMoveLog(state.moves, onMove);
+export function useGame(puzzle: GuzzlePuzzle) {
+  const [state, dispatch] = useReducer(transition, puzzle, initialState);
+  usePuzzleTracking(puzzle, {
+    isSolved: isSolved(state),
+    // The game starts when the player selects a mode, thus the timer starts then too.
+    isStarted: state.mode !== null,
+    score: scoreOf(state),
+    details: { size: state.config.size },
+    moves: state.moves,
+    logMove: createMoveLog,
+  });
 
   return {
     mode: state.mode,
     guesses: state.guesses,
     selected: state.selected,
-    mistakes: state.mistakes,
+    answer: state.config.answer,
+    size: state.config.size,
+    score: scoreOf(state),
     lastMove: lastLetter(state),
     hints: hintsFor(state),
-    isSolved: phaseOf(state) === "solved",
+    isSolved: isSolved(state),
     canUseKeys: canUseKeys(state),
     canSelect: (index: number) => canSelect(state, index),
     chooseMode: (mode: Mode) => {

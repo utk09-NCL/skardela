@@ -11,7 +11,7 @@ type Box = Pick<DOMRect, "left" | "top" | "width" | "height">;
 
 // The point on the board, in units, of a pointer at "clientX" and "clientY" px. The y of the board goes up,
 // and the y of the screen goes down. A pointer off the board gives a point off the board.
-export function pointOnBoard(clientX: number, clientY: number, box: Box): Point {
+function pointOnBoard(clientX: number, clientY: number, box: Box): Point {
   return {
     x: ((clientX - box.left) / box.width) * boardSize,
     y: boardSize - ((clientY - box.top) / box.height) * boardSize,
@@ -33,8 +33,7 @@ export function useDrag(game: Game) {
   const [drag, setDrag] = useState<Drag | null>(null);
   const { launch } = game.board;
   return {
-    // Rule question: what do the arrow and the sliders show during a drag with the power 0?
-    // This code shows the values from before the drag, as after the release of such a drag.
+    // rules.md: "During a drag with the power 0, the arrow and the sliders show the values from before the drag."
     aim: drag?.aim ?? game.aim,
     isDragging: drag !== null,
     handlers: {

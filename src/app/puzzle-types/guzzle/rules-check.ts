@@ -47,7 +47,7 @@ export function bankLetters(answer: readonly string[], guesses: Guesses): Letter
 }
 
 // The puzzle is solved when all playable squares are green.
-export function isSolved(answer: readonly string[], guesses: Guesses): boolean {
+export function isAnswerFound(answer: readonly string[], guesses: Guesses): boolean {
   const size = Math.sqrt(answer.length);
   return answer.every((_, index) => !isPlayable(index, size) || guesses[index]?.mark === "correct");
 }

@@ -67,7 +67,7 @@ describe("latics board on easy", () => {
     await user.click(square(5, 4));
     expect(status).toHaveTextContent(words.ends.edge(words.at(5, 1)));
     await user.click(square(5, 4));
-    expect(status).toHaveTextContent(words.ends.laser());
+    expect(status).toHaveTextContent("A laser at row 1, column 1 stops the beam.");
 
     // Step 5: the beam hits the monster.
     await user.click(square(5, 4));
@@ -159,5 +159,38 @@ describe("latics board and the list of solved puzzles", () => {
     await user.click(square(5, 4));
     expect(screen.getByRole("status")).toHaveTextContent(words.status.solved);
     expect(useAppStore.getState().solved).toEqual([easy.id]);
+  });
+});
+
+describe("latics board keyboard", () => {
+  // A board with one Tab stop: the Tab key goes past the board in one step, as on the Colour Binary board.
+  it("has one Tab stop, and the arrow keys move the focus between the squares", async () => {
+    const user = userEvent.setup();
+    render(<Board puzzle={easy} />);
+    const grid = screen.getByRole("grid", { name: words.boardLabel });
+    const tabStops = [...grid.querySelectorAll("button")].filter((button) => button.tabIndex === 0);
+    expect(tabStops).toEqual([square(1, 1)]);
+
+    await user.tab();
+    expect(square(1, 1)).toHaveFocus();
+    await user.keyboard("{ArrowRight}{ArrowDown}");
+    expect(square(2, 2)).toHaveFocus();
+    expect(square(2, 2)).toHaveAttribute("tabindex", "0");
+    expect(square(1, 1)).toHaveAttribute("tabindex", "-1");
+    // At the edge of the board, the focus stays on the same square.
+    await user.keyboard("{ArrowLeft}{ArrowLeft}");
+    expect(square(2, 1)).toHaveFocus();
+  });
+
+  it("changes the piece of the square with the focus with Enter", async () => {
+    const user = userEvent.setup();
+    render(<Board puzzle={easy} />);
+    await user.tab();
+    // Row 1, column 4 has the first mirror of the rules.md example. See step 2 of the example.
+    await user.keyboard("{ArrowRight}{ArrowRight}{ArrowRight}{Enter}");
+    expect(square(1, 4)).toHaveFocus();
+    expect(square(1, 4)).toHaveAccessibleName(
+      "Row 1, column 4, mirror from top left to bottom right",
+    );
   });
 });

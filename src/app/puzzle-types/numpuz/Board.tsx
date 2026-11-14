@@ -4,7 +4,6 @@ import { text } from "../../../text/en";
 import styles from "./Board.module.css";
 import { Controls } from "./Controls";
 import { Equation } from "./Equation";
-import { createMoveLog, getNumpuzLog, useNumpuzLifecycle } from "./log";
 import type { NumpuzPuzzle } from "./puzzle";
 import { statusText } from "./status";
 import { useGame } from "./useGame";
@@ -15,15 +14,7 @@ const words = text.numpuz;
 // The game is in one state machine. See "machine.ts".
 // The puzzle is solved when a check finds that the equation is equal to the target.
 export function Board({ puzzle }: { puzzle: NumpuzPuzzle }) {
-  const log = getNumpuzLog();
-  const meta = {
-    puzzleId: puzzle.id,
-    puzzleType: puzzle.type,
-    difficulty: puzzle.difficulty,
-  };
-  const game = useGame(puzzle, createMoveLog(log, meta));
-  // The lifecycle hook starts the timer and saves the solve with the mistakes. See "log.ts".
-  useNumpuzLifecycle(log, meta, game.isSolved, game.mistakes);
+  const game = useGame(puzzle);
 
   return (
     <div className={shared.game}>

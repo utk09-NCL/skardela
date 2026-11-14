@@ -89,18 +89,6 @@
   outline-offset: 2px;
 }
 
-/* A key with no selected blank uses "aria-disabled", not "disabled". So the shared hover rule still works,
-   and this rule turns it off. */
-.keys > .key[aria-disabled="true"]:hover:enabled {
-  border-color: var(--line);
-  background-color: var(--surface);
-}
-
-.key[aria-disabled="true"] {
-  cursor: default;
-  opacity: 0.6;
-}
-
 /* The status box has a red edge after a wrong check. The text says it too, so colour is not the only signal. */
 .status[data-wrong="true"] {
   border-color: var(--red-edge);

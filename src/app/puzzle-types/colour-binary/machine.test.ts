@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { deepFreeze } from "../../../test/deep-freeze";
 import { makeRandom } from "../../../shared/random";
 import { puzzleTypes } from "../registry";
 import example from "./examples/colour-binary-0000.json";
@@ -8,7 +9,7 @@ import {
   canSet,
   canTap,
   canUndo,
-  hintsUsed,
+  scoreOf,
   initialState,
   lastChanged,
   phaseOf,
@@ -25,22 +26,13 @@ const puzzles: readonly ColourBinaryPuzzle[] = [
   example as ColourBinaryPuzzle,
   ...(await puzzleTypes["colour-binary"].loadPuzzles()),
 ];
-const start = initialState(toSquares(example.start));
+const start = initialState(example);
 const fixed = start.start.findIndex((square) => square !== ".");
 const open = start.start.indexOf(".");
 
 // This helper applies the events one after the other, as "useReducer" does.
 function play(state: GameState, events: readonly GameEvent[]): GameState {
   return events.reduce((current, event) => transition(current, event), state);
-}
-
-// This helper freezes the state and each object in it. Then a change in place throws an error.
-function deepFreeze<Value>(value: Value): Value {
-  if (typeof value === "object" && value !== null && !Object.isFrozen(value)) {
-    Object.freeze(value);
-    for (const inner of Object.values(value)) deepFreeze(inner);
-  }
-  return value;
 }
 
 // The taps that change each open square to the colour of the answer. One tap gives red, two taps give blue.
@@ -102,10 +94,10 @@ describe("colour binary machine keys, undo and hints", () => {
   });
 
   it("counts only the hints that the player got, and gives the square of the last change", () => {
-    expect(hintsUsed(play(start, [{ type: "askHint" }, { type: "askHint" }]))).toBe(2);
+    expect(scoreOf(play(start, [{ type: "askHint" }, { type: "askHint" }]))).toBe(2);
     // An empty board has no hint. A request without a hint does not count.
-    const empty = initialState(toSquares(["....", "....", "....", "...."]));
-    expect(hintsUsed(transition(empty, { type: "askHint" }))).toBe(0);
+    const empty = initialState({ start: ["....", "....", "....", "...."] });
+    expect(scoreOf(transition(empty, { type: "askHint" }))).toBe(0);
     expect(lastChanged(start)).toBeNull();
     expect(lastChanged(play(start, [{ type: "tap", index: open }, { type: "askHint" }]))).toBe(
       open,
@@ -206,7 +198,7 @@ function randomEvent(state: GameState, answer: readonly string[], random: () => 
 function fuzz(puzzle: ColourBinaryPuzzle, seed: number) {
   const random = makeRandom(seed);
   const answer = toSquares(puzzle.answer);
-  let state = deepFreeze(initialState(toSquares(puzzle.start)));
+  let state = deepFreeze(initialState(puzzle));
   const problems = brokenInvariants(state);
   const phases = new Set<Phase>([phaseOf(state)]);
   for (let step = 0; step < 200; step += 1) {
@@ -234,7 +226,7 @@ describe("colour binary machine rules for each state", () => {
   it("solves each puzzle with the taps to its answer", () => {
     const phases = puzzles.map((puzzle) => ({
       id: puzzle.id,
-      phase: phaseOf(play(initialState(toSquares(puzzle.start)), tapsTo(puzzle))),
+      phase: phaseOf(play(initialState(puzzle), tapsTo(puzzle))),
     }));
     expect(phases).toEqual(puzzles.map(({ id }) => ({ id, phase: "solved" })));
   });

@@ -13,7 +13,7 @@ export function Controls({ game }: { game: Game }) {
     <fieldset className={styles.controls}>
       <legend className="visually-hidden">{words.controlsLabel}</legend>
       {game.config.tray > 0 && <output>{words.tray(game.trayLeft)}</output>}
-      <output>{words.misses(game.misses)}</output>
+      <output>{words.misses(game.score)}</output>
       <button
         type="button"
         className={`${shared.button} ${shared.boxed}`}

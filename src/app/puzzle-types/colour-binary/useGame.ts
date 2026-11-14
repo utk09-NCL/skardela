@@ -1,35 +1,42 @@
 import { useReducer } from "react";
-import { useMoveLog } from "../../../shared/useMoveLog";
+import { usePuzzleTracking } from "../../../shared/usePuzzleTracking";
+import { createMoveLog } from "./log";
 import {
   canAskHint,
   canSet,
   canTap,
   canUndo,
-  hintsUsed,
   initialState,
   isGiven,
+  isSolved,
   lastChanged,
-  phaseOf,
+  scoreOf,
   transition,
-  type Move,
 } from "./machine";
-import type { Square } from "./puzzle";
+import type { ColourBinaryPuzzle, Square } from "./puzzle";
 
 export type Game = ReturnType<typeof useGame>;
 
 // This hook connects the state machine in "machine.ts" to React. It has no game rules of its own.
 // All changes go through one reducer, thus each event applies to the latest state, also with fast taps.
 // The machine ignores an event that is not possible, so the UI can send each event.
-export function useGame(start: readonly Square[], onMove?: (move: Move) => void) {
-  const [state, dispatch] = useReducer(transition, start, initialState);
-  useMoveLog(state.moves, onMove);
+export function useGame(puzzle: ColourBinaryPuzzle) {
+  const [state, dispatch] = useReducer(transition, puzzle, initialState);
+  usePuzzleTracking(puzzle, {
+    isSolved: isSolved(state),
+    score: scoreOf(state),
+    details: { size: Math.sqrt(state.squares.length) },
+    moves: state.moves,
+    logMove: createMoveLog,
+  });
 
   return {
     squares: state.squares,
     hint: state.hint,
-    hints: hintsUsed(state),
+    size: Math.sqrt(state.squares.length),
+    score: scoreOf(state),
     lastChanged: lastChanged(state),
-    isSolved: phaseOf(state) === "solved",
+    isSolved: isSolved(state),
     canAskHint: canAskHint(state),
     canUndo: canUndo(state),
     canTap: (index: number) => canTap(state, index),
