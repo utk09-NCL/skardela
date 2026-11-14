@@ -1,4 +1,5 @@
 import { text } from "../../../text/en";
+import shared from "../../../shared/Board.module.css";
 import styles from "./Board.module.css";
 import type { DragState } from "./input";
 import { useFlightStep } from "./motion";
@@ -50,22 +51,26 @@ function Arrow({ from, aim }: { from: Point; aim: Aim }) {
   );
 }
 
-// The ring is a thick circle outline. Each planet is a full circle with the radius of its size.
+// The size of the halo around a planet, times the radius of the planet. A bigger planet pulls more,
+// and it has a bigger halo.
+const haloSize = 1.7;
+
+// The ring is a dashed circle outline. Each planet is a full circle with the radius of its size,
+// in a soft halo that shows its pull. See "## Board" in "rules.md".
 function Targets({ board }: { board: Board }) {
   return (
     <>
       <circle className={styles.ring} cx={board.ring.x} cy={board.ring.y} r={board.ringRadius} />
-      {board.planets.map((planet, index) => (
-        <circle
+      {board.planets.map((planet, index) => {
+        const { radius } = sizeRules[planet.size];
+        return (
           // oxlint-disable-next-line react/no-array-index-key -- the planets never move.
-          key={index}
-          className={styles.planet}
-          data-size={planet.size}
-          cx={planet.x}
-          cy={planet.y}
-          r={sizeRules[planet.size].radius}
-        />
-      ))}
+          <g key={index} className={styles.planet} data-size={planet.size}>
+            <circle className={styles.halo} cx={planet.x} cy={planet.y} r={radius * haloSize} />
+            <circle cx={planet.x} cy={planet.y} r={radius} />
+          </g>
+        );
+      })}
     </>
   );
 }
@@ -91,7 +96,7 @@ export function Scene({ game, drag }: { game: Game; drag: DragState }) {
   const step = useFlightStep(flying, game.instant, game.land);
   const probe = flying === null ? game.probe : (flying.path[step] ?? board.launch);
   return (
-    <figure className={styles.board} aria-label={words.boardLabel}>
+    <figure className={`${styles.board} ${shared.stage}`} aria-label={words.boardLabel}>
       <svg
         className={styles.scene}
         viewBox={`0 0 ${boardSize} ${boardSize}`}

@@ -16,6 +16,9 @@ describe("positionOf", () => {
   });
 });
 
+// A 3 by 3 board with gaps at index 1 and 2 (row 1, columns 2 and 3) and at index 4 (the middle).
+const isGap = (index: number) => [1, 2, 4].includes(index);
+
 describe("squareAfterArrow", () => {
   it("moves one square with each arrow key, and stays at the edge of the board", () => {
     // Square 5 is row 2, column 2 of a 4 by 4 board.
@@ -31,5 +34,13 @@ describe("squareAfterArrow", () => {
 
   it("gives undefined for a key that is not an arrow key", () => {
     expect(squareAfterArrow(5, "Enter", 4)).toBeUndefined();
+  });
+
+  // A board with gaps, as the Guzzle board: an arrow key goes past each gap to the next square in its direction.
+  it("goes past the gaps, and stays when only gaps are left in the direction", () => {
+    expect(squareAfterArrow(0, "ArrowRight", 3, isGap)).toBe(0);
+    expect(squareAfterArrow(3, "ArrowRight", 3, isGap)).toBe(5);
+    expect(squareAfterArrow(7, "ArrowUp", 3, isGap)).toBe(7);
+    expect(squareAfterArrow(8, "ArrowUp", 3, isGap)).toBe(5);
   });
 });

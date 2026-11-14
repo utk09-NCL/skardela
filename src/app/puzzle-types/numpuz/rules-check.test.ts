@@ -8,7 +8,10 @@ describe("evaluate", () => {
     expect(evaluate([8, 2, 1], ["÷", "+"])).toBe(5);
   });
 
+  // rules.md: "Operators of the same kind go from left to right. For example, 8 ÷ 4 × 2 is 4, and 8 − 4 + 2 is 6."
   it("works from left to right for operators of the same level", () => {
+    expect(evaluate([8, 4, 2], ["÷", "×"])).toBe(4);
+    expect(evaluate([8, 4, 2], ["-", "+"])).toBe(6);
     expect(evaluate([10, 3, 2], ["-", "+"])).toBe(9);
     expect(evaluate([6, 4, 2], ["÷", "×"])).toBe(3);
   });
@@ -22,6 +25,17 @@ describe("evaluate", () => {
 
 describe("checkGuess", () => {
   const numbers = [2, 3, 4];
+
+  // rules.md: "A division can give a fraction, for example 7 ÷ 2 = 3.5. Only the result of the full equation
+  // must be equal to the target."
+  it("accepts a division with a fraction when the full equation is equal to the target", () => {
+    expect(checkGuess([7, 2, 4], ["÷", "×"], 14)).toBe("correct");
+  });
+
+  // rules.md: "A check of an equation with a division by 0 is a wrong answer."
+  it("gives a wrong answer for a division by 0", () => {
+    expect(checkGuess([4, 0, 1], ["÷", "+"], 1)).toBe("wrong");
+  });
 
   it("is incomplete while a blank is empty", () => {
     expect(checkGuess(numbers, [null, null], 14)).toBe("incomplete");

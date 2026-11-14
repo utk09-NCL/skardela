@@ -110,7 +110,7 @@ parts into their own files. See `guzzle/` for an example: `useGame.ts`, `Grid.ts
 5. Run `npm run typecheck`. TypeScript then shows each place that needs your type:
    - `src/app/puzzle-types/boards.ts`: your board component.
    - `src/text/en/index.ts`: your UI text. Put it in a new file `src/text/en/<type>.ts`, with `name`,
-     `summary`, `rules`, `rulesKey`, `moreRules`, `score` and `scoreWord`. Then add it to `index.ts` with the name of your type. `rules` has three short rules. `rulesKey` is a list of sample squares and their meaning, or an empty list. `moreRules` has a label and the other rules. `score` gives the score of a solve as text, for example "2 mistakes".
+     `summary`, `rules`, `rulesKey`, `moreRules`, `score` and `scoreWord`. Then add it to `index.ts` with the name of your type. `rules` has three short rules. `rulesKey` is a list of sample squares and their meaning, or an empty list. `moreRules` has a label and three groups: `rules`, `controls` (mouse, touch and keyboard) and `scoreRule`, one line in the form "Score: <what counts>. 0 is a perfect solve." `score` gives the score of a solve as text, for example "2 mistakes".
    - `src/app/pages/home/PuzzleIcon.tsx`: the small icon of your type on the home page.
    - `tools/puzzles.test.ts`: your example and your data check.
 6. Put emoji symbols in `src/text/symbols.ts`, not in other files.

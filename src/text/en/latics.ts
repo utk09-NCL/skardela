@@ -25,14 +25,15 @@ const blueMark = { symbol: blue, colour: "blue" } as const;
 export const latics = {
   name: "Latics",
   summary: "Turn the mirrors and send the laser beam to the monster.",
-  // The three short rules show at all times. The rules key shows the materials: water, prisms and filters.
+  // The three short rules show at all times. The rules key shows the monster and the materials: water, prisms and filters.
   // The other rules are under "More rules". It is open only on the first visit.
   rules: [
-    `Hit each monster ${symbols.latics.monster} with a laser beam.`,
+    "Hit each monster with a laser beam.",
     "Select a mirror to turn it. Walls stop the beam.",
     "Medium and hard: plan the path, then fire the laser. Each miss counts.",
   ] satisfies Rule[],
   rulesKey: [
+    { text: "a monster", sample: { fill: "monster", symbol: "" } },
     { text: "water bends the beam", sample: { fill: "water", symbol: "" } },
     {
       text: "a prism splits white light",
@@ -41,18 +42,13 @@ export const latics = {
     { text: "a filter lets only its colour through", sample: { fill: "red", symbol: red } },
   ] satisfies KeyItem[],
   moreRules: {
-    label: "More rules: the tray, the lasers, water, prisms and filters",
+    label: "More rules: levels, the tray, water, prisms and filters",
     rules: [
-      "The beam goes in a straight line: across, up and down, or diagonally.",
-      "A mirror turns the beam. The angle in is the same as the angle out. A beam that goes along a mirror does not change.",
-      "The beam also stops when it goes off the board or back into a laser.",
-      "Each select turns a mirror 45° clockwise.",
-      "Easy: the beam shows at all times.",
-      "Medium and hard: a shot that does not hit all monsters is a miss. Make the fewest misses.",
-      "Medium and hard: select an empty square to put a mirror from the tray there. A tray mirror goes back to the tray after four turns. You cannot put a tray mirror on water.",
-      "Hard: select a laser to turn it 45° clockwise.",
-      "Water: a diagonal beam that goes into water turns straight, square to the edge of the water. When it leaves the water, it turns back to its first direction. A straight beam does not change.",
-      "Critical angle: a diagonal beam from a laser in water cannot get out. At the edge of the water, it reflects back in.",
+      "The beam goes in a straight line: across, up and down, or diagonally. A mirror turns it: the angle in is the same as the angle out.",
+      "The beam stops at a wall, at a laser and at the edge of the board.",
+      "Easy: the beam shows at all times. Medium and hard: plan the path, then fire the laser.",
+      "Medium and hard: select an empty square to put a mirror from the tray there, but not on water. A tray mirror goes back to the tray after four turns. Hard: you can turn the lasers too.",
+      "Water: a diagonal beam turns straight when it goes in, and turns back when it leaves. A diagonal beam from a laser in water cannot get out: it reflects at the edge of the water and at the edge of the board.",
       "Prism: red light turns 45° to the right, and blue light turns 45° to the left. Thus a white beam splits into a red beam and a blue beam.",
       {
         parts: [
@@ -69,11 +65,17 @@ export const latics = {
           redMark,
           " needs a red beam, and a blue monster ",
           blueMark,
-          ` needs a blue beam. The monster ${symbols.latics.monster} with no colour needs a beam of any colour.`,
+          " needs a blue beam. The monster with no colour needs a beam of any colour.",
         ],
       },
+    ] satisfies Rule[],
+    controls: [
+      "Mouse and touch: select a square to turn its mirror or its laser 45° clockwise.",
+      "Keyboard: the arrow keys move between the squares. Enter or Space turns the mirror.",
       '"Path of the beam" under the board tells the path of the beam in words.',
     ] satisfies Rule[],
+    scoreRule:
+      "Score: each shot on medium and hard that does not hit all monsters. 0 is a perfect solve.",
   },
   // The score of a solve: the number of misses. The home page and the result card show it.
   score: missCount,

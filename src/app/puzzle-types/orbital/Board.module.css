@@ -2,21 +2,21 @@
    This file sets what is special to Orbital: the drawing of the board, the sliders and the Launch button.
    The drawing uses the units of the board: one unit is 1/100 of the width of the board. */
 
+/* The aim arrow can go past the edge of the board when the probe is near the edge. It shows on the stage
+   around the board, and the stage cuts it. */
 .board {
   margin: 0;
+  overflow: clip;
 }
 
-/* The board is a square. It grows with the page to a maximum width, as the grids of the other puzzle types. */
+/* The board is a square on the stage. It grows with the page to a maximum width, as the grids of the other
+   puzzle types. The stage gives its background. See ".stage" in "src/shared/Board.module.css". */
 .scene {
-  --planet: light-dark(#8a7660, #a08b74);
-  --planet-edge: color-mix(in srgb, var(--planet) 70%, #000000);
   display: block;
+  overflow: visible;
   width: min(100%, 32rem);
   aspect-ratio: 1;
   margin-inline: auto;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background-color: var(--surface);
   /* A drag on the board aims the probe, thus the page does not scroll or zoom during a touch on the board. */
   touch-action: none;
   user-select: none;
@@ -26,32 +26,42 @@
   cursor: grabbing;
 }
 
-/* Each planet is a full circle. Its size shows its pull. */
+/* Each planet is a full circle in a soft halo. Its size shows its pull, and so does its halo.
+   A big or a medium planet is blue, and a small planet is grey. The colours are in "src/index.css". */
 .planet {
   fill: var(--planet);
-  stroke: var(--planet-edge);
-  stroke-width: 0.5;
 }
 
-/* The ring is a thick circle outline with a soft fill. */
+.planet[data-size="small"] {
+  fill: var(--moon);
+}
+
+.halo {
+  fill-opacity: 0.16;
+}
+
+/* The ring is a dashed circle outline. */
 .ring {
-  fill: var(--accent-bg);
+  fill: none;
   stroke: var(--accent);
-  stroke-width: 1.2;
+  stroke-dasharray: 1.6 1.1;
+  stroke-width: 0.8;
 }
 
-/* The path of the flight in the air ("current") is a solid line. */
+/* The path of the flight in the air ("current") is a dotted line: round dots along the path. */
 .path {
   fill: none;
-  stroke: var(--blue);
+  stroke: var(--accent);
+  stroke-dasharray: 0 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 0.6;
+  stroke-width: 0.9;
 }
 
 /* The paths of the earlier launches are faint dashed lines, so they do not look like the flight in the air. */
 .path[data-path="earlier"] {
   stroke: var(--text-muted);
+  stroke-linecap: butt;
   stroke-dasharray: 1.2 1.2;
   stroke-width: 0.4;
   opacity: 0.6;
@@ -60,7 +70,7 @@
 /* The probe is a small diamond. The edge keeps it clear on a planet or a path. */
 .probe {
   fill: var(--text-h);
-  stroke: var(--surface);
+  stroke: var(--stage);
   stroke-width: 0.4;
 }
 

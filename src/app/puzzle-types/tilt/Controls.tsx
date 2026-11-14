@@ -2,14 +2,21 @@ import shared from "../../../shared/Board.module.css";
 import { text } from "../../../text/en";
 import styles from "./Board.module.css";
 import { tiltOnArrowKey } from "./input";
-import { directions } from "./rules-check";
+import { directions, type Direction } from "./rules-check";
 import type { Game } from "./useGame";
 
 const words = text.tilt;
 
 // The four arrow buttons tilt the board with a mouse or a touch. An arrow key on a button tilts the board too.
 // After the solve, the buttons have "aria-disabled", so a screen reader can still read them.
-export function Controls({ game }: { game: Game }) {
+// "pressed" is the direction of the last tilt for a short time. Its button lights up. See "usePressedArrow".
+type ControlsProps = {
+  game: Game;
+  pressed: Direction | null;
+  onTilt: (direction: Direction) => void;
+};
+
+export function Controls({ game, pressed, onTilt }: ControlsProps) {
   return (
     <fieldset className={styles.arrows}>
       <legend className="visually-hidden">{words.controlsLabel}</legend>
@@ -19,13 +26,14 @@ export function Controls({ game }: { game: Game }) {
           type="button"
           className={`${shared.button} ${shared.boxed} ${styles.arrow}`}
           data-direction={direction}
+          data-pressed={pressed === direction}
           aria-label={words.tiltButton(words.directions[direction])}
           aria-disabled={game.isSolved}
           onClick={() => {
-            game.tilt(direction);
+            onTilt(direction);
           }}
           onKeyDown={(event) => {
-            tiltOnArrowKey(event, game.tilt);
+            tiltOnArrowKey(event, onTilt);
           }}
         >
           <span aria-hidden="true">{words.symbols.arrows[direction]}</span>

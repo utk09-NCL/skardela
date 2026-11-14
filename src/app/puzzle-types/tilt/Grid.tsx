@@ -4,7 +4,7 @@ import shared from "../../../shared/Board.module.css";
 import { text } from "../../../text/en";
 import styles from "./Board.module.css";
 import { tiltOnArrowKey, useSwipe } from "./input";
-import { holeAt, type Ball } from "./rules-check";
+import { holeAt, type Ball, type Direction } from "./rules-check";
 import { squareLabel } from "./status";
 import type { Game } from "./useGame";
 
@@ -62,8 +62,9 @@ function BallView({ ball, size }: { ball: Ball; size: number }) {
 // "--slide" is the time of the slide. It is 0 ms when "reduce motion" is on, so the balls move at once.
 type GridStyle = ReturnType<typeof gridStyle> & { "--slide": string };
 
-export function Grid({ game }: { game: Game }) {
-  const swipe = useSwipe(game.tilt);
+// "onTilt" tilts the board. The board gives it, so each tilt also lights up its arrow button.
+export function Grid({ game, onTilt }: { game: Game; onTilt: (direction: Direction) => void }) {
+  const swipe = useSwipe(onTilt);
   const helpId = useId();
   const style: GridStyle = { ...gridStyle(game.size), "--slide": `${game.slide}ms` };
   const squares = Array.from({ length: game.size * game.size }, (_, index) => index);
@@ -80,7 +81,7 @@ export function Grid({ game }: { game: Game }) {
         className={`${shared.grid} ${styles.grid}`}
         style={style}
         onKeyDown={(event) => {
-          tiltOnArrowKey(event, game.tilt);
+          tiltOnArrowKey(event, onTilt);
         }}
         {...swipe}
       >

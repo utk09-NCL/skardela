@@ -71,6 +71,18 @@
   /* The ring for a selected square, a hint and the keyboard focus on a board.
      It has high contrast on the page and is not one of the square colours, so it shows on each square. */
   --ring: var(--text-h);
+  /* The stage under a board: a soft panel under the squares, a little different from the panel of the page.
+     The edge of a square that is a control ("--line") has 3.1:1 (light) and 3.9:1 (dark) on it. */
+  --stage: light-dark(#f4efe7, #161411);
+  /* The quiet edge of a square that is not a control, for example on the Tilt board. It is decoration only:
+     the walls, the holes and the balls show the board. It has 1.4:1 (light) and 1.5:1 (dark) on "--surface". */
+  --grid-line: light-dark(#e2dbd0, #3e3832);
+  /* A Latics monster that a beam of any colour can hit. 5.6:1 (light) and 6.4:1 (dark) on "--surface". */
+  --monster: light-dark(#7c3aed, #a78bfa);
+  /* The Orbital planets: a big or a medium planet is blue, a small planet is grey. Each has 3.8:1 or more
+     on "--stage". The halo around a planet is a soft circle of the same colour. It shows the pull. */
+  --planet: var(--blue);
+  --moon: light-dark(#7a7269, #8d857c);
 
   /* The fonts are in the app (see "src/main.tsx"), so the page sends no request to a font service. */
   --sans: "Funnel Display Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;

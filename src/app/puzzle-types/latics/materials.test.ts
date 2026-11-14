@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 import example from "./examples/latics-0000.json";
-import { findPuzzleProblems, toSquares, type LaserData, type LaticsPuzzle } from "./puzzle";
+import {
+  findPuzzleProblems,
+  toSquares,
+  toWater,
+  type LaserData,
+  type LaticsPuzzle,
+} from "./puzzle";
+import { waterAreas } from "./water";
 import { hitsAllMonsters, pathParts, traceBeam, type Beam, type BeamPart } from "./beam";
 
 // The first part of a beam. A beam from one laser always has a first part.
@@ -194,5 +201,39 @@ describe("latics beam into a laser", () => {
     expect(beam.parts.map((part) => part.end)).toEqual(["laser", "laser"]);
     // The beam of the first laser stops at the second laser, and the beam of the second laser at the first.
     expect([steps(beam, 0)?.at(-1), steps(beam, 1)?.at(-1)]).toEqual([4, 0]);
+  });
+});
+
+describe("latics water areas", () => {
+  // rules.md: "Each area of water is a rectangle, and two areas do not touch, also not at a corner."
+  // The board draws each area as one shape.
+  it("gives each area of water as its first and its last row and column", () => {
+    const rows = [".....", ".~~..", ".~~..", "....~", "....~"];
+    expect(waterAreas(toWater({ board: rows, water: rows }), 5)).toEqual([
+      { top: 1, left: 1, bottom: 2, right: 2 },
+      { top: 3, left: 4, bottom: 4, right: 4 },
+    ]);
+  });
+
+  it("gives no area for a board without water", () => {
+    expect(waterAreas(toWater({ board: noWater(4) }), 4)).toEqual([]);
+  });
+});
+
+describe("latics water at the edge of the board", () => {
+  // rules.md: "A diagonal beam in water cannot get out. At the edge of the water, it reflects back in."
+  // "The edge of the board is an edge of the water too."
+  it("reflects a diagonal beam in water at the edge of the board", () => {
+    const rows = [".....", ".....", ".....", "~~~~~", "~~~~~"];
+    const board = boardOf([".....", ".....", ".....", ".....", ".L..."], rows, [white("SE")]);
+    // The laser is at row 5, column 2 (index 21). Down is the edge of the board. The beam reflects at the corner
+    // of the square into row 5, column 3 (index 22), and goes up and right to row 4, column 4 (index 18).
+    expect(steps(traceBeam(board))?.slice(0, 2)).toEqual([22, 18]);
+  });
+
+  it("lets a straight beam in water go off the board", () => {
+    const rows = [".....", ".....", ".....", "~~~~~", "~~~~~"];
+    const board = boardOf([".....", ".....", ".....", ".....", ".L..."], rows, [white("S")]);
+    expect(firstPart(traceBeam(board)).end).toBe("edge");
   });
 });

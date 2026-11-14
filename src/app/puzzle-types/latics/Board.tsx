@@ -14,7 +14,9 @@ export function Board({ puzzle }: { puzzle: LaticsPuzzle }) {
 
   return (
     <div className={shared.game}>
-      <Grid game={game} />
+      <div className={shared.stage}>
+        <Grid game={game} />
+      </div>
 
       <Controls game={game} />
 

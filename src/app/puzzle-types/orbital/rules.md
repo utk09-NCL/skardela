@@ -20,8 +20,9 @@ Launch the probe into the ring. Make the fewest misses.
 - At the start, the board shows the probe at the launch point, the ring, the planets and "Misses: 0."
 - Before a launch, an arrow from the probe shows the angle. The length of the arrow shows the power.
 - After a launch, its path stays on the board as a faint line. The board shows the paths of all earlier launches.
-- The probe is a small diamond. The ring is a thick circle outline. Each planet is a full circle, with the radius of its size.
-- The path of the current flight is a solid line. The paths of earlier launches are faint dashed lines.
+- The probe is a small diamond. The ring is a dashed circle outline. Each planet is a full circle, with the radius of its size.
+- A big or a medium planet is blue. A small planet is grey. A soft halo around each planet shows its pull: a bigger planet has a bigger halo.
+- The path of the current flight is a dotted line. The paths of earlier launches are faint dashed lines.
 
 ## Rules
 
@@ -68,7 +69,7 @@ Launch the probe into the ring. Make the fewest misses.
 
 ## Score
 
-- The score is the misses. A solve with the first launch has 0 misses.
+- Score: each launch that does not reach the ring. 0 is a perfect solve: a solve with the first launch.
 - The board shows the misses, for example "Misses: 2." At the start, it shows "Misses: 0."
 
 ## Edge cases

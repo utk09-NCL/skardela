@@ -26,11 +26,22 @@ const arrowSteps: Partial<Record<string, { readonly row: number; readonly column
 
 // The square that an arrow key moves to. At the edge of the board, the focus stays on the same square.
 // A key that is not an arrow key gives undefined.
-export function squareAfterArrow(index: number, key: string, size: number): number | undefined {
+// "isGap" tells the places that are not squares, for example on the Guzzle board. The key goes past them.
+// When only gaps are left in the direction, the focus stays on the same square.
+export function squareAfterArrow(
+  index: number,
+  key: string,
+  size: number,
+  isGap: (place: number) => boolean = () => false,
+): number | undefined {
   const step = arrowSteps[key];
   if (step === undefined) return undefined;
-  const { row, column } = positionOf(index, size);
-  const next = { row: row + step.row, column: column + step.column };
-  const isOnBoard = next.row >= 0 && next.row < size && next.column >= 0 && next.column < size;
-  return isOnBoard ? next.row * size + next.column : index;
+  let { row, column } = positionOf(index, size);
+  for (;;) {
+    row += step.row;
+    column += step.column;
+    const isOnBoard = row >= 0 && row < size && column >= 0 && column < size;
+    if (!isOnBoard) return index;
+    if (!isGap(row * size + column)) return row * size + column;
+  }
 }

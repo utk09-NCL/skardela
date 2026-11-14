@@ -10,11 +10,11 @@ const mistakeCount = (count: number) => `${count} ${mistakeWord(count)}`;
 // The text of the Guzzle puzzle type.
 export const guzzle = {
   name: "Guzzle",
-  summary: "Find four words that cross at the center letter. Make the fewest mistakes.",
+  summary: "Find four words that cross at the centre letter. Make the fewest mistakes.",
   // The three short rules show at all times. The rules key tells the meaning of each square colour.
   // The other rules are under "More rules". It is open only on the first visit.
   rules: [
-    "Four words of the same length cross at the center letter.",
+    "Four words of the same length cross at the centre letter.",
     "An arrow shows where each word starts. Select a square to see the clue of its word.",
     "Make all squares green with the fewest mistakes.",
   ] satisfies Rule[],
@@ -27,16 +27,19 @@ export const guzzle = {
     { text: "not in this word", sample: { fill: "red", symbol: symbols.guzzle.absent } },
   ] satisfies KeyItem[],
   moreRules: {
-    label: "More rules: modes, keys, mistakes",
+    label: "More rules: modes, letter keys and mistakes",
     rules: [
       `The words go across, down and on the two diagonals. An arrow (${Object.values(symbols.guzzle.arrows).join(" ")}) shows the direction to read the word.`,
-      "Before you start, select a mode. The timer starts when you select it.",
-      "With bank: the letter keys show only the letters that the words still need. A number on a key shows how many squares need that letter, when more than one square needs it.",
-      "Without bank: the letter keys show all letters from A to Z. Use the clues to find the words.",
-      "Put a letter in a square. After a green letter, the cursor goes to the next square of the same word.",
+      "Before you start, select a mode. The timer starts then. With bank: the letter keys show only the letters that the words still need. A number on a key shows how many squares need that letter. Without bank: the letter keys show A to Z.",
+      "After a green letter, the cursor goes to the next square of the same word.",
       `The letter keys show what you know about the selected square. ${symbols.guzzle.absent}: the letter is not in this square. ${symbols.guzzle.present}: the word has the letter.`,
-      "A wrong letter adds a mistake. A letter that you already know is wrong does not add a mistake.",
     ] satisfies Rule[],
+    controls: [
+      "Mouse and touch: select a square, then select a letter key.",
+      "Keyboard: the arrow keys move between the squares. Type a letter to put it in the square with the focus.",
+    ] satisfies Rule[],
+    scoreRule:
+      "Score: each wrong letter. A letter that you already know is wrong does not count. 0 is a perfect solve.",
   },
   // The score of a solve: the number of mistakes. The home page and the result card show it.
   score: mistakeCount,

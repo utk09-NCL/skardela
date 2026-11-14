@@ -23,16 +23,17 @@ export const numpuz = {
   rulesKey: [] satisfies KeyItem[],
   // The other rules are under "More rules".
   moreRules: {
-    label: "More rules: blanks and checking",
+    label: "More rules: the order, fractions and checks",
     rules: [
-      "Each blank takes one operator.",
-      "Select a blank. Then choose an operator to put in it.",
-      "Fill every blank. Then select Check.",
-      // The board counts the mistakes for the score. See "machine.ts".
-      "A check with a wrong answer is one mistake. Change an operator before you check again.",
-      // The keys that the board reads are in "src/app/puzzle-types/numpuz/keys.ts".
-      `With a keyboard: type +, -, * or / on a blank. * gives ${multiply} and / gives ${divide}.`,
+      "Operators of the same kind go from left to right.",
+      "A division can give a fraction. Only the result of the full equation must be equal to the target.",
+      "Fill every blank. Then select Check. Change an operator before you check again.",
     ] satisfies Rule[],
+    controls: [
+      "Select a blank. Then select an operator to put in it.",
+      `Keyboard: type +, -, * or / on a blank. * gives ${multiply} and / gives ${divide}.`,
+    ] satisfies Rule[],
+    scoreRule: "Score: each check with a wrong answer. 0 is a perfect solve.",
   },
   // The score of a solve: the number of mistakes. The home page and the result card show it.
   score: mistakeCount,

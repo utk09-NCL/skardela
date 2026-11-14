@@ -18,10 +18,9 @@ export function Board({ puzzle }: { puzzle: GuzzlePuzzle }) {
 
   return (
     <div className={shared.game}>
-      <fieldset className={shared.board}>
-        <legend className="visually-hidden">{words.boardLabel}</legend>
+      <div className={shared.stage}>
         <Grid game={game} />
-      </fieldset>
+      </div>
 
       <output className={styles.mistakes}>{words.mistakes(game.score)}</output>
 

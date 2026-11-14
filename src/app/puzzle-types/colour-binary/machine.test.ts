@@ -93,8 +93,19 @@ describe("colour binary machine keys, undo and hints", () => {
     expect(transition(twice, { type: "undo" })).toBe(twice);
   });
 
+  // rules.md: "While a hint shows, Hint does nothing. Your next change hides the hint, and then Hint works again."
+  it("ignores Hint while a hint shows, and accepts it again after a change", () => {
+    const hinted = transition(start, { type: "askHint" });
+    expect(canAskHint(hinted)).toBe(false);
+    expect(transition(hinted, { type: "askHint" })).toBe(hinted);
+    expect(scoreOf(hinted)).toBe(1);
+    const changed = transition(hinted, { type: "tap", index: open });
+    expect(canAskHint(changed)).toBe(true);
+    expect(scoreOf(transition(changed, { type: "askHint" }))).toBe(2);
+  });
+
   it("counts only the hints that the player got, and gives the square of the last change", () => {
-    expect(scoreOf(play(start, [{ type: "askHint" }, { type: "askHint" }]))).toBe(2);
+    expect(scoreOf(play(start, [{ type: "askHint" }, { type: "askHint" }]))).toBe(1);
     // An empty board has no hint. A request without a hint does not count.
     const empty = initialState({ start: ["....", "....", "....", "...."] });
     expect(scoreOf(transition(empty, { type: "askHint" }))).toBe(0);
