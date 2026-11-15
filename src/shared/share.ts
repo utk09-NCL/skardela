@@ -18,6 +18,14 @@ export function marksText(results: readonly (SolveResult | undefined)[]): string
   return results.map((result) => symbols.share[levelMark(result)]).join("");
 }
 
+// The mark of one square character of a share text, for example "clean" for a green square.
+// The result card uses it to colour each square on the screen.
+export function markOfSquare(character: string): LevelMark | undefined {
+  return (Object.keys(symbols.share) as LevelMark[]).find(
+    (mark) => symbols.share[mark] === character,
+  );
+}
+
 // "copied": the text is on the clipboard. "shared": the share menu of the device sent the text.
 // "cancelled": the player closed the share menu. "failed": the browser did not let the page copy the text.
 export type ShareOutcome = "copied" | "shared" | "cancelled" | "failed";

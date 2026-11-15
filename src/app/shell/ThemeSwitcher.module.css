@@ -1,48 +1,49 @@
-/* The label holds the list and draws the arrow, so the arrow has space inside the box. */
+/* Two buttons in one box. The pressed button has a soft fill, as the tabs of the header. */
 .switcher {
-  position: relative;
-  display: inline-flex;
-}
-
-/* The arrow is two borders of a turned square. It has the text colour, so it follows the theme. */
-.switcher::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: 0.875rem;
-  width: 0.4rem;
-  height: 0.4rem;
-  border-right: 2px solid var(--text-muted);
-  border-bottom: 2px solid var(--text-muted);
-  transform: translateY(-70%) rotate(45deg);
-  pointer-events: none;
-}
-
-.select {
-  min-height: 2.25rem;
-  padding: 0.25rem 2.25rem 0.25rem 0.75rem;
-  border: 0;
+  display: flex;
+  flex-shrink: 0;
+  gap: 2px;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 3px;
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  background-color: var(--surface-muted);
+  background-color: var(--surface);
+}
+
+.choice {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 1.75rem;
+  border-radius: 7px;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  line-height: 1;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.choice:hover {
   color: var(--text-h);
-  cursor: pointer;
-  appearance: none;
-  transition: background-color 150ms ease;
 }
 
-/* The same soft fill and hover as a secondary button. */
-.select:hover {
-  background-color: var(--surface-muted-hover);
+/* The pressed button has an edge too, so colour is not the only signal. "--line" has 3:1 or more on the fill. */
+.choice[aria-pressed="true"] {
+  background-color: var(--surface-muted);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--text-h);
 }
 
-/* A small screen has little space in the header, thus the list is smaller. */
+.choice:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* A small screen has little space in the header, thus the buttons are narrower. They stay 24 px or more. */
 @media (max-width: 40rem) {
-  .select {
-    padding: 0.25rem 1.75rem 0.25rem 0.5rem;
-    font-size: 0.875rem;
-  }
-
-  .switcher::after {
-    right: 0.625rem;
+  .choice {
+    width: 1.75rem;
   }
 }

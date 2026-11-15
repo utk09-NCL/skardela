@@ -21,9 +21,9 @@ function logRestart({ type, puzzle }: LoadedPuzzle) {
   });
 }
 
-// The bar above the rules. "Restart" starts the same puzzle again, after one question.
+// The buttons next to the timer. "Restart" starts the same puzzle again, after one question.
 // "Random puzzle" opens a different puzzle of the same type and level, if possible one that the player did not solve.
-// While the question is open, it fills the bar.
+// While the question is open, it takes the place of the buttons.
 // The bar is outside the board, thus each puzzle type gets it. The page keeps the bar when it opens a new puzzle,
 // thus "Random puzzle" keeps the focus.
 type PuzzleActionsProps = { loaded: LoadedPuzzle; onRestart: () => void };
@@ -32,7 +32,7 @@ export function PuzzleActions({ loaded, onRestart }: PuzzleActionsProps) {
   const navigate = useNavigate();
   const { puzzle, others } = loaded;
   // The question belongs to one puzzle. A different puzzle, for example after the Back button, closes it.
-  const { isOpen, buttonRef, yesRef, open, close } = useConfirm(puzzle.id);
+  const { isOpen, buttonRef, noRef, open, close } = useConfirm(puzzle.id);
 
   const restart = () => {
     logRestart(loaded);
@@ -53,7 +53,7 @@ export function PuzzleActions({ loaded, onRestart }: PuzzleActionsProps) {
           question={page.restartQuestion}
           yes={page.restartYes}
           no={page.restartNo}
-          yesRef={yesRef}
+          noRef={noRef}
           onYes={restart}
           onNo={close}
         />

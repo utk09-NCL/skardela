@@ -38,8 +38,11 @@ export const numpuz = {
   // The score of a solve: the number of mistakes. The home page and the result card show it.
   score: mistakeCount,
   scoreWord: mistakeWord,
+  // The short label of the score under the stage, for example "Mistakes 2". See "src/shared/StatusRow.tsx".
+  metric: "Mistakes",
   boardLabel: "Numpuz board",
-  target: (target: number) => `Target: ${target}`,
+  // The label above the target number. The CSS shows it in capitals.
+  targetLabel: "Target",
   // The board shows these symbols for the operators and for an empty blank.
   symbols: symbols.numpuz,
   operatorNames: { "+": "plus", "-": "minus", "\u00D7": "times", "\u00F7": "divided by" },

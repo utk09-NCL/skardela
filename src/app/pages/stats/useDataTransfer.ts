@@ -7,7 +7,7 @@ import { parseImportText, toExportText } from "../../../shared/state/storage-for
 import { useAppStore } from "../../../shared/state/store";
 import { text } from "../../../text/en";
 
-const words = text.home.stats.data;
+const words = text.stats.data;
 // An export file of 2000 solves is about 30 KB. A much larger file is not a Skardela data file.
 const maxImportBytes = 5 * 1024 * 1024;
 const log = getLogger("ui.data-transfer");

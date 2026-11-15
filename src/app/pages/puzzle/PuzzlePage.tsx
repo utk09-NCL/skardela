@@ -11,8 +11,8 @@ import { PuzzleSide } from "./PuzzleSide";
 
 const page = text.puzzlePage;
 
-// The puzzle page is one panel, as "Now playing" in the redesign: the header with the timer and a close link,
-// then the board, and the side column with the actions and the rules.
+// The puzzle page: the header with the level tabs, the timer and the actions,
+// then the board on the left and the side column with the result card and the rules on the right.
 export function PuzzlePage() {
   const loaded = useLoaderData<typeof puzzleLoader>();
   // Each restart gives the board a new key. React then removes the old board and makes a new board,
@@ -22,9 +22,9 @@ export function PuzzlePage() {
 
   const { type, puzzle } = loaded;
   return (
-    <div className={styles.panel}>
+    <>
       <title>{page.title(text[type].name, puzzle.id, text.siteName)}</title>
-      <PuzzleHeader loaded={loaded} />
+      <PuzzleHeader loaded={loaded} onRestart={() => setAttempt((count) => count + 1)} />
       {/* The board comes first, so a small screen shows the board without scrolling.
           On a wide screen, the CSS puts the side column on the right. */}
       <div className={styles.layout}>
@@ -38,8 +38,8 @@ export function PuzzlePage() {
             </Suspense>
           </ErrorBoundary>
         </div>
-        <PuzzleSide loaded={loaded} onRestart={() => setAttempt((count) => count + 1)} />
+        <PuzzleSide loaded={loaded} />
       </div>
-    </div>
+    </>
   );
 }

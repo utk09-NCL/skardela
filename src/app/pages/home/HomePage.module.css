@@ -2,20 +2,23 @@
 
 /* ---------- Hero ---------- */
 
-/* The text is on the left and the progress of today is on the right. On a small screen, they are one column. */
+/* The text is on the left and the progress of today is on the right. On a small screen, they are one column.
+   The progress is in the middle of the height of the text, also when the text has the Continue link. */
 .hero {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
-  gap: 1.25rem;
+  gap: 2rem 3rem;
+  margin-block: clamp(0.5rem, 3vw, 1rem) clamp(2.5rem, 6vw, 4rem);
 }
 
 .heroText {
   display: flex;
+  flex: 1 1 26rem;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.75rem;
+  gap: 1rem;
   max-width: 40rem;
 }
 
@@ -23,19 +26,23 @@
   color: var(--text-muted);
   font-family: var(--mono);
   font-size: 0.75rem;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .heroTitle {
   margin: 0;
-  font-size: clamp(1.875rem, 5vw, 3rem);
-  line-height: 1.05;
-  text-wrap: pretty;
+  font-size: clamp(2.75rem, 6.4vw, 4.5rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
 }
 
 .intro {
+  max-width: 34rem;
+  color: var(--text-muted);
   font-size: 1.0625rem;
+  line-height: 1.5;
 }
 
 /* The link to the puzzle that the player did not finish. It shows only the name of the puzzle. */
@@ -65,68 +72,56 @@
   text-transform: uppercase;
 }
 
-.ctas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-/* The two links of the hero look like buttons. The main action has the accent colour. */
-.primary,
-.secondary {
-  display: inline-flex;
-  align-items: center;
-  min-height: 3rem;
-  padding: 0.625rem 1.25rem;
-  border-radius: 14px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background-color 150ms ease;
-}
-
-.primary {
-  background-color: var(--accent);
-  color: var(--on-accent);
-}
-
-.primary:hover {
-  background-color: var(--accent-hover);
-}
-
-.secondary {
-  border: 1px solid var(--border);
-  background-color: var(--surface);
-  color: var(--text-h);
-}
-
-.secondary:hover {
-  background-color: var(--surface-muted);
-}
-
-/* The progress of today: one segment for each puzzle, then the count and the time to new puzzles. */
+/* The progress of today: the ring, then the title and the time to new puzzles. */
 .progress {
   display: flex;
-  flex: 0 1 20rem;
-  flex-direction: column;
-  gap: 0.5rem;
-  min-width: 15rem;
+  align-items: center;
+  gap: 1.125rem;
 }
 
-.segments {
+/* The ring is a circle of two colours, with a hole in its middle. The mask uses only the alpha of its colours,
+   thus "black" makes the ring show and "transparent" makes the hole. The count is in the hole. */
+.ring {
+  position: relative;
   display: grid;
-  gap: 3px;
-  padding: 0;
-  list-style: none;
+  flex-shrink: 0;
+  place-items: center;
+  width: 5.25rem;
+  height: 5.25rem;
+  max-width: none;
+  color: var(--text-h);
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
 }
 
-.segment {
-  height: 8px;
-  border-radius: 4px;
-  background-color: var(--border);
+.ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(var(--brand) calc(var(--part) * 1turn), var(--border) 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 6px), black calc(100% - 5px));
 }
 
-.segment[data-solved="true"] {
-  background-color: var(--brand);
+.ringCount {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.ringTotal {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.progressText {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.progressTitle {
+  color: var(--text-h);
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .progressLine {
@@ -135,80 +130,158 @@
   font-size: 0.75rem;
 }
 
-/* ---------- Sections ---------- */
-
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.875rem;
-  margin-top: clamp(1.75rem, 4vw, 2.75rem);
-  /* A link to a section must not put the heading under the sticky header. */
-  scroll-margin-top: 4.5rem;
-}
-
-.sectionHeader {
-  display: grid;
-  gap: 0.25rem;
-}
-
-.section h2 {
-  margin: 0;
-  font-size: 1.375rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-
-.sectionIntro {
-  color: var(--text-muted);
-  font-size: 0.9375rem;
-}
-
 /* ---------- Today's puzzles ---------- */
+
+.today {
+  display: grid;
+  gap: 1.25rem;
+}
+
+/* The chips above the cards. The pressed chip has the colours of the text and the page the other way round. */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.375rem;
+  padding: 0.5rem 0.875rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-h);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+.chip:hover {
+  border-color: var(--line);
+}
+
+.chip[aria-pressed="true"] {
+  border-color: var(--text-h);
+  background-color: var(--text-h);
+  color: var(--bg);
+}
+
+.chipCount {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  opacity: 0.75;
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
-  gap: 0.875rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18.125rem), 1fr));
+  gap: 1rem;
   padding: 0;
   list-style: none;
 }
 
-/* Each card has three rows: the name and the summary, the levels, and the main link.
-   The rows come from the grid of the cards (subgrid), thus the rows of all cards in a line align,
-   also when the summary of one card is longer. */
+/* Each card has three rows: the icon with the name and the details, the summary, and the levels.
+   The summary fills the free space, so the levels of all cards in a row are on one line. */
 .card {
-  display: grid;
-  grid-row: span 3;
-  grid-template-rows: subgrid;
-  row-gap: 1rem;
-  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.125rem;
   border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
+  border-radius: 20px;
   background-color: var(--surface);
+  transition:
+    border-color 150ms ease,
+    translate 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* The card goes up a little under the pointer, as in the design. */
+.card:hover {
+  border-color: var(--line);
+  translate: 0 -3px;
 }
 
 .cardHead {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.875rem;
 }
 
 .cardText {
   display: grid;
-  gap: 0.25rem;
+  flex: 1;
+  gap: 0.125rem;
   min-width: 0;
 }
 
 .cardTitle {
+  margin: 0;
   font-size: 1.3125rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.cardDetails {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.125rem 0.625rem;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+}
+
+.author {
+  color: var(--text-h);
+}
+
+/* The tag of a new puzzle type: a small pill. It is text, so colour is not the only signal. */
+.newTag {
+  padding: 0.125rem 0.4375rem;
+  border-radius: 999px;
+  background-color: var(--accent-bg);
+  color: var(--accent-text);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .summary {
-  color: var(--text);
+  flex: 1;
+  color: var(--text-muted);
   font-size: 0.875rem;
-  line-height: 1.4;
+  line-height: 1.45;
+}
+
+/* "Share" shows after the first solve. It is a small button at the top right of the card. */
+.share {
+  align-self: flex-start;
+  min-height: 2.25rem;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-h);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.share:hover {
+  background-color: var(--surface-muted);
 }
 
 /* The three levels have the same width and stay in one row. */
@@ -220,452 +293,158 @@
   list-style: none;
 }
 
+/* A level is a link with two lines: the name and the status. The next level to play has a ring.
+   The ring is a shadow inside the edge, so the size of the link does not change. */
 .level {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  height: 100%;
-  padding: 0.5625rem 0.625rem;
-  border-radius: 12px;
-  background-color: var(--surface-muted);
+  gap: 0.1875rem;
+  min-height: 3rem;
+  padding: 0.5rem 0.625rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   color: var(--text-h);
   text-decoration: none;
+  transition: border-color 150ms ease;
 }
 
 .level:hover {
-  background-color: var(--surface-muted-hover);
+  border-color: var(--accent-border);
 }
 
-/* The next level to play has a ring, as in the redesign. */
+.level:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .level[data-next="true"] {
-  box-shadow: inset 0 0 0 2px var(--brand);
-  background-color: var(--surface);
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 0.5px var(--accent);
 }
 
-/* A solved level has a soft green fill and edge, and a check mark. The next level keeps its ring. */
 .level[data-solved="true"] {
-  box-shadow: inset 0 0 0 1px var(--success-border);
-  background-color: var(--success-bg);
+  background-color: var(--surface-muted);
 }
 
 .levelName {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.25rem;
   font-size: 0.8125rem;
   font-weight: 600;
-}
-
-.levelMark {
-  color: var(--success);
 }
 
 .levelStatus {
   color: var(--text-muted);
   font-family: var(--mono);
   font-size: 0.6875rem;
+  white-space: nowrap;
+}
+
+.level[data-next="true"] .levelStatus {
+  color: var(--accent-text);
 }
 
 .level[data-solved="true"] .levelStatus {
   color: var(--success);
 }
 
-/* The last row of a card: the main link, or the total of a solved card, and "Share" after a solve. */
-.cardActions {
-  display: flex;
-  align-self: end;
-  gap: 0.5rem;
-}
-
-/* The main link of a card. It fills the row next to "Share". */
-.cta,
-.allSolved {
-  display: flex;
-  flex: 1 1 auto;
-  align-items: center;
-  justify-content: center;
-  min-height: 3rem;
-  padding-inline: 0.75rem;
-  border-radius: 14px;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  text-align: center;
-}
-
-.share {
-  flex: 0 0 auto;
-  min-height: 3rem;
-  padding-inline: 1rem;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background-color: var(--surface);
-  color: var(--text-h);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.share:hover {
-  border-color: var(--line);
-  background-color: var(--surface-muted);
-}
-
-.cta {
-  background-color: var(--text-h);
-  color: var(--bg);
-  text-decoration: none;
-}
-
-.cta:hover {
-  background-color: color-mix(in srgb, var(--text-h) 85%, var(--bg));
-}
-
-.allSolved {
-  background-color: var(--surface-muted);
-  color: var(--text-muted);
-}
-
-/* ---------- Your stats ---------- */
-
-.statsHeader {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.375rem 1rem;
-}
-
-.kpis {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
-  gap: 0.625rem;
-  padding: 0;
-  list-style: none;
-}
-
-.kpi {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 1rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background-color: var(--surface);
-}
-
-.kpiValue {
-  color: var(--text-h);
-  font-family: var(--mono);
-  font-size: 1.625rem;
-  font-weight: 600;
-}
-
-.kpiValue[data-main="true"] {
-  color: var(--accent-text);
-}
-
-.kpiLabel {
-  color: var(--text);
-  font-size: 0.8125rem;
-}
-
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 25rem), 1fr));
-  gap: 0.875rem;
-}
-
-.panel {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 1.25rem;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  background-color: var(--surface);
-}
-
-.panelTitle {
-  color: var(--text-h);
-  font-size: 1.0625rem;
-  font-weight: 700;
-  text-align: left;
-}
-
-/* The calendar: seven columns, Monday first. */
-.weekdays,
-.days {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 4px;
-}
-
-.weekdays {
-  color: var(--text-muted);
-  font-family: var(--mono);
-  font-size: 0.625rem;
-  text-align: center;
-}
-
-.days {
-  padding: 0;
-  list-style: none;
-}
-
-.day {
-  display: block;
-  aspect-ratio: 1.6;
-  border-radius: 4px;
-  background-color: var(--surface-muted);
-}
-
-/* The colour steps of the calendar: more solves give a stronger orange. */
-.day[data-step="1"] {
-  background-color: color-mix(in srgb, var(--brand) 40%, var(--surface));
-}
-
-.day[data-step="2"] {
-  background-color: color-mix(in srgb, var(--brand) 70%, var(--surface));
-}
-
-.day[data-step="3"] {
-  background-color: var(--brand);
-}
-
-.day[data-today="true"] {
-  box-shadow: 0 0 0 2px var(--text-h);
-}
-
-/* A day after today has no data yet. It shows only as an outline. */
-.day[data-future="true"] {
-  background-color: transparent;
-  box-shadow: inset 0 0 0 1px var(--border);
-}
-
-.legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  padding: 0;
-  list-style: none;
-  color: var(--text-muted);
-  font-family: var(--mono);
-  font-size: 0.6875rem;
-}
-
-.legend li {
-  display: flex;
-  align-items: center;
-  gap: 0.3125rem;
-}
-
-.legend .day {
-  width: 10px;
-  height: 10px;
-  aspect-ratio: auto;
-  border-radius: 2px;
-}
-
-/* The personal bests: the name of the puzzle type, then the best time of each level. */
-.bests {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-}
-
-.bests caption {
-  padding-bottom: 0.5rem;
-}
-
-.bests th,
-.bests td {
-  padding: 0.4375rem 0;
-  text-align: right;
-}
-
-.bests thead th {
-  color: var(--text-muted);
-  font-family: var(--mono);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.bests tbody tr {
-  border-top: 1px solid var(--border);
-}
-
-.bests tbody th {
-  color: var(--text-h);
-  font-weight: 400;
-  text-align: left;
-}
-
-.bests td {
-  width: 4.5rem;
-  color: var(--text-h);
-  font-family: var(--mono);
-  vertical-align: top;
-}
-
-/* A level without a solve has a quiet dash. */
-.bests td[data-empty="true"] {
-  color: var(--text-muted);
-}
-
-/* The name of a puzzle type is a button. It looks like the text of the row, with a small arrow. */
-.bestsToggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  min-height: 1.75rem;
-  color: var(--text-h);
-  text-align: left;
-}
-
-.bestsToggle::after {
-  content: "";
-  width: 0.375rem;
-  height: 0.375rem;
-  border-right: 1.5px solid var(--text-muted);
-  border-bottom: 1.5px solid var(--text-muted);
-  transform: translateY(-25%) rotate(45deg);
-  transition: transform 150ms ease;
-}
-
-.bestsToggle[aria-expanded="true"]::after {
-  transform: translateY(25%) rotate(-135deg);
-}
-
-.bestsToggle:hover {
-  color: var(--accent-text);
-}
-
-/* The average time shows under the best time when the row is open. */
-.average {
-  display: block;
-  color: var(--text-muted);
-  font-size: 0.6875rem;
-  white-space: nowrap;
-}
-
-.bestsNote {
-  color: var(--text-muted);
-  font-family: var(--mono);
-  font-size: 0.6875rem;
-}
-
-/* Before the first solve: one message and a link, in a panel with a dashed edge. */
-.noSolves {
-  align-content: start;
-  border-style: dashed;
-}
-
-.noSolvesLink {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  min-height: 2.75rem;
-  padding: 0.5rem 1rem;
-  border-radius: 12px;
-  background-color: var(--text-h);
-  color: var(--bg);
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.noSolvesLink:hover {
-  background-color: color-mix(in srgb, var(--text-h) 85%, var(--bg));
-}
-
-/* Export, import and clear, in one row. The message and the note are under the buttons. */
-.data {
-  display: grid;
-  gap: 0.5rem;
-}
-
-.dataButtons {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.dataMessage {
-  min-height: 1.5em;
-  color: var(--success);
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-
-.dataMessage[data-error="true"] {
-  color: var(--danger);
-}
-
-.dataNote {
-  max-width: none;
-  color: var(--text-muted);
-  font-size: 0.8125rem;
-}
-
 /* ---------- How it works ---------- */
+
+/* Three steps in one row, between two lines. On a small screen, each step has its own row. */
+.stepsSection {
+  margin-top: clamp(3rem, 7vw, 4rem);
+  padding-block: 2rem;
+  border-block: 1px solid var(--border);
+}
 
 .steps {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
-  gap: 0.875rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16.25rem), 1fr));
+  gap: 0.75rem 2.5rem;
   padding: 0;
   list-style: none;
   counter-reset: step;
 }
 
-/* Each step shows its number in a circle. The number comes from the ordered list.
-   The content starts at the top, so the titles of all steps are in one line. */
+/* Each step shows its number, for example "01", in the accent colour. The number comes from the ordered list.
+   It is in the first column. The title and the text are in the second column. */
+/* "align-content: start" keeps the title and the text at the top, also when a step in the row is taller. */
 .step {
   display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
   align-content: start;
-  gap: 0.375rem;
-  padding: 1.25rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  background-color: var(--surface);
+  column-gap: 0.875rem;
+  row-gap: 0.25rem;
   counter-increment: step;
 }
 
 .step::before {
-  content: counter(step);
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  margin-bottom: 0.25rem;
-  border-radius: 50%;
-  background-color: var(--accent-bg);
+  content: counter(step, decimal-leading-zero);
+  grid-row: span 2;
+  padding-top: 0.25rem;
   color: var(--accent-text);
   font-family: var(--mono);
-  font-weight: 600;
+  font-size: 0.8125rem;
 }
 
 .stepTitle {
-  font-size: 1.125rem;
+  margin: 0;
+  font-size: 1.0625rem;
+}
+
+.step p {
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.5;
 }
 
 /* ---------- Questions ---------- */
 
+/* The heading and the link on the left, and the questions on the right. On a small screen, they are one column. */
+.faqSection {
+  display: grid;
+  gap: 1.5rem 4rem;
+  margin-top: clamp(3rem, 7vw, 4rem);
+}
+
+@media (min-width: 52rem) {
+  .faqSection {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    align-items: start;
+  }
+}
+
+.faqIntro {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.faqIntro h2 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.faqIntro p {
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+}
+
 .faq {
-  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid var(--border);
 }
 
 .question {
-  border-bottom: 1px solid var(--border);
+  border-top: 1px solid var(--border);
 }
 
 .question summary {
   position: relative;
-  padding: 1rem 2.5rem 1rem 0;
+  padding: 1.125rem 2.5rem 1.125rem 0;
   color: var(--text-h);
-  font-weight: 600;
+  font-size: 1.0625rem;
+  font-weight: 500;
   list-style: none;
   cursor: pointer;
 }
@@ -674,24 +453,34 @@
   display: none;
 }
 
-/* The arrow is two borders of a turned square, as in the theme switcher. It turns when the answer opens. */
+/* The plus sign is two thin lines. It turns to a cross when the answer opens. */
 .question summary::after {
   content: "";
   position: absolute;
   top: 50%;
-  right: 0.75rem;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-right: 2px solid var(--text-muted);
-  border-bottom: 2px solid var(--text-muted);
-  transform: translateY(-70%) rotate(45deg);
+  right: 0.25rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  background:
+    linear-gradient(var(--text-muted), var(--text-muted)) center / 100% 1.5px no-repeat,
+    linear-gradient(var(--text-muted), var(--text-muted)) center / 1.5px 100% no-repeat;
+  transform: translateY(-50%);
   transition: transform 150ms ease;
 }
 
 .question[open] summary::after {
-  transform: translateY(-30%) rotate(-135deg);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.question summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .question p {
-  padding-bottom: 1rem;
+  max-width: 38.75rem;
+  padding-bottom: 1.25rem;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.55;
 }

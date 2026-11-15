@@ -25,7 +25,8 @@ const blueMark = { symbol: blue, colour: "blue" } as const;
 export const latics = {
   name: "Latics",
   summary: "Turn the mirrors and send the laser beam to the monster.",
-  // The three short rules show at all times. The rules key shows the monster and the materials: water, prisms and filters.
+  // The three short rules show at all times. The rules key shows the monster, the materials (water, prisms and
+  // filters) and a wall.
   // The other rules are under "More rules". It is open only on the first visit.
   rules: [
     "Hit each monster with a laser beam.",
@@ -40,6 +41,7 @@ export const latics = {
       sample: { fill: "empty", symbol: symbols.latics.prism },
     },
     { text: "a filter lets only its colour through", sample: { fill: "red", symbol: red } },
+    { text: "a wall stops the beam", sample: { fill: "wall", symbol: "" } },
   ] satisfies KeyItem[],
   moreRules: {
     label: "More rules: levels, the tray, water, prisms and filters",
@@ -80,6 +82,8 @@ export const latics = {
   // The score of a solve: the number of misses. The home page and the result card show it.
   score: missCount,
   scoreWord: missWord,
+  // The short labels of the numbers under the stage, for example "Misses 2". See "src/shared/StatusRow.tsx".
+  metrics: { tray: "Tray mirrors", misses: "Misses" },
   boardLabel: "Latics board",
   symbols: symbols.latics,
   // The direction of the beam in words. "The beam goes up and right 3 squares."

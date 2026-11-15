@@ -14,7 +14,7 @@ export function StreakPill() {
   return (
     <p className={styles.streak}>
       <span className={styles.streakDot} aria-hidden="true" />
-      <span>{streak}</span>
+      <span className={styles.streakCount}>{streak}</span>
       <span className={styles.streakWord}>{text.streak.word}</span>
     </p>
   );

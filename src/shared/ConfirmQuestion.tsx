@@ -1,4 +1,4 @@
-import type { KeyboardEvent, RefObject } from "react";
+import { useId, type KeyboardEvent, type RefObject } from "react";
 import shared from "./Board.module.css";
 import styles from "./ConfirmQuestion.module.css";
 
@@ -9,7 +9,7 @@ type ConfirmQuestionProps = {
   question: string;
   yes: Answer;
   no: Answer;
-  yesRef: RefObject<HTMLButtonElement | null>;
+  noRef: RefObject<HTMLButtonElement | null>;
   onYes: () => void;
   onNo: () => void;
 };
@@ -18,7 +18,10 @@ type ConfirmQuestionProps = {
 // A two-step button is for an action that deletes something, thus "Yes" has the danger colour.
 // A fast double click on the button lands on the question text, not on "Yes", because the text is first.
 // The Escape key is the same as "No", as it closes a dialog.
-export function ConfirmQuestion({ question, yes, no, yesRef, onYes, onNo }: ConfirmQuestionProps) {
+// The focus goes to "No", so a screen reader reads its label first. Each answer has the question as its
+// description, so a screen reader reads the question too, for example "No, keep playing. Restart the puzzle?".
+export function ConfirmQuestion({ question, yes, no, noRef, onYes, onNo }: ConfirmQuestionProps) {
+  const questionId = useId();
   const noOnEscape = (event: KeyboardEvent) => {
     if (event.key === "Escape") onNo();
   };
@@ -26,21 +29,25 @@ export function ConfirmQuestion({ question, yes, no, yesRef, onYes, onNo }: Conf
   const yesClass = `${buttonClass} ${shared.dangerSolid}`;
   return (
     <span className={styles.question}>
-      <span className={styles.text}>{question}</span>
+      <span id={questionId} className={styles.text}>
+        {question}
+      </span>
       <button
-        ref={yesRef}
         type="button"
         className={yesClass}
         aria-label={yes.label}
+        aria-describedby={questionId}
         onKeyDown={noOnEscape}
         onClick={onYes}
       >
         {yes.text}
       </button>
       <button
+        ref={noRef}
         type="button"
         className={buttonClass}
         aria-label={no.label}
+        aria-describedby={questionId}
         onKeyDown={noOnEscape}
         onClick={onNo}
       >

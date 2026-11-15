@@ -1,16 +1,23 @@
 import { useEffect } from "react";
-import { applyTheme, isTheme, themes } from "../../shared/state/theme";
+import { applyTheme } from "../../shared/state/theme";
 import { getLogger } from "../../shared/logger";
 import { useAppStore } from "../../shared/state/store";
+import { useMediaQuery } from "../../shared/useMediaQuery";
 import { text } from "../../text/en";
+import { symbols } from "../../text/symbols";
 import styles from "./ThemeSwitcher.module.css";
 
-// This list lets the player select the system theme, the light theme or the dark theme.
-// A native <select> works with a keyboard and a screen reader without more code.
+const log = getLogger("ui.theme-switcher");
+const choices = ["light", "dark"] as const;
+
+// Two buttons: the light theme and the dark theme. A new player has the "system" theme,
+// thus the button of the theme of the device shows as pressed until the player selects a theme.
+// "Clear my data" sets the "system" theme again.
 export function ThemeSwitcher() {
   const theme = useAppStore((state) => state.theme);
   const setTheme = useAppStore((state) => state.setTheme);
-  const log = getLogger("ui.theme-switcher");
+  const isSystemDark = useMediaQuery("(prefers-color-scheme: dark)", false);
+  const shown = theme === "system" ? (isSystemDark ? "dark" : "light") : theme;
 
   // The effect sets the theme on the page after each change, also after a change in a different tab.
   useEffect(() => {
@@ -18,27 +25,25 @@ export function ThemeSwitcher() {
   }, [theme]);
 
   return (
-    <label className={styles.switcher}>
-      <span className="visually-hidden">{text.theme.label}</span>
-      {/* The name lets the browser identify the field, for example for autofill. */}
-      <select
-        name="theme"
-        className={styles.select}
-        value={theme}
-        onChange={(event) => {
-          const selected = event.target.value;
-          if (!isTheme(selected)) return;
-          // This log helps us track user theme changes during a session.
-          log.info("Theme changed", { theme: selected });
-          setTheme(selected);
-        }}
-      >
-        {themes.map((option) => (
-          <option key={option} value={option}>
-            {text.theme.options[option]}
-          </option>
-        ))}
-      </select>
-    </label>
+    <fieldset className={styles.switcher}>
+      <legend className="visually-hidden">{text.theme.label}</legend>
+      {choices.map((choice) => (
+        <button
+          key={choice}
+          type="button"
+          className={styles.choice}
+          aria-pressed={shown === choice}
+          aria-label={text.theme[choice]}
+          onClick={() => {
+            if (choice === theme) return;
+            // This log helps us track user theme changes during a session.
+            log.info("Theme changed", { theme: choice });
+            setTheme(choice);
+          }}
+        >
+          <span aria-hidden="true">{symbols.theme[choice]}</span>
+        </button>
+      ))}
+    </fieldset>
   );
 }

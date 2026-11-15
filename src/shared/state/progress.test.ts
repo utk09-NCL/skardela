@@ -13,6 +13,7 @@ import {
   isoDuration,
   longestStreak,
   msUntilMidnight,
+  solvesOnDay,
 } from "./progress";
 import type { SolveResult } from "./saved-data";
 
@@ -30,6 +31,18 @@ describe("days", () => {
     expect(addDays("2026-10-31", 1)).toBe("2026-11-01");
     expect(addDays("2026-12-31", 1)).toBe("2027-01-01");
     expect(addDays("2026-03-01", -1)).toBe("2026-02-28");
+  });
+});
+
+describe("solvesOnDay", () => {
+  // The daily puzzles repeat. A solve of the same puzzle on an earlier day is not a solve of today.
+  it("gives only the solves of the day", () => {
+    const earlier = solveOn("2026-11-12", 30, "numpuz-0001");
+    const today = solveOn("2026-11-14", 90, "numpuz-0001");
+    const results = [earlier, solveOn("2026-11-12", 60, "numpuz-0002"), today];
+    expect(solvesOnDay(results, "2026-11-14")).toEqual([today]);
+    expect(bestResult(solvesOnDay(results, "2026-11-14"), "numpuz-0001")).toBe(today);
+    expect(solvesOnDay(results, "2026-11-13")).toEqual([]);
   });
 });
 
@@ -58,9 +71,14 @@ describe("streaks", () => {
 });
 
 describe("calendarDays", () => {
-  // 2026-10-24 is a Saturday.
+  // 2026-10-24 is a Saturday. On that day, the player solved guzzle-0001 two times and guzzle-0002 one time.
   const days = calendarDays(
-    [solveOn("2026-10-24"), solveOn("2026-10-24"), solveOn("2026-10-05")],
+    [
+      solveOn("2026-10-24"),
+      solveOn("2026-10-24"),
+      solveOn("2026-10-24", 60, "guzzle-0002"),
+      solveOn("2026-10-05"),
+    ],
     "2026-10-24",
     5,
   );
@@ -71,10 +89,11 @@ describe("calendarDays", () => {
     expect(days.at(-1)?.day).toBe("2026-10-25");
   });
 
-  it("counts the solves of each day and marks today and the days after it", () => {
+  // A puzzle that the player solved again on the same day counts one time, as in "puzzles solved".
+  it("counts the different puzzles of each day and marks today and the days after it", () => {
     const today = days.find((day) => day.isToday);
-    expect(today).toMatchObject({ day: "2026-10-24", solves: 2, isFuture: false });
-    expect(days.find((day) => day.day === "2026-10-05")?.solves).toBe(1);
+    expect(today).toMatchObject({ day: "2026-10-24", puzzles: 2, isFuture: false });
+    expect(days.find((day) => day.day === "2026-10-05")?.puzzles).toBe(1);
     expect(days.filter((day) => day.isFuture).map((day) => day.day)).toEqual(["2026-10-25"]);
   });
 });

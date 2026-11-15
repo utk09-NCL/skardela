@@ -4,6 +4,7 @@ import { guzzle } from "./guzzle";
 import { home } from "./home";
 import { latics } from "./latics";
 import { puzzlePage } from "./puzzle-page";
+import { stats } from "./stats";
 import { numpuz } from "./numpuz";
 import { orbital } from "./orbital";
 import { tilt } from "./tilt";
@@ -15,6 +16,7 @@ import { tilt } from "./tilt";
 export const text = {
   ...app,
   home,
+  stats,
   puzzlePage,
   "colour-binary": colourBinary,
   guzzle,

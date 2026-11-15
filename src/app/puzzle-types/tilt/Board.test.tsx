@@ -30,8 +30,11 @@ function arrow(direction: Direction): HTMLElement {
   return screen.getByRole("button", { name: words.tiltButton(direction) });
 }
 
-function counts(): HTMLElement {
-  return screen.getByText(/^Tilts: \d+\. Fewest: /u);
+// The tilts and the fewest tilts in the status row, as a screen reader reads them, for example "Tilts: 1. Fewest: 5."
+function counts(): string {
+  const tilts = screen.getByText(/^Tilts: \d+\.$/u).textContent;
+  const fewest = screen.getByText(/^Fewest: /u).textContent;
+  return `${tilts} ${fewest}`;
 }
 
 // A swipe on the board, from one point to a point "across" px to the right and "upDown" px down.
@@ -56,7 +59,7 @@ async function playStepsOneToFour(user: ReturnType<typeof userEvent.setup>, stat
   // Step 2: no ball can move up. The tilt does not count.
   await user.keyboard("{ArrowUp}");
   expect(status).toHaveTextContent("No ball can move up.");
-  expect(counts()).toHaveTextContent("Tilts: 1. Fewest: 5.");
+  expect(counts()).toBe("Tilts: 1. Fewest: 5.");
 
   // Step 3: the arrow button tilts the board down. The blue ball rolls over the red hole.
   await user.click(arrow("down"));
@@ -89,22 +92,22 @@ async function playStepsFiveToSeven(user: ReturnType<typeof userEvent.setup>, st
 
   // Step 6 and step 7: down, then right. The puzzle is solved with 6 tilts, thus 1 extra tilt.
   await user.keyboard("{ArrowDown}");
-  expect(counts()).toHaveTextContent("Tilts: 5. Fewest: 5.");
-  expect(screen.queryByTestId("confetti")).not.toBeInTheDocument();
+  expect(counts()).toBe("Tilts: 5. Fewest: 5.");
+  expect(screen.queryByTestId("solve-burst")).not.toBeInTheDocument();
   await user.keyboard("{ArrowRight}");
   expect(status).toHaveTextContent(
     "Tilt right. The blue ball falls into its hole. Tilts: 6. You solved the puzzle with 1 extra tilt.",
   );
   expect(status).toHaveAttribute("data-solved", "true");
-  expect(counts()).toHaveTextContent("Tilts: 6. Fewest: 5.");
+  expect(counts()).toBe("Tilts: 6. Fewest: 5.");
   expect(square("Row 6, column 4, blue ball in its hole")).toBeInTheDocument();
-  expect(screen.getByTestId("confetti")).toBeInTheDocument();
+  expect(screen.getByTestId("solve-burst")).toBeInTheDocument();
 }
 
 describe("tilt board example", () => {
   it("shows the walls, the balls, the holes and the tilts at the start", () => {
     render(<Board puzzle={puzzle} />);
-    expect(counts()).toHaveTextContent("Tilts: 0. Fewest: 5.");
+    expect(counts()).toBe("Tilts: 0. Fewest: 5.");
     expect(screen.getByRole("status")).toHaveTextContent(words.status.start);
     expect(square("Row 2, column 2, blue ball")).toBeInTheDocument();
     expect(square("Row 5, column 6, red ball")).toBeInTheDocument();
@@ -139,7 +142,7 @@ describe("tilt board example", () => {
     board().focus();
     await user.keyboard("{ArrowUp}");
     swipe(0, 60);
-    expect(counts()).toHaveTextContent("Tilts: 6. Fewest: 5.");
+    expect(counts()).toBe("Tilts: 6. Fewest: 5.");
     expect(status).toHaveTextContent("You solved the puzzle with 1 extra tilt.");
   });
 });
@@ -163,7 +166,7 @@ describe("tilt board controls", () => {
     board().focus();
     await user.keyboard("a{Enter} ");
     await user.keyboard("{Control>}{ArrowUp}{/Control}");
-    expect(counts()).toHaveTextContent("Tilts: 0. Fewest: 5.");
+    expect(counts()).toBe("Tilts: 0. Fewest: 5.");
     expect(screen.getByRole("status")).toHaveTextContent(words.status.start);
   });
 
@@ -198,22 +201,24 @@ describe("tilt board key hint", () => {
   it("shows a key hint that tells the player to click the board", async () => {
     const user = userEvent.setup();
     render(<Board puzzle={puzzle} />);
-    const idle = `${words.symbols.keyboard} ${words.keyHint.idle}`;
-    const active = `${words.symbols.keyboard} ${words.keyHint.active}`;
     // The hint has both texts. The CSS shows one of them, from the focus. The test environment has no CSS.
     // The board has its own help text for a screen reader, thus the hint is hidden from it.
-    expect(screen.getByText(idle).closest("p")).toHaveAttribute("aria-hidden", "true");
-    expect(screen.getByText(active)).toBeInTheDocument();
+    const hint = screen.getByText(words.keyHint.idle).closest("p");
+    expect(hint).toHaveAttribute("aria-hidden", "true");
+    expect(hint).toHaveAttribute("data-hidden", "false");
+    expect(hint).toHaveTextContent(words.symbols.keyboard);
+    expect(screen.getByText(words.keyHint.active)).toBeInTheDocument();
 
     // "A click on the board gives it the focus."
     await user.click(board());
     expect(board()).toHaveFocus();
 
-    // After the solve, the arrow keys do nothing, thus the hint does not show.
+    // After the solve, the arrow keys do nothing, thus the hint is hidden. It keeps its space (CSS "visibility"),
+    // so the board does not move.
     board().focus();
     await user.keyboard("{ArrowDown}{ArrowLeft}{ArrowUp}{ArrowDown}{ArrowRight}");
     expect(screen.getByRole("status")).toHaveTextContent(words.status.solved(0));
-    expect(screen.queryByText(active)).not.toBeInTheDocument();
+    expect(hint).toHaveAttribute("data-hidden", "true");
   });
 });
 
@@ -230,11 +235,11 @@ describe("tilt board motion", () => {
     expect(board().style.getPropertyValue("--slide")).toBe(`${slideTime}ms`);
     board().focus();
     await user.keyboard("{ArrowDown}{ArrowLeft}");
-    expect(counts()).toHaveTextContent("Tilts: 1. Fewest: 5.");
+    expect(counts()).toBe("Tilts: 1. Fewest: 5.");
 
     now.mockReturnValue(1000 + slideTime);
     await user.keyboard("{ArrowLeft}");
-    expect(counts()).toHaveTextContent("Tilts: 2. Fewest: 5.");
+    expect(counts()).toBe("Tilts: 2. Fewest: 5.");
   });
 
   it("moves the balls at once when reduce motion is on", async () => {
@@ -248,7 +253,7 @@ describe("tilt board motion", () => {
     expect(board().style.getPropertyValue("--slide")).toBe("0ms");
     board().focus();
     await user.keyboard("{ArrowDown}{ArrowLeft}");
-    expect(counts()).toHaveTextContent("Tilts: 2. Fewest: 5.");
+    expect(counts()).toBe("Tilts: 2. Fewest: 5.");
   });
 });
 

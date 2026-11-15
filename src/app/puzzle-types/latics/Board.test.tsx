@@ -73,7 +73,7 @@ describe("latics board on easy", () => {
     await user.click(square(5, 4));
     expect(status).toHaveTextContent(words.status.solved);
     expect(square(5, 5)).toHaveAccessibleName("Row 5, column 5, monster, hit");
-    expect(screen.getByTestId("confetti")).toBeInTheDocument();
+    expect(screen.getByTestId("solve-burst")).toBeInTheDocument();
   });
 
   it("does not let the player change a wall, an empty square or the laser", async () => {

@@ -68,9 +68,9 @@
   --blue-edge: color-mix(in srgb, var(--blue) 75%, #000000);
   --green-edge: color-mix(in srgb, var(--green) 75%, #000000);
   --yellow-edge: color-mix(in srgb, var(--yellow) 70%, #000000);
-  /* The ring for a selected square, a hint and the keyboard focus on a board.
-     It has high contrast on the page and is not one of the square colours, so it shows on each square. */
-  --ring: var(--text-h);
+  /* The ring for a selected square, a hint and the keyboard focus on a board. It is orange, as in the design.
+     It is outside the square, on the stage, where it has 4.5:1 (light) and 8.1:1 (dark). */
+  --ring: var(--accent);
   /* The stage under a board: a soft panel under the squares, a little different from the panel of the page.
      The edge of a square that is a control ("--line") has 3.1:1 (light) and 3.9:1 (dark) on it. */
   --stage: light-dark(#f4efe7, #161411);
@@ -83,12 +83,19 @@
      on "--stage". The halo around a planet is a soft circle of the same colour. It shows the pull. */
   --planet: var(--blue);
   --moon: light-dark(#7a7269, #8d857c);
+  /* The colour steps of the stats calendar: 1–3, 4–6 and 7 or more puzzles on a day. More puzzles give a darker
+     colour in the light theme and a brighter colour in the dark theme. Each step has 3.1:1 or more on "--surface",
+     and 1.8:1 or more on the step before it (measured). The day shows its number too, so the colour is not
+     the only signal. The number has 4.9:1 or more: "--text-h" on step 1, and "--bg" on steps 2 and 3. */
+  --calendar-1: light-dark(#ed6638, #b54407);
+  --calendar-2: light-dark(#b23c0b, #e97443);
+  --calendar-3: light-dark(#722303, #febda4);
 
   /* The fonts are in the app (see "src/main.tsx"), so the page sends no request to a font service. */
   --sans: "Funnel Display Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --mono: "Ubuntu Sans Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   /* The width of the content. The header, the main content and the footer use it. */
-  --content-width: 1120px;
+  --content-width: 1192px;
   --gutter: clamp(1rem, 4vw, 2rem);
 
   color-scheme: light dark;

@@ -50,6 +50,10 @@ function yesButton() {
   return screen.getByRole("button", { name: page.restartYes.label });
 }
 
+function noButton() {
+  return screen.getByRole("button", { name: page.restartNo.label });
+}
+
 function restartButton() {
   return screen.getByRole("button", { name: page.restart });
 }
@@ -69,22 +73,22 @@ async function openAndMove() {
 }
 
 describe("puzzle page restart", () => {
-  // On a small screen, the order on the page is the board, the bar, then the rules.
-  // On a wide screen, the CSS puts the bar and the rules in the column on the left.
-  it("puts the bar after the board and above the rules", async () => {
+  // The actions are in the header, next to the timer, as in the design. Thus they come before the board.
+  it("puts the actions next to the timer, above the board", async () => {
     renderAt("/puzzles/colour-binary-0001");
     const board = await screen.findByRole("grid", { name: /^Colour Binary, \d+ by \d+$/u });
-    const rules = screen.getByRole("region", { name: page.rulesHeading });
-    expect(follows(board, restartButton())).toBe(true);
-    expect(follows(restartButton(), rules)).toBe(true);
+    expect(follows(screen.getByRole("timer"), restartButton())).toBe(true);
+    expect(follows(restartButton(), board)).toBe(true);
   });
 
   it("asks first, and restarts the board after Yes", async () => {
     const user = await openAndMove();
     await user.click(restartButton());
-    // The question does not change the board. The focus goes to Yes.
+    // The question does not change the board. The focus goes to No, the safe answer.
+    // A screen reader reads the question with the answer.
     expect(await square(1, 2, "red")).toBeInTheDocument();
-    expect(yesButton()).toHaveFocus();
+    expect(noButton()).toHaveFocus();
+    expect(noButton()).toHaveAccessibleDescription(page.restartQuestion);
 
     await user.click(yesButton());
     expect(await square(1, 2, "empty")).toBeInTheDocument();
@@ -94,10 +98,19 @@ describe("puzzle page restart", () => {
   it("keeps the moves after No, and gives the focus back to Restart", async () => {
     const user = await openAndMove();
     await user.click(restartButton());
-    await user.click(screen.getByRole("button", { name: page.restartNo.label }));
+    await user.click(noButton());
     expect(await square(1, 2, "red")).toBeInTheDocument();
     expect(restartButton()).toHaveFocus();
     expect(screen.queryByRole("button", { name: page.restartYes.label })).toBeNull();
+  });
+
+  // A second press of Enter selects No, because the focus is on No. Thus two fast presses do not restart.
+  it("keeps the moves after two presses of Enter on Restart", async () => {
+    const user = await openAndMove();
+    restartButton().focus();
+    await user.keyboard("{Enter}{Enter}");
+    expect(await square(1, 2, "red")).toBeInTheDocument();
+    expect(restartButton()).toHaveFocus();
   });
 
   it("keeps the moves after the Escape key", async () => {
@@ -122,8 +135,7 @@ describe("puzzle page random puzzle", () => {
     const id = router.state.location.pathname.replace("/puzzles/", "");
     expect(await easyGuzzleIds()).toContain(id);
     // The page can render the new puzzle a moment after the path changes, thus the test waits for it.
-    const details = screen.getByRole("list", { name: page.detailsLabel });
-    expect(await within(details).findByText(page.puzzleNumber(id.slice(-4)))).toBeInTheDocument();
+    expect(await screen.findByText(new RegExp(`^#${id.slice(-4)} by `, "u"))).toBeInTheDocument();
     expect(screen.getByRole("button", { name: page.random })).toHaveFocus();
   });
 
@@ -206,5 +218,12 @@ describe("puzzle page rules", () => {
     // The key of Latics shows the materials.
     const key = within(rules).getByRole("list", { name: page.keyLabel });
     expect(within(key).getAllByRole("listitem")).toHaveLength(text.latics.rulesKey.length);
+  });
+
+  // The Latics and the Tilt boards have walls, thus their keys show a wall sample too.
+  it.each(["latics-0001", "tilt-0001"])("shows a wall in the key of %s", async (id) => {
+    renderAt(`/puzzles/${id}`);
+    const key = await screen.findByRole("list", { name: page.keyLabel });
+    expect(key.querySelector('[data-fill="wall"]')).not.toBeNull();
   });
 });

@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router";
+import { Link, NavLink, Outlet, useMatch } from "react-router";
 import { text } from "../../text/en";
 import { AnalyticsNotice } from "./AnalyticsNotice";
 import styles from "./Layout.module.css";
@@ -11,11 +11,35 @@ import { useReloadAtMidnight } from "./useReloadAtMidnight";
 // It is read one time when the app loads, because a render must not read the clock.
 const currentYear = new Date().getFullYear();
 
+// The footer of each page: the name of the site and the legal line on the left, and the link on the right.
+function SiteFooter() {
+  return (
+    <footer className={styles.footer}>
+      <div className={`content-width ${styles.footerInner}`}>
+        <p className={styles.footerTagline}>{text.footer.tagline}</p>
+        <a
+          className={styles.footerLink}
+          href={text.footer.source.href}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {text.footer.source.label}
+        </a>
+        <p className={styles.footerLegal}>{text.footer.content(currentYear)}</p>
+      </div>
+    </footer>
+  );
+}
+
 // The frame of each page: a sticky header, the main content and the footer.
 // The header and the footer go across the full width. Their content has the width of the main content.
 // Each page gets the puzzles of the new day after midnight. See "useReloadAtMidnight.ts".
 export function Layout() {
   useReloadAtMidnight();
+  // A puzzle page belongs to the puzzles, thus the "Puzzles" tab shows as current there too.
+  // "NavLink" sets "aria-current" only on the page of the link. "useMatch" matches as "NavLink" does,
+  // for example also "/stats/".
+  const isStats = useMatch("/stats") !== null;
   return (
     <>
       <a className={styles.skipLink} href="#main">
@@ -29,9 +53,12 @@ export function Layout() {
               <img src="/favicon.svg" alt="" width="28" height="28" />
               <span>{text.siteName}</span>
             </Link>
-            <Link className={styles.navLink} to="/#stats">
+            <NavLink className={styles.tab} to="/" end data-current={!isStats}>
+              {text.nav.puzzles}
+            </NavLink>
+            <NavLink className={styles.tab} to="/stats" data-current={isStats}>
               {text.nav.stats}
-            </Link>
+            </NavLink>
           </nav>
           <StreakPill />
           <ThemeSwitcher />
@@ -41,21 +68,7 @@ export function Layout() {
         <StorageNotice />
         <Outlet />
       </main>
-      <footer className={styles.footer}>
-        {/* The name and the link are in the first line. The legal line is smaller, under them. */}
-        <div className={`content-width ${styles.footerInner}`}>
-          <p className={styles.footerTagline}>{text.footer.tagline}</p>
-          <a
-            className={styles.footerLink}
-            href={text.footer.source.href}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {text.footer.source.label}
-          </a>
-          <p className={styles.footerLegal}>{text.footer.content(currentYear)}</p>
-        </div>
-      </footer>
+      <SiteFooter />
       {/* The notice shows on each page, because a new player can open a puzzle link first. */}
       <AnalyticsNotice />
     </>

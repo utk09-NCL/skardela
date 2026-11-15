@@ -166,7 +166,7 @@ describe("colour-binary board solve", () => {
   it("shows that the puzzle is solved, and saves the hints as the mistakes", async () => {
     const user = userEvent.setup();
     render(<Board puzzle={puzzle} />);
-    expect(screen.queryByTestId("confetti")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("solve-burst")).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: words.hintButton }));
     await fillAnswer(user);
     expect(screen.getByRole("status")).toHaveTextContent(words.status.solved);
@@ -178,7 +178,7 @@ describe("colour-binary board solve", () => {
       "aria-disabled",
       "true",
     );
-    expect(screen.getByTestId("confetti")).toBeInTheDocument();
+    expect(screen.getByTestId("solve-burst")).toBeInTheDocument();
     // "Random puzzle" skips a solved puzzle.
     expect(useAppStore.getState().solved).toEqual([puzzle.id]);
     expect(useAppStore.getState().results[0]?.mistakes).toBe(1);

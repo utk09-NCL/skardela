@@ -32,14 +32,6 @@
   line-height: 1;
 }
 
-/* Numbers of the same width, so the text does not move when the count changes. */
-.mistakes {
-  justify-self: center;
-  color: var(--text-h);
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
 .modes,
 .keys {
   min-inline-size: 0;
@@ -98,39 +90,52 @@
   opacity: 0.8;
 }
 
-/* The list of clues. The clue of the selected word has an accent line and fill. */
+/* The list of clues, in one box with a thin edge. The clue of the selected word has an accent line and fill. */
 .clues {
   display: grid;
-  gap: 0.25rem;
-  width: min(100%, 32rem);
-  margin: 0 auto;
+  margin: 0;
   padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
   list-style: none;
 }
 
 .clue {
   display: flex;
-  gap: 0.5rem;
-  padding: 0.25rem 0.75rem;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
   border-inline-start: 3px solid transparent;
-  border-radius: var(--radius-sm);
+  background-color: var(--surface);
+  font-size: 0.9375rem;
+  line-height: 1.4;
 }
 
 .clue[aria-current="true"] {
   border-inline-start-color: var(--accent);
   background-color: var(--accent-bg);
-  color: var(--text-h);
 }
 
 .clue strong {
   color: var(--text-h);
+  font-weight: 600;
+}
+
+.clueText {
+  color: var(--text-muted);
 }
 
 /* The arrow has a fixed width, so all clue texts start at the same place. */
 .clueArrow {
   flex: none;
-  width: 1.25em;
+  width: 1em;
+  color: var(--text-muted);
+  font-family: var(--mono);
   text-align: center;
+}
+
+.clue[aria-current="true"] .clueArrow {
+  color: var(--accent-text);
 }
 
 /* A key with a "wrong" hint has muted text. A key with an "inWord" hint is yellow.

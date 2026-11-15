@@ -17,7 +17,7 @@ const squareCount = (count: number) => `${count} ${count === 1 ? "square" : "squ
 export const tilt = {
   name: "Tilt",
   summary: "Tilt the board to roll each ball into the hole of its colour.",
-  // The three short rules show at all times. The rules key shows the icon of each colour.
+  // The three short rules show at all times. The rules key shows the icon of each colour and a wall.
   // The other rules are under "More rules".
   rules: [
     "Tilt the board up, down, left or right. All balls roll until something stops them.",
@@ -29,6 +29,7 @@ export const tilt = {
     { text: "blue ball and hole", sample: { fill: "blue", symbol: blue } },
     { text: "yellow ball and hole", sample: { fill: "yellow", symbol: yellow } },
     { text: "ball in its hole", sample: { fill: "empty", symbol: symbols.tilt.full } },
+    { text: "wall", sample: { fill: "wall", symbol: "" } },
   ] satisfies KeyItem[],
   moreRules: {
     label: "More rules: walls, holes and the grey ball",
@@ -74,9 +75,13 @@ export const tilt = {
     // A ball that stopped on an empty hole of a different colour, for example "blue ball on the red hole".
     onHole: (ball: string, hole: string) => `${ball} ball on the ${hole} hole`,
   },
-  // The tilts and the fewest tilts, for example "Tilts: 7. Fewest: 5."
-  counts: (tilts: number, fewest: number | null) =>
-    `Tilts: ${tilts}. Fewest: ${fewest === null ? "unknown" : fewest}.`,
+  // The short labels of the numbers under the stage, for example "Tilts 7" and "Fewest 5".
+  // See "src/shared/StatusRow.tsx". A screen reader reads "tilts" and "fewest".
+  metrics: { tilts: "Tilts", fewest: "Fewest" },
+  tilts: (count: number) => `Tilts: ${count}.`,
+  fewest: (fewest: number | null) => `Fewest: ${fewest === null ? "unknown" : fewest}.`,
+  // The screen shows a dash when the fewest tilts are not known.
+  unknownFewest: "—",
   controlsLabel: "Tilt the board",
   tiltButton: (direction: string) => `Tilt ${direction}`,
   status: {

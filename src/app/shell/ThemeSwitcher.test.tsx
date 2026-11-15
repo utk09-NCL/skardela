@@ -1,6 +1,6 @@
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { savedDataKey } from "../../shared/state/saved-data";
 import { useAppStore } from "../../shared/state/store";
 import { text } from "../../text/en";
@@ -13,7 +13,16 @@ function stored(): unknown {
 
 afterEach(() => {
   delete document.documentElement.dataset.theme;
+  vi.unstubAllGlobals();
 });
+
+// The two theme buttons, by their names.
+function themeButtons() {
+  return {
+    light: screen.getByRole("button", { name: text.theme.light }),
+    dark: screen.getByRole("button", { name: text.theme.dark }),
+  };
+}
 
 describe("theme switcher", () => {
   it("shows the saved theme and sets it on the page", async () => {
@@ -22,33 +31,43 @@ describe("theme switcher", () => {
       await useAppStore.persist.rehydrate();
     });
     render(<ThemeSwitcher />);
-    expect(screen.getByRole("combobox", { name: text.theme.label })).toHaveValue("dark");
+    expect(themeButtons().dark).toHaveAttribute("aria-pressed", "true");
+    expect(themeButtons().light).toHaveAttribute("aria-pressed", "false");
     expect(document.documentElement.dataset.theme).toBe("dark");
   });
 
-  // Chrome reports a form field without an "id" or a "name".
-  it("gives the list a name", () => {
-    render(<ThemeSwitcher />);
-    expect(screen.getByRole("combobox", { name: text.theme.label })).toHaveAttribute(
-      "name",
-      "theme",
+  // A new player has the theme of the device. The page then has no "data-theme", and the CSS follows the device.
+  it("shows the theme of the device as pressed before the first select", () => {
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn<(query: string) => Partial<MediaQueryList>>((query) => ({
+        matches: query === "(prefers-color-scheme: dark)",
+        addEventListener: vi.fn<MediaQueryList["addEventListener"]>(),
+        removeEventListener: vi.fn<MediaQueryList["removeEventListener"]>(),
+      })),
     );
+    render(<ThemeSwitcher />);
+    expect(useAppStore.getState().theme).toBe("system");
+    expect(themeButtons().dark).toHaveAttribute("aria-pressed", "true");
+    expect(Object.hasOwn(document.documentElement.dataset, "theme")).toBe(false);
   });
+});
 
+describe("theme switcher changes", () => {
   it("changes and saves the theme, and keeps the other saved data", async () => {
     useAppStore.getState().acknowledgeNotice();
     const user = userEvent.setup();
     render(<ThemeSwitcher />);
-    const select = screen.getByRole("combobox", { name: text.theme.label });
-    expect(select).toHaveValue("system");
 
-    await user.selectOptions(select, text.theme.options.light);
+    await user.click(themeButtons().dark);
+    expect(themeButtons().dark).toHaveAttribute("aria-pressed", "true");
+    expect(document.documentElement.dataset.theme).toBe("dark");
+    expect(stored()).toMatchObject({ theme: "dark", cookieBanner: true });
+
+    await user.click(themeButtons().light);
+    expect(themeButtons().light).toHaveAttribute("aria-pressed", "true");
     expect(document.documentElement.dataset.theme).toBe("light");
     expect(stored()).toMatchObject({ theme: "light", cookieBanner: true });
-
-    await user.selectOptions(select, text.theme.options.system);
-    expect(Object.hasOwn(document.documentElement.dataset, "theme")).toBe(false);
-    expect(stored()).toMatchObject({ theme: "system", cookieBanner: true });
   });
 
   it("follows a theme change in a different tab", async () => {
@@ -58,7 +77,7 @@ describe("theme switcher", () => {
       window.dispatchEvent(new StorageEvent("storage", { key: savedDataKey, newValue: "{}" }));
       await Promise.resolve();
     });
-    expect(screen.getByRole("combobox", { name: text.theme.label })).toHaveValue("dark");
+    expect(themeButtons().dark).toHaveAttribute("aria-pressed", "true");
     expect(document.documentElement.dataset.theme).toBe("dark");
   });
 });

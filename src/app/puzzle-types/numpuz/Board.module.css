@@ -1,4 +1,4 @@
-/* The base of the board, the status box and the buttons are in "src/shared/Board.module.css".
+/* The base of the board, the status line and the buttons are in "src/shared/Board.module.css".
    This file sets only what is special to Numpuz: the equation row, the blanks and the operator keys. */
 
 /* The equation is one row. It wraps on a narrow screen, so the board never scrolls sideways. */
@@ -57,31 +57,51 @@
   cursor: default;
 }
 
-/* The target is under the equation. */
+/* The target is above the equation: a small label and a large number. */
 .target {
-  margin: 1rem 0 0;
-  color: var(--text-h);
-  font-size: 1.25rem;
-  font-weight: 600;
-  text-align: center;
+  display: grid;
+  justify-items: center;
+  gap: 0.25rem;
+  margin: 0 0 1.5rem;
+  max-width: none;
 }
 
-/* The four operator keys are in one row. The keys are in a fieldset, thus the first lines remove its default styles. */
+.targetLabel {
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.targetValue {
+  color: var(--text-h);
+  font-size: clamp(2.25rem, 8vw, 2.875rem);
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* The four operator keys are in one row, before the Check button. The keys are in a fieldset,
+   thus the first lines remove its default styles. */
 .keys {
   min-inline-size: 0;
+  margin: 0;
   padding: 0;
   border: 0;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  display: flex;
   gap: 0.5rem;
-  inline-size: min(100%, 20rem);
-  margin-inline: auto;
 }
 
 /* The ".keys >" part makes this rule stronger than the shared "button" rule, in any order of the files. */
 .keys > .key {
-  justify-self: stretch;
-  font-size: 1.5rem;
+  min-width: 3.25rem;
+  padding-inline: 0;
+  font-family: var(--mono);
+  font-size: 1.25rem;
+}
+
+.check {
+  min-width: 6rem;
 }
 
 .key:focus-visible {
@@ -89,7 +109,7 @@
   outline-offset: 2px;
 }
 
-/* The status box has a red edge after a wrong check. The text says it too, so colour is not the only signal. */
+/* The status line is red after a wrong check. The text says it too, so colour is not the only signal. */
 .status[data-wrong="true"] {
-  border-color: var(--red-edge);
+  color: var(--danger);
 }

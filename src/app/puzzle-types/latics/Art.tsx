@@ -118,7 +118,7 @@ type MarksProps = { square: Square; laser: LaserData | undefined; isHit: boolean
 
 // The marks above the drawing: the monster, the shape of a red or a blue piece, and the symbol of a hit.
 // A red piece shows a circle and a blue piece shows a square, as in Colour Binary.
-// A hit monster is green and shows ✓, so the colour is not the only signal.
+// A hit monster is green and shows ✓ in a disc, so the colour is not the only signal.
 export function SquareMarks({ square, laser, isHit }: MarksProps) {
   const colour = pieceColour(square, laser);
   return (

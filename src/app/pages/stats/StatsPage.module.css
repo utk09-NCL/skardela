@@ -1,0 +1,390 @@
+/* The stats page. The panels have a thin border and no shadow, as on the home page. */
+
+/* The title on the left. The note is on the right, on the same line as the bottom of the title. */
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-block: clamp(0.25rem, 2vw, 0.5rem) 1.75rem;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2.5rem, 5.5vw, 3.75rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.note {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+/* Four numbers in one box. A thin line is between two numbers. On a small screen, they are two rows. */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 1.75rem;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background-color: var(--surface);
+  list-style: none;
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: clamp(1rem, 2.5vw, 1.375rem) clamp(1rem, 2.5vw, 1.5rem);
+}
+
+.kpi + .kpi {
+  border-left: 1px solid var(--border);
+}
+
+.kpiValue {
+  color: var(--text-h);
+  font-family: var(--mono);
+  font-size: clamp(1.75rem, 3vw + 1rem, 2.5rem);
+  font-weight: 500;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpiValue[data-main="true"] {
+  color: var(--accent-text);
+}
+
+.kpiLabel {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 40rem) {
+  .kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kpi:nth-child(3) {
+    border-left: 0;
+  }
+
+  .kpi:nth-child(n + 3) {
+    border-top: 1px solid var(--border);
+  }
+}
+
+/* The calendar on the left and the personal bests on the right. When the space is too small,
+   the personal bests go under the calendar. */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.grid > :first-child {
+  flex: 1 1 20rem;
+  max-width: 27.5rem;
+}
+
+.grid > :last-child {
+  flex: 2 1 28.75rem;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(1.125rem, 2.5vw, 1.375rem);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background-color: var(--surface);
+}
+
+/* The title of a panel, with a detail on the right, for example the dates of the calendar. */
+.panelHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}
+
+.panelTitle {
+  margin: 0;
+  color: var(--text-h);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-align: left;
+}
+
+.panelDetail {
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+}
+
+/* The calendar: seven columns, Monday first. */
+.weekdays,
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.weekdays {
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  text-align: center;
+}
+
+.days {
+  padding: 0;
+  list-style: none;
+}
+
+/* A day with puzzles shows its number in the middle. */
+.day {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  background-color: var(--surface-muted);
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* The colour steps of the calendar: more puzzles give a stronger orange. See "--calendar-1" in "src/index.css". */
+.day[data-step="1"] {
+  background-color: var(--calendar-1);
+  color: var(--text-h);
+}
+
+.day[data-step="2"] {
+  background-color: var(--calendar-2);
+  color: var(--bg);
+}
+
+.day[data-step="3"] {
+  background-color: var(--calendar-3);
+  color: var(--bg);
+}
+
+.day[data-today="true"] {
+  box-shadow: 0 0 0 2px var(--text-h);
+}
+
+/* A day after today has no data yet. It shows only as an outline. */
+.day[data-future="true"] {
+  background-color: transparent;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0;
+  list-style: none;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.3125rem;
+}
+
+.legend .day {
+  width: 10px;
+  height: 10px;
+  aspect-ratio: auto;
+  border-radius: 3px;
+}
+
+/* The personal bests: the name of the puzzle type, then the best time of each level. */
+.bests {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+/* The caption is the title of the panel. It is above the names of the levels. */
+.bests caption {
+  padding-bottom: 0.25rem;
+  caption-side: top;
+}
+
+.bests th,
+.bests td {
+  padding: 0.625rem 0;
+  text-align: right;
+}
+
+.bests thead th {
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.bests tbody tr {
+  border-top: 1px solid var(--border);
+}
+
+.bests tbody th {
+  color: var(--text-h);
+  font-weight: 400;
+  text-align: left;
+}
+
+.bests td {
+  width: clamp(3.75rem, 14vw, 7rem);
+  color: var(--text-h);
+  font-family: var(--mono);
+  vertical-align: top;
+}
+
+/* A level without a solve has a quiet dash. */
+.bests td[data-empty="true"] {
+  color: var(--text-muted);
+}
+
+/* The name of a puzzle type is a button. It looks like the text of the row, with a small arrow. */
+.bestsToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 1.75rem;
+  color: var(--text-h);
+  text-align: left;
+}
+
+.bestsToggle::after {
+  content: "";
+  width: 0.375rem;
+  height: 0.375rem;
+  border-right: 1.5px solid var(--text-muted);
+  border-bottom: 1.5px solid var(--text-muted);
+  transform: translateY(-25%) rotate(45deg);
+  transition: transform 150ms ease;
+}
+
+.bestsToggle[aria-expanded="true"]::after {
+  transform: translateY(25%) rotate(-135deg);
+}
+
+.bestsToggle:hover {
+  color: var(--accent-text);
+}
+
+/* The average time shows under the best time when the row is open. */
+.average {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+}
+
+.bestsNote {
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+}
+
+/* Before the first solve: one message and a link, in a panel with a dashed edge. */
+.noSolves {
+  align-content: start;
+  border-style: dashed;
+}
+
+.noSolvesLink {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  background-color: var(--text-h);
+  color: var(--bg);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.noSolvesLink:hover {
+  background-color: color-mix(in srgb, var(--text-h) 85%, var(--bg));
+}
+
+/* "Your data": the title and the note on the left, and the buttons on the right.
+   The message is under them. On a small screen, the buttons go under the note. */
+.data {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem 2rem;
+}
+
+.dataText {
+  display: grid;
+  gap: 0.375rem;
+}
+
+/* The three buttons, or the question of "Clear my data" in their place. Both have about the same width,
+   and the row keeps the height of a button, so the panel does not move. */
+.dataButtons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  min-height: 3rem;
+}
+
+/* The message stays in the page when it is empty, so a screen reader reads each new message. */
+.dataMessage {
+  grid-column: 1 / -1;
+  color: var(--success);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.dataMessage[data-error="true"] {
+  color: var(--danger);
+}
+
+.dataNote {
+  max-width: 35rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* The buttons of the panel are smaller than the buttons of a board, as in the design. */
+.dataButtons button {
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  font-size: 0.875rem;
+}
+
+@media (max-width: 48rem) {
+  .data {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

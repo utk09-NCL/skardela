@@ -23,6 +23,7 @@ export const colourBinary = {
     { text: "tap one time: red", sample: { fill: "red", symbol: symbols["colour-binary"].R } },
     { text: "two times: blue", sample: { fill: "blue", symbol: symbols["colour-binary"].B } },
     { text: "three times: empty", sample: { fill: "empty", symbol: "" } },
+    { text: "white dot: given", sample: { fill: "red", symbol: "", isGiven: true } },
   ] satisfies KeyItem[],
   moreRules: {
     label: "More rules: given squares, hints and keys",
@@ -45,13 +46,6 @@ export const colourBinary = {
   // The label of a square, for example "Row 1, column 4: red" or "Row 1, column 1: red, given".
   square: (square: { row: number; column: number; colour: string; isGiven: boolean }) =>
     `Row ${square.row}, column ${square.column}: ${square.colour}${square.isGiven ? ", given" : ""}`,
-  // The key under the board. A given square and a square of the player have the same colour.
-  // Only the given square has a dot.
-  legend: {
-    label: "Square key",
-    given: "given",
-    yours: "yours",
-  },
   status: {
     start: "Tap a square to make it red. Tap again for blue, and again to make it empty.",
     solved: "You solved the puzzle. Each row and each column obeys the rules.",
@@ -89,4 +83,6 @@ export const colourBinary = {
   // The score of a solve: the number of hints. The home page and the result card show it.
   score: (count: number) => `${count} ${hintWord(count)}`,
   scoreWord: hintWord,
+  // The short label of the score under the stage, for example "Hints 2". See "src/shared/StatusRow.tsx".
+  metric: "Hints",
 };

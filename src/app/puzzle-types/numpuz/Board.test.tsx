@@ -51,17 +51,19 @@ describe("numpuz board example", () => {
     await user.click(checkButton());
     expect(status).toHaveTextContent(words.status.wrong(1));
     expect(status).toHaveAttribute("data-wrong", "true");
-    // The same wrong guess cannot be checked again.
-    expect(checkButton()).toBeDisabled();
+    // The same wrong guess cannot be checked again. A second check is not a second mistake.
+    expect(checkButton()).toHaveAttribute("aria-disabled", "true");
+    await user.click(checkButton());
+    expect(status).toHaveTextContent(words.status.wrong(1));
 
     // Step 2: 6 + 3 − 2 = 7. The puzzle is solved.
     await user.click(blank(2));
     await user.click(key("-"));
     expect(status).toHaveTextContent(words.status.start);
-    expect(screen.queryByTestId("confetti")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("solve-burst")).not.toBeInTheDocument();
     await user.click(checkButton());
     expect(status).toHaveTextContent(words.status.solved(1));
-    expect(screen.getByTestId("confetti")).toBeInTheDocument();
+    expect(screen.getByTestId("solve-burst")).toBeInTheDocument();
 
     // The play session saves the solve with one mistake. "Random puzzle" skips a solved puzzle.
     const { solved, results } = useAppStore.getState();
@@ -71,7 +73,7 @@ describe("numpuz board example", () => {
     // After the solve, the blanks, the keys and the Check button do not work.
     expect(blank(1)).toHaveAttribute("aria-disabled", "true");
     expect(key("+")).toHaveAttribute("aria-disabled", "true");
-    expect(checkButton()).toBeDisabled();
+    expect(checkButton()).toHaveAttribute("aria-disabled", "true");
   });
 });
 
@@ -88,6 +90,19 @@ describe("numpuz board mistakes", () => {
     await user.click(checkButton());
     expect(screen.getByRole("status")).toHaveTextContent(words.status.solved(0));
     expect(useAppStore.getState().results.at(-1)?.mistakes).toBe(0);
+  });
+});
+
+describe("numpuz board check", () => {
+  // A disabled button loses the focus to the page. Check only looks disabled, so a keyboard user keeps the place.
+  it("keeps the focus on Check after a check", async () => {
+    const user = userEvent.setup();
+    render(<Board puzzle={puzzle} />);
+    checkButton().focus();
+    await user.keyboard("{Enter}");
+    expect(screen.getByRole("status")).toHaveTextContent(words.status.incomplete);
+    expect(checkButton()).toHaveAttribute("aria-disabled", "true");
+    expect(checkButton()).toHaveFocus();
   });
 });
 

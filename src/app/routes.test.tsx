@@ -55,3 +55,16 @@ describe("routes", () => {
     expect(screen.getByTestId("not-found-page-title")).toBeInTheDocument();
   });
 });
+
+describe("stats route", () => {
+  it("shows the stats page at /stats, with the Stats tab as the current page", async () => {
+    renderAt("/stats");
+    expect(
+      await screen.findByRole("heading", { level: 1, name: text.stats.heading }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: text.nav.stats })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+  });
+});

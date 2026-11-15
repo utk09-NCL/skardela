@@ -42,16 +42,23 @@ export function puzzleLoader({ params }: LoaderFunctionArgs): Promise<LoadedPuzz
   return loadPuzzle(params.puzzleId ?? "");
 }
 
-// One card of the home page: a puzzle type and the IDs of its puzzles of today, one for each level.
+// One card of the home page: a puzzle type, the IDs of its puzzles of today (one for each level),
+// the authors of these puzzles, and the date when the puzzle type came to the site.
 export type TodayCard = Awaited<ReturnType<typeof homeLoader>>[number];
 
 // The home page shows one recommended puzzle for each type and difficulty for the current day.
 export function homeLoader() {
   const day = dayNumber(localDate(new Date()));
   return Promise.all(
-    (Object.keys(puzzleTypes) as PuzzleType[]).map(async (type) => ({
-      type,
-      levels: puzzlesForDay(await puzzleTypes[type].loadPuzzles(), day),
-    })),
+    (Object.keys(puzzleTypes) as PuzzleType[]).map(async (type) => {
+      const puzzles: readonly PuzzleMap[PuzzleType][] = await puzzleTypes[type].loadPuzzles();
+      const levels = puzzlesForDay(puzzles, day);
+      // Each author shows one time, also when an author made two of today's puzzles.
+      const authors = new Set(
+        levels.map(({ id }) => puzzles.find((puzzle) => puzzle.id === id)?.author ?? ""),
+      );
+      authors.delete("");
+      return { type, levels, authors: [...authors], added: puzzleTypes[type].added };
+    }),
   );
 }

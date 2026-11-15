@@ -33,15 +33,17 @@ export const symbols = {
     mistakes: "🟨",
     unsolved: "⬜",
   },
-  // The link that closes a puzzle and goes back to the home page, and the link to the next level.
+  // The button that closes a message, for example the storage notice.
+  close: "✕",
+  // The link back to the home page, and the link to the next level.
   puzzlePage: {
-    close: "✕",
+    back: "←",
     next: "→",
   },
+  // The two theme buttons. These are text symbols, not emoji, so they have the colour of the button text.
   theme: {
-    system: "💻",
-    light: "☀️",
-    dark: "🌙",
+    light: "☀\uFE0E",
+    dark: "☾",
   },
   numpuz: {
     // The four operators that a blank can take. Each key is the operator in the puzzle data.

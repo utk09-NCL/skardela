@@ -39,15 +39,16 @@ src/
   index.css                  Global styles and colour values.
   app/
     routes.tsx               All pages and their URLs.
-    puzzles.ts               Loads puzzles for the home page and the puzzle page.
+    puzzles.ts               Loads puzzles for the home page, the stats page and the puzzle page.
     daily.ts                 Selects the puzzles of the day.
     shell/                   The frame of each page: the header, the notices, the footer and the route error.
       AnalyticsNotice.tsx    The notice for new players. Analytics loads only after the OK.
       useReloadAtMidnight.ts Loads the puzzles of the new day after midnight, on each page.
       reloadAfterRelease.ts  Loads the page again when an open tab asks for a file of an old release.
     pages/                   One file or one folder for each page.
-      home/                  The home page: today's progress, today's puzzles, the stats and the questions.
-      puzzle/                The puzzle page ("Now playing"), with the timer, Restart and Random puzzle.
+      home/                  The home page: today's progress, today's puzzles, how it works and the questions.
+      stats/                 The stats page: the streaks, the calendar, the personal bests and your data.
+      puzzle/                The puzzle page, with the level tabs, the timer, Restart and Random puzzle.
     puzzle-types/
       registry.ts            The list of puzzle types and their puzzle files.
       boards.ts              The board component of each puzzle type.
@@ -106,12 +107,14 @@ parts into their own files. See `guzzle/` for an example: `useGame.ts`, `Grid.ts
 2. In `puzzle.ts`, make the puzzle type with `PuzzleBase & { readonly type: "<type>"; ... }`.
 3. Add your puzzles to `puzzles/<type>.json`. Add at least one puzzle for each level.
    Put the answer in the field `answer` as readable rows. A Vite plugin in `vite.config.ts` ciphers `answer`, so the browser does not get a readable answer. In `registry.ts`, use `decipherPuzzles` to load the file. A puzzle type that checks the moves with its rules can have no `answer`, for example `latics`. Then the plugin does not change the file, and the type does not need `decipherPuzzles`.
-4. In `src/app/puzzle-types/registry.ts`, add your type to `PuzzleMap` and to `puzzleTypes`.
+4. In `src/app/puzzle-types/registry.ts`, add your type to `PuzzleMap` and to `puzzleTypes`. Give it `added`, the date of the
+   first commit of its puzzle file, for example `"2026-11-21"`. The home page marks a type of the last two weeks as new.
 5. Run `npm run typecheck`. TypeScript then shows each place that needs your type:
    - `src/app/puzzle-types/boards.ts`: your board component.
    - `src/text/en/index.ts`: your UI text. Put it in a new file `src/text/en/<type>.ts`, with `name`,
      `summary`, `rules`, `rulesKey`, `moreRules`, `score` and `scoreWord`. Then add it to `index.ts` with the name of your type. `rules` has three short rules. `rulesKey` is a list of sample squares and their meaning, or an empty list. `moreRules` has a label and three groups: `rules`, `controls` (mouse, touch and keyboard) and `scoreRule`, one line in the form "Score: <what counts>. 0 is a perfect solve." `score` gives the score of a solve as text, for example "2 mistakes".
-   - `src/app/pages/home/PuzzleIcon.tsx`: the small icon of your type on the home page.
+   - `src/app/pages/home/PuzzleIcon.tsx`: the small icon of your type on the home page. Draw it on a grid of
+     24 × 24 with `currentColor`, and give each shape a colour class from `PuzzleIcon.module.css`.
    - `tools/puzzles.test.ts`: your example and your data check.
 6. Put emoji symbols in `src/text/symbols.ts`, not in other files.
 7. In `useGame.ts`, call `usePuzzleTracking` from `src/shared/`. Give it `isSolved` and `scoreOf` of your machine,

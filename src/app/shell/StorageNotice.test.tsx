@@ -33,7 +33,7 @@ describe("storage notice", () => {
       useStorageStatus.setState({ status: "full" });
     });
     expect(screen.getByRole("alert")).toHaveTextContent(words.full);
-    expect(screen.getByRole("link", { name: words.statsLink })).toHaveAttribute("href", "/#stats");
+    expect(screen.getByRole("link", { name: words.statsLink })).toHaveAttribute("href", "/stats");
     await user.click(screen.getByRole("button", { name: words.close }));
     expect(screen.queryByRole("alert")).toBeNull();
   });

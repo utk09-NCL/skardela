@@ -40,6 +40,8 @@ export const orbital = {
   // The score of a solve: the number of misses. The home page and the result card show it.
   score: missCount,
   scoreWord: missWord,
+  // The short label of the score under the stage, for example "Misses 2". See "src/shared/StatusRow.tsx".
+  metric: "Misses",
   boardLabel: "Orbital board",
   // The list of the items on the board, for a screen reader. "at" is a position, see "at" below.
   itemsLabel: "Items on the board",

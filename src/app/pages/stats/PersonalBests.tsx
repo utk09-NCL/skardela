@@ -5,9 +5,9 @@ import { bestOf, formatDuration } from "../../../shared/state/progress";
 import type { SolveResult } from "../../../shared/state/saved-data";
 import { text } from "../../../text/en";
 import type { PuzzleType } from "../../puzzle-types/registry";
-import styles from "./HomePage.module.css";
+import styles from "./StatsPage.module.css";
 
-const words = text.home.stats.bests;
+const words = text.stats.bests;
 
 // The puzzle that the message before the first solve links to.
 export type FirstPuzzle = { id: string; type: PuzzleType; difficulty: Difficulty };
@@ -29,7 +29,7 @@ function Time({ seconds }: { seconds: number | undefined }) {
 function NoSolvesYet({ first }: { first: FirstPuzzle | undefined }) {
   return (
     <div className={`${styles.panel} ${styles.noSolves}`}>
-      <h3 className={styles.panelTitle}>{words.heading}</h3>
+      <h2 className={styles.panelTitle}>{words.heading}</h2>
       <p>{words.empty}</p>
       {first !== undefined && (
         <Link className={styles.noSolvesLink} to={`/puzzles/${first.id}`}>

@@ -1,7 +1,9 @@
+/* oxlint-disable import/max-dependencies -- the tests need the router, the stores, the text, the registry and the date helpers. */
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { describe, expect, it, vi } from "vitest";
 import { usePlaySession } from "../../../shared/state/playSession";
+import { addDays, dayKey } from "../../../shared/state/progress";
 import { useAppStore } from "../../../shared/state/store";
 import { text } from "../../../text/en";
 import { symbols } from "../../../text/symbols";
@@ -27,14 +29,20 @@ function loadedAs(id: string, difficulty: Level): LoadedPuzzle {
   return { type: "guzzle", puzzle: { ...guzzle, id, difficulty }, others: [], today };
 }
 
-// A saved solve of a Guzzle puzzle. The day does not change the card.
-function solve(puzzleId: string, difficulty: Level, seconds: number, mistakes?: number) {
+// A saved solve of a Guzzle puzzle, today or on an earlier "day". The card counts only the levels solved today.
+function solve(
+  puzzleId: string,
+  difficulty: Level,
+  seconds: number,
+  mistakes?: number,
+  day = dayKey(new Date()),
+) {
   useAppStore.getState().recordSolve({
     puzzleId,
     type: "guzzle",
     difficulty,
     seconds,
-    day: "2026-10-25",
+    day,
     ...(mistakes === undefined ? {} : { mistakes }),
   });
 }
@@ -55,6 +63,14 @@ function numberOf(label: string): string {
 }
 
 // The share text on the card, with its line breaks. It is under the heading "Share text".
+// The mark of each square in the shown share text. The CSS gives each mark its colour.
+function shownMarks(): (string | undefined)[] {
+  const squares = screen
+    .getByText(words.shareHeading)
+    .nextElementSibling?.querySelectorAll<HTMLElement>("[data-mark]");
+  return [...(squares ?? [])].map((square) => square.dataset.mark);
+}
+
 function shownShareText(): string {
   return String(screen.getByText(words.shareHeading).nextElementSibling?.textContent);
 }
@@ -105,12 +121,30 @@ describe("result card share", () => {
       "Solved in 2:14 with 1 mistake",
       text.share.site,
     ]);
+    // Each square of the text has the colour of its mark on the screen.
+    expect(shownMarks()).toEqual(["clean", "mistakes", "unsolved"]);
     fireEvent.click(screen.getByRole("button", { name: words.copy }));
     expect(await screen.findByText(text.share.copiedMessage)).toBeInTheDocument();
     expect(writeText).toHaveBeenCalledWith(shareText);
-    expect(screen.getByRole("link", { name: words.nextLabel("Guzzle", "Hard") })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: words.next("Hard") })).toHaveAttribute(
       "href",
       "/puzzles/guzzle-0025",
+    );
+  });
+});
+
+describe("result card share of today's levels", () => {
+  // The daily puzzles repeat. A solve of today's easy puzzle on an earlier day does not count today.
+  it("does not count a level that the player solved on an earlier day", () => {
+    solve("guzzle-0023", "easy", 102, 0, addDays(dayKey(new Date()), -3));
+    solve("guzzle-0024", "medium", 134, 1);
+    renderSolved(loadedAs("guzzle-0024", "medium"));
+    expect(shownShareText().split("\n")[2]).toBe(
+      `${symbols.share.unsolved}${symbols.share.mistakes}${symbols.share.unsolved}`,
+    );
+    expect(screen.getByRole("link", { name: words.next("Easy") })).toHaveAttribute(
+      "href",
+      "/puzzles/guzzle-0023",
     );
   });
 
@@ -124,7 +158,7 @@ describe("result card share", () => {
       symbols.share.clean,
     ]);
     // The next level is today's first level that the player did not solve.
-    expect(screen.getByRole("link", { name: words.nextLabel("Guzzle", "Easy") })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: words.next("Easy") })).toHaveAttribute(
       "href",
       "/puzzles/guzzle-0023",
     );

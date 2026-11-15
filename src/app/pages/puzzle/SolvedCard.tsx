@@ -18,7 +18,6 @@ export function SolvedCard({ loaded }: { loaded: LoadedPuzzle }) {
   const current = usePlaySession((session) => session.puzzleId);
   const solvedAt = usePlaySession((session) => session.solvedAt);
   const results = useAppStore((state) => state.results);
-  const solved = useAppStore((state) => state.solved);
   // The clock changes each minute, so the date in the share text is correct after midnight.
   const day = useToday();
   if (current !== puzzle.id || solvedAt === null) return null;
@@ -36,7 +35,7 @@ export function SolvedCard({ loaded }: { loaded: LoadedPuzzle }) {
         <p className={styles.solvedPuzzle}>{words.puzzle(text[type].name, level, number)}</p>
       </div>
       <ResultNumbers type={type} level={level} solve={solve} results={results} />
-      <ResultShare loaded={loaded} solve={solve} results={results} solved={solved} day={day} />
+      <ResultShare loaded={loaded} solve={solve} results={results} day={day} />
     </section>
   );
 }
