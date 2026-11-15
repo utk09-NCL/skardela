@@ -136,7 +136,7 @@ describe("orbital board example", () => {
     const user = userEvent.setup();
     const { container } = render(<Board puzzle={puzzle} />);
     await playMisses(user, container);
-    expect(screen.queryByTestId("confetti")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("solve-burst")).not.toBeInTheDocument();
 
     // Step 4: 92° and power 5 reach the ring.
     setAngle(92);
@@ -146,7 +146,7 @@ describe("orbital board example", () => {
       "Angle 92°, power 5. The probe reached the ring. You solved the puzzle with 3 misses.",
     );
     expect(status).toHaveAttribute("data-solved", "true");
-    expect(screen.getByTestId("confetti")).toBeInTheDocument();
+    expect(screen.getByTestId("solve-burst")).toBeInTheDocument();
     // After the solve, the probe stays in the ring, at x 36.77, y 80.29.
     expect(items()[0]).toBe("Probe at x 37, y 80.");
 

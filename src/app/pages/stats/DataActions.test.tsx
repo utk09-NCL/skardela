@@ -14,7 +14,7 @@ vi.mock(import("../../../shared/save-file"), () => ({
 }));
 vi.mock(import("../../../shared/reload"), () => ({ reloadPage: vi.fn<() => void>() }));
 
-const words = text.home.stats.data;
+const words = text.stats.data;
 const solve: SolveResult = {
   puzzleId: "latics-0004",
   type: "latics",

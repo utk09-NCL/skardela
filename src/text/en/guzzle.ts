@@ -44,6 +44,8 @@ export const guzzle = {
   // The score of a solve: the number of mistakes. The home page and the result card show it.
   score: mistakeCount,
   scoreWord: mistakeWord,
+  // The short label of the score under the stage, for example "Mistakes 2". See "src/shared/StatusRow.tsx".
+  metric: "Mistakes",
   boardLabel: "Guzzle board",
   modeLabel: "How do you want to play?",
   modes: { bank: "With bank", noBank: "Without bank" },

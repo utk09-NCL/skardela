@@ -18,8 +18,24 @@ type LevelProps = {
   isNext: boolean;
 };
 
-// A link to the puzzle of one level, with its status. A solved level shows a check mark and the result
-// of its best solve: the time and the score, for example "1:42" and "0 mistakes". The next level to play has a ring.
+type StatusProps = { isSolved: boolean; time: string | undefined; isNext: boolean };
+
+// The status under the level name: a check mark and the best time of a solved level, "play" on the next level
+// to play, and a dash on the other levels. The check mark is only for the eyes: the name of the link says "solved".
+function LevelStatus({ isSolved, time, isNext }: StatusProps) {
+  if (!isSolved) {
+    return <span className={styles.levelStatus}>{isNext ? words.next : words.notSolved}</span>;
+  }
+  return (
+    <span className={styles.levelStatus}>
+      <span aria-hidden="true">{words.solvedMark}</span> {time ?? words.solvedNoTime}
+    </span>
+  );
+}
+
+// A link to the puzzle of one level, with its status. The next level to play has a ring.
+// The name of the link tells a screen reader the full result: the time and the score, for example
+// "Medium, solved in 2:14 with 1 mistake". The screen shows only the time.
 export function LevelLink({ id, type, difficulty, isSolved, best, isNext }: LevelProps) {
   const level = text.levels[difficulty];
   const time = best === undefined ? undefined : formatDuration(best.seconds);
@@ -30,21 +46,11 @@ export function LevelLink({ id, type, difficulty, isSolved, best, isNext }: Leve
       data-solved={isSolved}
       data-next={isNext}
       to={`/puzzles/${id}`}
-      aria-label={words.levelLink(level, isSolved ? { time, score } : undefined)}
+      aria-label={words.levelLink(level, isSolved ? { time, score } : undefined, isNext)}
     >
-      <span className={styles.levelName}>
-        {level}
-        {isSolved && (
-          <span className={styles.levelMark} aria-hidden="true">
-            {words.solvedMark}
-          </span>
-        )}
-      </span>
-      {/* A narrow card has no space for the time and the score in one line, thus each has its own line. */}
-      <span className={styles.levelStatus}>
-        {isSolved ? (time ?? words.solvedNoTime) : words.notSolved}
-      </span>
-      {score !== undefined && <span className={styles.levelStatus}>{score}</span>}
+      {/* The space keeps the two words apart in the text of the link, for voice control. */}
+      <span className={styles.levelName}>{level}</span>{" "}
+      <LevelStatus isSolved={isSolved} time={time} isNext={isNext} />
     </Link>
   );
 }

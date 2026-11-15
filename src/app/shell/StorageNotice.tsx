@@ -18,7 +18,7 @@ export function StorageNotice() {
   return (
     <div className={styles.storageNotice} role="alert">
       <p>
-        {words[status]} {status === "full" && <Link to="/#stats">{words.statsLink}</Link>}
+        {words[status]} {status === "full" && <Link to="/stats">{words.statsLink}</Link>}
       </p>
       <button
         type="button"
@@ -28,7 +28,7 @@ export function StorageNotice() {
           setClosed(status);
         }}
       >
-        {symbols.puzzlePage.close}
+        {symbols.close}
       </button>
     </div>
   );

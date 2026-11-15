@@ -1,18 +1,21 @@
+import { useLoaderData } from "react-router";
 import { currentStreak, longestStreak, solvesPerDay } from "../../../shared/state/progress";
 import { useAppStore } from "../../../shared/state/store";
 import { useToday } from "../../../shared/useNow";
 import { text } from "../../../text/en";
-import type { TodayCard } from "../../puzzles";
+import type { homeLoader } from "../../puzzles";
 import { DataActions } from "./DataActions";
-import styles from "./HomePage.module.css";
 import { PersonalBests } from "./PersonalBests";
 import { StatsCalendar } from "./StatsCalendar";
+import styles from "./StatsPage.module.css";
 
-const words = text.home.stats;
+const words = text.stats;
 
-// The stats of the player. They come from the solves that the browser saved. There is no account.
-// The cards of today give the puzzle types, and the first puzzle for a player without solves.
-export function Stats({ cards }: { cards: readonly TodayCard[] }) {
+// The stats page: four numbers, the calendar of the last five weeks, the personal bests and the data actions.
+// The stats come from the solves that the browser saved. There is no account.
+// Today's puzzles give the puzzle types, and the first puzzle for a player without solves.
+export function StatsPage() {
+  const cards = useLoaderData<typeof homeLoader>();
   const results = useAppStore((state) => state.results);
   const solved = useAppStore((state) => state.solved);
   // The clock changes each minute, so the streak and the calendar are correct after midnight.
@@ -31,10 +34,11 @@ export function Stats({ cards }: { cards: readonly TodayCard[] }) {
     { label: words.kpis.days, value: solvesPerDay(results).size, isMain: false },
   ];
   return (
-    <section id="stats" aria-labelledby="stats-heading" className={styles.section}>
-      <div className={styles.statsHeader}>
-        <h2 id="stats-heading">{words.heading}</h2>
-        <p className={styles.sectionIntro}>{words.note}</p>
+    <>
+      <title>{`${words.heading} | ${text.siteName}`}</title>
+      <div className={styles.header}>
+        <h1 className={styles.title}>{words.heading}</h1>
+        <p className={styles.note}>{words.note}</p>
       </div>
       <ul className={styles.kpis}>
         {numbers.map(({ label, value, isMain }) => (
@@ -46,11 +50,11 @@ export function Stats({ cards }: { cards: readonly TodayCard[] }) {
           </li>
         ))}
       </ul>
-      <div className={styles.statsGrid}>
+      <div className={styles.grid}>
         <StatsCalendar results={results} today={today} />
         <PersonalBests results={results} types={types} first={first} />
       </div>
       <DataActions />
-    </section>
+    </>
   );
 }

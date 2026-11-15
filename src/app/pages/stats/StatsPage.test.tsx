@@ -14,12 +14,17 @@ import { routes } from "../../routes";
 // jsdom cannot load a page again, thus the test replaces "reloadPage".
 vi.mock(import("../../../shared/reload"), () => ({ reloadPage: vi.fn<() => void>() }));
 
-const stats = text.home.stats;
+const stats = text.stats;
 
-function renderHome() {
+// The tests play as a returning player of the analytics notice, so the notice does not show.
+function renderAt(path: string) {
   useAppStore.getState().acknowledgeNotice();
-  render(<RouterProvider router={createMemoryRouter(routes, { initialEntries: ["/"] })} />);
-  return screen.findByRole("region", { name: stats.heading });
+  render(<RouterProvider router={createMemoryRouter(routes, { initialEntries: [path] })} />);
+}
+
+function renderStats() {
+  renderAt("/stats");
+  return screen.findByRole("heading", { level: 1, name: stats.heading });
 }
 
 // Four solves of easy Guzzle puzzles: two today, one yesterday and one five days ago.
@@ -43,10 +48,10 @@ function kpi(label: string): string | null {
   return screen.getByText(label).previousElementSibling?.textContent ?? null;
 }
 
-describe("home page stats", () => {
+describe("stats page", () => {
   it("shows the streaks, the solved puzzles and the days played", async () => {
     solveOnDays();
-    await renderHome();
+    await renderStats();
     expect(kpi(stats.kpis.streak)).toBe("2");
     expect(kpi(stats.kpis.longest)).toBe("2");
     expect(kpi(stats.kpis.solved)).toBe("4");
@@ -55,7 +60,7 @@ describe("home page stats", () => {
 
   it("shows the solves of today in the calendar, and the personal bests in a table", async () => {
     const today = solveOnDays();
-    await renderHome();
+    await renderStats();
     const calendar = screen.getByRole("list", { name: stats.calendar.heading });
     expect(within(calendar).getByText(stats.calendar.day(today, 2))).toBeInTheDocument();
     const table = screen.getByRole("table", { name: stats.bests.heading });
@@ -73,7 +78,7 @@ describe("home page stats", () => {
   it("shows the average times of a row after a select on the name of the puzzle type", async () => {
     solveOnDays();
     const user = userEvent.setup();
-    await renderHome();
+    await renderStats();
     const toggle = screen.getByRole("button", { name: text.guzzle.name });
     expect(toggle).toHaveAttribute("aria-expanded", "false");
     expect(screen.queryByText(stats.bests.average("1:15"))).toBeNull();
@@ -83,7 +88,7 @@ describe("home page stats", () => {
   });
 
   it("shows one message and a link to a puzzle before the first solve", async () => {
-    await renderHome();
+    await renderStats();
     expect(screen.queryByRole("table", { name: stats.bests.heading })).toBeNull();
     expect(screen.getByText(stats.bests.empty)).toBeInTheDocument();
     const link = screen.getByRole("link", {
@@ -93,11 +98,11 @@ describe("home page stats", () => {
   });
 });
 
-describe("home page clear data", () => {
+describe("stats page clear data", () => {
   it("asks first, then deletes all saved data and loads the page again", async () => {
     solveOnDays();
     const user = userEvent.setup();
-    await renderHome();
+    await renderStats();
     await user.click(screen.getByRole("button", { name: stats.clear.button }));
     expect(screen.getByRole("button", { name: stats.clear.yes.label })).toHaveFocus();
     expect(useAppStore.getState().results).toHaveLength(4);
@@ -111,15 +116,16 @@ describe("home page clear data", () => {
   it("keeps the data after No", async () => {
     solveOnDays();
     const user = userEvent.setup();
-    await renderHome();
+    await renderStats();
     await user.click(screen.getByRole("button", { name: stats.clear.button }));
     await user.click(screen.getByRole("button", { name: stats.clear.no.label }));
     expect(useAppStore.getState().results).toHaveLength(4);
     expect(screen.getByRole("button", { name: stats.clear.button })).toHaveFocus();
   });
 
-  it("explains Clear data in the questions", async () => {
-    await renderHome();
+  it("explains Clear data in the questions of the home page", async () => {
+    renderAt("/");
+    await screen.findByRole("heading", { level: 1 });
     const item = text.home.faq.items.find(({ answer }) => answer.includes(stats.clear.button));
     expect(screen.getByText(String(item?.question))).toBeInTheDocument();
   });

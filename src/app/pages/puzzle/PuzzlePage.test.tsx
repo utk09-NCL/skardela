@@ -69,14 +69,12 @@ async function openAndMove() {
 }
 
 describe("puzzle page restart", () => {
-  // On a small screen, the order on the page is the board, the bar, then the rules.
-  // On a wide screen, the CSS puts the bar and the rules in the column on the left.
-  it("puts the bar after the board and above the rules", async () => {
+  // The actions are in the header, next to the timer, as in the design. Thus they come before the board.
+  it("puts the actions next to the timer, above the board", async () => {
     renderAt("/puzzles/colour-binary-0001");
     const board = await screen.findByRole("grid", { name: /^Colour Binary, \d+ by \d+$/u });
-    const rules = screen.getByRole("region", { name: page.rulesHeading });
-    expect(follows(board, restartButton())).toBe(true);
-    expect(follows(restartButton(), rules)).toBe(true);
+    expect(follows(screen.getByRole("timer"), restartButton())).toBe(true);
+    expect(follows(restartButton(), board)).toBe(true);
   });
 
   it("asks first, and restarts the board after Yes", async () => {
@@ -122,8 +120,7 @@ describe("puzzle page random puzzle", () => {
     const id = router.state.location.pathname.replace("/puzzles/", "");
     expect(await easyGuzzleIds()).toContain(id);
     // The page can render the new puzzle a moment after the path changes, thus the test waits for it.
-    const details = screen.getByRole("list", { name: page.detailsLabel });
-    expect(await within(details).findByText(page.puzzleNumber(id.slice(-4)))).toBeInTheDocument();
+    expect(await screen.findByText(new RegExp(`^#${id.slice(-4)} by `, "u"))).toBeInTheDocument();
     expect(screen.getByRole("button", { name: page.random })).toHaveFocus();
   });
 

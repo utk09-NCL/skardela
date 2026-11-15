@@ -171,15 +171,40 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* The list of the path is on the left, under the status line. */
 .path {
-  justify-self: center;
-  width: min(100%, 32rem);
+  padding-inline: 0.25rem;
 }
 
+/* The summary looks like "More rules" beside the board: small bold text and a chevron, not the marker of
+   the browser. The chevron is two borders of a turned square, and it turns when the list opens. */
 .path summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   color: var(--text-h);
+  font-size: 0.875rem;
   font-weight: 600;
+  list-style: none;
   cursor: pointer;
+}
+
+.path summary::-webkit-details-marker {
+  display: none;
+}
+
+.path summary::after {
+  content: "";
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-right: 1.5px solid var(--text-muted);
+  border-bottom: 1.5px solid var(--text-muted);
+  transform: translateY(-25%) rotate(45deg);
+  transition: transform 200ms ease;
+}
+
+.path[open] summary::after {
+  transform: translateY(25%) rotate(-135deg);
 }
 
 .path ol {

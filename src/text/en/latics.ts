@@ -80,6 +80,8 @@ export const latics = {
   // The score of a solve: the number of misses. The home page and the result card show it.
   score: missCount,
   scoreWord: missWord,
+  // The short labels of the numbers under the stage, for example "Misses 2". See "src/shared/StatusRow.tsx".
+  metrics: { tray: "Tray mirrors", misses: "Misses" },
   boardLabel: "Latics board",
   symbols: symbols.latics,
   // The direction of the beam in words. "The beam goes up and right 3 squares."

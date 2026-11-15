@@ -1,14 +1,23 @@
-/* The base of the board, the squares, the status box and the buttons are in "src/shared/Board.module.css".
+/* The base of the board, the squares, the status line and the buttons are in "src/shared/Board.module.css".
    This file sets what is special to Tilt: the walls, the holes, the balls, the slide and the arrow buttons.
    The board uses both "grid" classes and both "square" classes. */
 
 /* "--gap" is the same gap as in the shared grid. The balls use it to find their squares. */
+/* The board has a frame, as a tray: a line of the text colour around it, with a gap.
+   The frame is two shadows, so it adds no padding and the balls keep their places.
+   The width leaves space for the frame, so the frame stays on the stage. */
 .grid {
   --gap: clamp(0.25rem, 1.2vw, 0.4rem);
   --grey: light-dark(#6f6a64, #8c857d);
+  --frame-gap: 0.625rem;
   position: relative;
   gap: var(--gap);
+  width: min(100% - 2 * var(--frame-gap) - 4px, calc(var(--size) * 3.5rem), 30rem);
+  margin: calc(var(--frame-gap) + 2px) auto;
   border-radius: var(--radius-md);
+  box-shadow:
+    0 0 0 var(--frame-gap) var(--stage),
+    0 0 0 calc(var(--frame-gap) + 2px) var(--text-h);
   /* A swipe on the board tilts it, thus the page does not scroll or zoom during a touch on the board. */
   touch-action: none;
 }
@@ -20,11 +29,10 @@
 }
 
 /* The key hint above the board. It tells a mouse player to click the board before the arrow keys.
-   A touch screen with no mouse does not show it. The negative margin puts it near the tilts. */
+   A touch screen with no mouse does not show it. */
 .keyHint {
   display: none;
   justify-self: center;
-  margin-block-start: -0.5rem;
   padding: 0.25rem 0.75rem;
   border: 1px dashed var(--line);
   border-radius: 999px;
@@ -35,6 +43,16 @@
 
 .keyHintActive {
   display: none;
+}
+
+/* After the solve, the hint is hidden, but it keeps its space, so the board does not move up. */
+.keyHint[data-hidden="true"] {
+  visibility: hidden;
+}
+
+/* A small gap between the keyboard symbol and the text. */
+.keyIcon {
+  margin-inline-end: 0.375em;
 }
 
 /* The board or an arrow button has the focus: the hint shows its "active" text with the colour of the ring.
@@ -162,15 +180,6 @@
 .ball[data-in-hole="true"] .disc {
   width: 80%;
   border-width: 2.5px;
-}
-
-/* The tilts and the fewest tilts, above the board. */
-.counts {
-  justify-self: center;
-  color: var(--text-h);
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  text-align: center;
 }
 
 /* The four arrow buttons are in a cross: up on top, left and right in the middle, down at the bottom.

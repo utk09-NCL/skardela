@@ -13,6 +13,7 @@ import {
   isoDuration,
   longestStreak,
   msUntilMidnight,
+  solvesOnDay,
 } from "./progress";
 import type { SolveResult } from "./saved-data";
 
@@ -30,6 +31,18 @@ describe("days", () => {
     expect(addDays("2026-10-31", 1)).toBe("2026-11-01");
     expect(addDays("2026-12-31", 1)).toBe("2027-01-01");
     expect(addDays("2026-03-01", -1)).toBe("2026-02-28");
+  });
+});
+
+describe("solvesOnDay", () => {
+  // The daily puzzles repeat. A solve of the same puzzle on an earlier day is not a solve of today.
+  it("gives only the solves of the day", () => {
+    const earlier = solveOn("2026-11-12", 30, "numpuz-0001");
+    const today = solveOn("2026-11-14", 90, "numpuz-0001");
+    const results = [earlier, solveOn("2026-11-12", 60, "numpuz-0002"), today];
+    expect(solvesOnDay(results, "2026-11-14")).toEqual([today]);
+    expect(bestResult(solvesOnDay(results, "2026-11-14"), "numpuz-0001")).toBe(today);
+    expect(solvesOnDay(results, "2026-11-13")).toEqual([]);
   });
 });
 

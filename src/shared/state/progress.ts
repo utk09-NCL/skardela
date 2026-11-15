@@ -27,6 +27,12 @@ export function solvesPerDay(results: readonly SolveResult[]): Map<string, numbe
   return counts;
 }
 
+// The solves of one day. The daily puzzles repeat after some days, thus today's progress uses only
+// the solves of today, not a solve of the same puzzle on an earlier day. Use it with "bestResult".
+export function solvesOnDay(results: readonly SolveResult[], day: string): SolveResult[] {
+  return results.filter((result) => result.day === day);
+}
+
 // The days in a row with at least one solve, up to today. A streak that ends yesterday continues,
 // because the player can still solve a puzzle today.
 export function currentStreak(results: readonly SolveResult[], today: string): number {

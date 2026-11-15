@@ -48,14 +48,17 @@ export function Controls({ game, pressed, onTilt }: ControlsProps) {
 // and "active" when one of them has the focus (".game:focus-within" in "Board.module.css").
 // A screen reader does not read it, because the board has its own help text.
 // The CSS shows it only with a mouse. See "## Controls" in "rules.md".
-export function KeyHint() {
+// After the solve, the arrow keys do nothing, thus the hint is hidden. It keeps its space, so the board does not move.
+export function KeyHint({ isHidden }: { isHidden: boolean }) {
   return (
-    <p className={styles.keyHint} aria-hidden="true">
+    <p className={styles.keyHint} data-hidden={isHidden} aria-hidden="true">
       <span className={styles.keyHintIdle}>
-        {words.symbols.keyboard} {words.keyHint.idle}
+        <span className={styles.keyIcon}>{words.symbols.keyboard}</span>
+        {words.keyHint.idle}
       </span>
       <span className={styles.keyHintActive}>
-        {words.symbols.keyboard} {words.keyHint.active}
+        <span className={styles.keyIcon}>{words.symbols.keyboard}</span>
+        {words.keyHint.active}
       </span>
     </p>
   );

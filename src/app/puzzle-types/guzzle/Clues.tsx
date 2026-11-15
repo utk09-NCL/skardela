@@ -23,7 +23,8 @@ export function Clues({ clues, size, selected }: Props) {
             </span>
             <span>
               <strong>{words.clueLines[line]}</strong>
-              {isSelected && ` (${words.position(position, size)})`}: {clues[line]}
+              {isSelected && ` (${words.position(position, size)})`}{" "}
+              <span className={styles.clueText}>{clues[line]}</span>
             </span>
           </li>
         );

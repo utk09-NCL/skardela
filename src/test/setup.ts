@@ -16,15 +16,6 @@ function close(this: HTMLDialogElement) {
   this.dispatchEvent(new Event("close"));
 }
 
-// jsdom also has no "scrollIntoView". The home page uses it to go to a section, for example "/#stats".
-function scrollIntoView() {
-  // jsdom has no layout, thus there is nothing to scroll.
-}
-
-if (typeof Element.prototype.scrollIntoView !== "function") {
-  Element.prototype.scrollIntoView = scrollIntoView;
-}
-
 if (typeof HTMLDialogElement.prototype.showModal !== "function") {
   HTMLDialogElement.prototype.showModal = showModal;
   HTMLDialogElement.prototype.close = close;

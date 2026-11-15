@@ -24,7 +24,7 @@ Skardela looks like warm paper with dark ink and orange. It uses the fonts Funne
 ## Step 3: Read the design system
 
 - `src/index.css`: the tokens for colour, radius, shadow, font and space. Each colour token has a light value and a dark value.
-- `src/shared/Board.module.css`: the board, the squares, the status box and the buttons.
+- `src/shared/Board.module.css`: the board, the squares, the status line and the buttons.
 - The `.module.css` file of the component, and the file of a similar component.
 - `.claude/skills/modern-css/SKILL.md`: the CSS to use in place of JavaScript, and the browser support rule.
 

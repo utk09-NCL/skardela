@@ -21,9 +21,9 @@ function logRestart({ type, puzzle }: LoadedPuzzle) {
   });
 }
 
-// The bar above the rules. "Restart" starts the same puzzle again, after one question.
+// The buttons next to the timer. "Restart" starts the same puzzle again, after one question.
 // "Random puzzle" opens a different puzzle of the same type and level, if possible one that the player did not solve.
-// While the question is open, it fills the bar.
+// While the question is open, it takes the place of the buttons.
 // The bar is outside the board, thus each puzzle type gets it. The page keeps the bar when it opens a new puzzle,
 // thus "Random puzzle" keeps the focus.
 type PuzzleActionsProps = { loaded: LoadedPuzzle; onRestart: () => void };

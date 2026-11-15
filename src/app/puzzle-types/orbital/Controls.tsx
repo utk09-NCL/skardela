@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useId, type CSSProperties } from "react";
 import shared from "../../../shared/Board.module.css";
 import { text } from "../../../text/en";
 import styles from "./Board.module.css";
@@ -23,6 +23,10 @@ type SliderProps = {
 // and the machine ignores a change. Thus the slider goes back to the value of the game.
 function Slider({ label, value, min, max, valueText, isDisabled, onChange }: SliderProps) {
   const id = useId();
+  // The CSS reads "--fill", the part of the track on the left of the thumb, to colour it.
+  const fill: CSSProperties & { "--fill": string } = {
+    "--fill": `${((value - min) / (max - min)) * 100}%`,
+  };
   return (
     <div className={styles.slider}>
       <label htmlFor={id}>{label}</label>
@@ -39,6 +43,7 @@ function Slider({ label, value, min, max, valueText, isDisabled, onChange }: Sli
         value={value}
         aria-valuetext={valueText}
         aria-disabled={isDisabled}
+        style={fill}
         onChange={(event) => {
           onChange(Number(event.currentTarget.value));
         }}
@@ -48,7 +53,7 @@ function Slider({ label, value, min, max, valueText, isDisabled, onChange }: Sli
 }
 
 // The two sliders set the angle and the power, and the Launch button launches the probe.
-// The misses show next to the Launch button. See "## Score": "The board shows the misses, for example "Misses: 2.""
+// The misses show in the status row. See "Board.tsx".
 // "aim" is the aim that the sliders show: during a drag, it is the aim of the drag.
 // During a flight and after the solve, the controls have "aria-disabled" and do nothing.
 // See "## Motion": "During the flight, the sliders and the Launch button keep the keyboard focus."
@@ -80,10 +85,9 @@ export function Controls({ game, aim }: { game: Game; aim: Aim }) {
         }}
       />
       <div className={styles.launchRow}>
-        <p className={styles.misses}>{words.misses(game.score)}</p>
         <button
           type="button"
-          className={`${shared.button} ${shared.boxed} ${styles.launch}`}
+          className={`${shared.button} ${shared.primary} ${styles.launch}`}
           aria-disabled={isDisabled}
           onClick={game.launch}
         >

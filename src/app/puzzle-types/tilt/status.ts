@@ -1,3 +1,4 @@
+import type { Metric } from "../../../shared/StatusRow";
 import { text } from "../../../text/en";
 import type { Move } from "./machine";
 import { holeAt, type Ball, type Layout } from "./rules-check";
@@ -18,8 +19,28 @@ function moveText(move: Move): string {
   ].join(" ");
 }
 
+// The numbers in the status row: the tilts and the fewest tilts. The status text already tells the tilts
+// after each tilt (see "statusText"), thus the numbers are not live regions, and a screen reader does not
+// read the tilts two times.
+export function countsOf(game: Game): Metric[] {
+  return [
+    {
+      label: words.metrics.tilts,
+      value: game.tilts,
+      text: words.tilts(game.tilts),
+      isAnnounced: false,
+    },
+    {
+      label: words.metrics.fewest,
+      value: game.fewest ?? words.unknownFewest,
+      text: words.fewest(game.fewest),
+      isAnnounced: false,
+    },
+  ];
+}
+
 // The status text tells the player what to do, what the last tilt did, or the result.
-// The status box is a live region, thus a screen reader tells each new text. See "## Screen reader" in "rules.md".
+// The status line is a live region, thus a screen reader tells each new text. See "## Screen reader" in "rules.md".
 // After the solve, the text tells the last tilt too, so a screen reader also tells the last tilt.
 export function statusText(game: Game): string {
   if (game.blocked !== null) return words.status.noMove(words.directions[game.blocked]);

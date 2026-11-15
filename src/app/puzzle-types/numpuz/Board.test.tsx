@@ -58,10 +58,10 @@ describe("numpuz board example", () => {
     await user.click(blank(2));
     await user.click(key("-"));
     expect(status).toHaveTextContent(words.status.start);
-    expect(screen.queryByTestId("confetti")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("solve-burst")).not.toBeInTheDocument();
     await user.click(checkButton());
     expect(status).toHaveTextContent(words.status.solved(1));
-    expect(screen.getByTestId("confetti")).toBeInTheDocument();
+    expect(screen.getByTestId("solve-burst")).toBeInTheDocument();
 
     // The play session saves the solve with one mistake. "Random puzzle" skips a solved puzzle.
     const { solved, results } = useAppStore.getState();

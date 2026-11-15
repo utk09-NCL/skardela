@@ -66,13 +66,6 @@
   }
 }
 
-/* The key under the board. The chips have a soft fill, because the board is on a light surface. */
-.legend {
-  --key-bg: var(--surface-muted);
-  display: flex;
-  justify-content: center;
-}
-
 /* Undo and Hint, in one row in the middle. */
 .buttons {
   display: flex;

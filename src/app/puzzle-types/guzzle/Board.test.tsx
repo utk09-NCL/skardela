@@ -66,7 +66,7 @@ describe("guzzle board result", () => {
     const user = userEvent.setup();
     render(<Board puzzle={puzzle} />);
     await user.click(screen.getByRole("button", { name: words.modes.bank }));
-    expect(screen.queryByTestId("confetti")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("solve-burst")).not.toBeInTheDocument();
 
     // Steps 2 to 5: two mistakes in the top-left square, then all correct letters.
     await typeLetters(user, [
@@ -83,7 +83,7 @@ describe("guzzle board result", () => {
     ]);
 
     expect(screen.getByText("You solved the puzzle. With bank, 2 mistakes.")).toBeInTheDocument();
-    expect(screen.getByTestId("confetti")).toBeInTheDocument();
+    expect(screen.getByTestId("solve-burst")).toBeInTheDocument();
     // "Random puzzle" skips a solved puzzle.
     expect(useAppStore.getState().solved).toEqual([puzzle.id]);
   });
@@ -191,6 +191,16 @@ describe("guzzle board focus", () => {
     expect(square(1, 1)).toHaveFocus();
     await user.keyboard("{ArrowDown}{ArrowRight}");
     expect(square(2, 2)).toHaveFocus();
+  });
+
+  // On a phone, the mode buttons must be easy to find. They are under the board and above the status text.
+  it("shows the mode buttons between the board and the status text", () => {
+    render(<Board puzzle={puzzle} />);
+    const modes = screen.getByRole("group", { name: words.modeLabel });
+    const board = screen.getByRole("grid");
+    const status = screen.getByText(words.status.choose);
+    expect(board.compareDocumentPosition(modes) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(modes.compareDocumentPosition(status) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   // The mode buttons go away after the choice. The focus must not go to the start of the page.

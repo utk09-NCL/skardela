@@ -1,5 +1,6 @@
 import { Fragment, type KeyboardEvent } from "react";
 import shared from "../../../shared/Board.module.css";
+import { SolveBurst } from "../../../shared/SolveBurst";
 import { useFocusWhen } from "../../../shared/useFocusWhen";
 import { text } from "../../../text/en";
 import styles from "./Board.module.css";
@@ -55,21 +56,29 @@ function Blank({ game, index }: { game: Game; index: number }) {
   );
 }
 
-// The equation shows the numbers, the blanks between them, and the target.
+// The stage shows the target above the equation: the numbers and the blanks between them.
+// After the solve, the burst shows in the stage. The stage is a <div> around the fieldset,
+// because a fieldset puts a positioned child only over its content, not over its full box.
 export function Equation({ game }: { game: Game }) {
   return (
-    <fieldset className={`${shared.board} ${shared.stage}`}>
-      <legend className="visually-hidden">{words.boardLabel}</legend>
-      <div className={styles.equation}>
-        {game.numbers.map((number, index) => (
-          // oxlint-disable-next-line react/no-array-index-key -- the numbers never move in the list.
-          <Fragment key={index}>
-            <span className={styles.number}>{number}</span>
-            {index < game.guess.length && <Blank game={game} index={index} />}
-          </Fragment>
-        ))}
-      </div>
-      <p className={styles.target}>{words.target(game.target)}</p>
-    </fieldset>
+    <div className={shared.stage}>
+      <fieldset className={shared.board}>
+        <legend className="visually-hidden">{words.boardLabel}</legend>
+        <p className={styles.target}>
+          <span className={styles.targetLabel}>{words.targetLabel}</span>{" "}
+          <span className={styles.targetValue}>{game.target}</span>
+        </p>
+        <div className={styles.equation}>
+          {game.numbers.map((number, index) => (
+            // oxlint-disable-next-line react/no-array-index-key -- the numbers never move in the list.
+            <Fragment key={index}>
+              <span className={styles.number}>{number}</span>
+              {index < game.guess.length && <Blank game={game} index={index} />}
+            </Fragment>
+          ))}
+        </div>
+      </fieldset>
+      {game.isSolved && <SolveBurst />}
+    </div>
   );
 }

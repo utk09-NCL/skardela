@@ -1,5 +1,6 @@
 import { text } from "../../../text/en";
 import shared from "../../../shared/Board.module.css";
+import { SolveBurst } from "../../../shared/SolveBurst";
 import styles from "./Board.module.css";
 import type { DragState } from "./input";
 import { useFlightStep } from "./motion";
@@ -137,6 +138,7 @@ export function Scene({ game, drag }: { game: Game; drag: DragState }) {
         </g>
       </svg>
       <ItemList game={game} />
+      {game.isSolved && <SolveBurst />}
     </figure>
   );
 }

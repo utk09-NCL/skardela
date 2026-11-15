@@ -5,16 +5,19 @@ import { symbols } from "../symbols";
 export const puzzlePage = {
   title: (puzzleTypeName: string, id: string, siteName: string) =>
     `${puzzleTypeName} ${id} | ${siteName}`,
-  detailsLabel: "Puzzle details",
-  // The details under the title have no labels. The words "#" and "by" are enough.
-  puzzleNumber: (number: string) => `#${number}`,
-  author: (author: string) => `by ${author}`,
-  // The label above the title of the panel.
-  nowPlaying: "Now playing",
+  // The link above the title. It goes back to the home page. The arrow before it is only for the eyes.
+  back: "All puzzles",
+  // The details next to the title have no labels. The words "#" and "by" are enough.
+  // The tabs show the level, thus the level is only for a screen reader.
+  details: (level: string, number: string, author: string) => ({
+    level: `${level}, `,
+    shown: `#${number} by ${author}`,
+  }),
+  // The tabs link to today's puzzle of each level. A solved level shows a check mark.
+  levelsLabel: (typeName: string) => `Today's ${typeName} puzzles`,
+  levelSolved: "solved",
   // The time since the start of the puzzle. A screen reader reads the label before the time.
   timerLabel: "Time",
-  // The link that closes the puzzle. It shows only the symbol "✕".
-  close: "Close the puzzle and go to today's puzzles",
   // The result card that shows after a solve: the time, the score, the time against the average,
   // the share text and the link to the next level of today.
   result: {
@@ -34,8 +37,10 @@ export const puzzlePage = {
     copy: "Copy result",
     // On a phone, the button opens the share menu of the phone.
     share: "Share result",
-    next: (level: string) => `Next: ${level} ${symbols.puzzlePage.next}`,
-    nextLabel: (typeName: string, level: string) => `Next puzzle: ${typeName} ${level}`,
+    // The link to the next level of today. Its name is its visible text, for voice control.
+    // The arrow after it is only for the eyes.
+    next: (level: string) => `Next: ${level}`,
+    nextArrow: symbols.puzzlePage.next,
   },
   // The rules beside the board: three short rules, a key, and the other rules under "More rules".
   rulesHeading: "How to play",
@@ -45,7 +50,7 @@ export const puzzlePage = {
   loading: "The puzzle is loading...",
   loadingBoard: "The board is loading...",
   boardError: "An error stopped the board. Reload the page to try again.",
-  // The bar above the rules. "Restart" asks one time before it deletes the moves.
+  // The buttons next to the timer. "Restart" asks one time before it deletes the moves.
   restart: "Restart",
   restartQuestion: "Restart the puzzle?",
   // Each answer shows a short text. The label tells a screen reader what the answer does.

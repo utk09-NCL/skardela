@@ -1,5 +1,3 @@
-import { symbols } from "../symbols";
-
 // A short date in British English, for example "25 October". "timeZone" is set for a day key,
 // because a day key is a date without a time. See "src/shared/state/progress.ts".
 const shortDate = (date: Date, timeZone?: string) =>
@@ -21,7 +19,8 @@ export const app = {
   skipLink: "Skip to main content",
   nav: {
     label: "Main",
-    stats: "Your stats",
+    puzzles: "Puzzles",
+    stats: "Stats",
   },
   // The streak in the header: the days in a row with at least one solved puzzle.
   // A small screen shows only the number. A screen reader always reads the full text.
@@ -71,17 +70,15 @@ export const app = {
     failed: "Not copied",
     failedMessage: "Your browser did not let Skardela copy the result.",
   },
+  // Two buttons that show only a symbol. The label tells a screen reader the name of each theme.
   theme: {
     label: "Theme",
-    options: {
-      system: `${symbols.theme.system} System`,
-      light: `${symbols.theme.light} Light`,
-      dark: `${symbols.theme.dark} Dark`,
-    },
+    light: "Light theme",
+    dark: "Dark theme",
   },
   // The analytics line is for returning players. New players see the analytics notice.
   footer: {
-    tagline: "Skardela · free daily puzzles · no account, no download",
+    tagline: "Free daily puzzles. No account, no download.",
     source: { label: "Source on GitHub", href: "https://github.com/utk09-NCL/skardela" },
     content: (year: number) => `© ${year} Skardela. This website uses analytics without cookies.`,
   },
@@ -89,7 +86,7 @@ export const app = {
   storage: {
     unavailable:
       "Your browser does not let Skardela save data. You can play, but your progress is lost when you close the page.",
-    full: 'The browser storage is full, thus Skardela cannot save your new progress. Select "Export my data" under "Your stats", then "Clear my data".',
+    full: 'The browser storage is full, thus Skardela cannot save your new progress. Select "Export my data" on the Stats page, then "Clear my data".',
     outdated:
       "A different tab has a new version of Skardela. Reload this page to save your progress.",
     statsLink: "Go to your stats",

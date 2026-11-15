@@ -12,18 +12,34 @@
   border: 0;
 }
 
-/* The stage under a board: a soft panel with round corners. The board is in its middle.
+/* The stage under a board: a large panel with a thin edge and round corners. The board is in its middle.
    It is a different element from the board, because some boards put items on the board with "position".
-   On a narrow phone, the padding is 0, so a 9 × 9 board keeps squares of 24 px or more. It grows to 1.25rem. */
+   It gives the position of the burst after a solve (see "SolveBurst.tsx").
+   On a narrow phone, the padding is small, so a 9 × 9 board keeps squares of 24 px or more. */
 .stage {
-  justify-self: center;
+  position: relative;
   display: grid;
   justify-items: center;
+  align-content: center;
   box-sizing: border-box;
-  width: min(100%, 34rem);
-  padding: clamp(0rem, (100vw - 20rem) / 8, 1.25rem);
-  border-radius: var(--radius-lg);
+  width: 100%;
+  padding: clamp(0.75rem, 5vw, 2.75rem) clamp(0.25rem, (100vw - 20rem) / 8, 1.25rem);
+  border: 1px solid var(--border);
+  border-radius: 24px;
   background-color: var(--stage);
+  transition: border-color 500ms ease;
+}
+
+/* On a wide screen, the stage has the same height for each puzzle type, as in the design. */
+@media (min-width: 60rem) {
+  .stage {
+    min-height: 28.75rem;
+  }
+}
+
+/* After the solve, the stage has a green edge. The status line tells the solve too. */
+.game:has(.status[data-solved="true"]) .stage {
+  border-color: var(--success);
 }
 
 /* The board component sets "--size" to the number of squares in one row. */
@@ -80,7 +96,7 @@
 }
 
 /* The selected square, the hint square and the keyboard focus use the same ring.
-   The ring is not a square colour, so it shows clearly on each square. */
+   The ring is 2 px outside the square, on the stage, so it shows clearly also around a red square. */
 .square:focus-visible,
 .square[data-selected="true"],
 .square[data-hint="true"] {
@@ -92,8 +108,9 @@
   cursor: default;
 }
 
+/* The hover edge is on the square, thus it has the text colour, which shows on each square colour. */
 .square[aria-disabled="false"]:hover {
-  border-color: var(--ring);
+  border-color: var(--text-h);
 }
 
 /* The Latics monster: a round head with two eyes. The rules key of Latics shows the same monster.
@@ -123,24 +140,63 @@
   --body: var(--success);
 }
 
-/* The status text is in a box. It has a minimum height, so the page does not move when the text changes. */
-.status {
-  justify-self: center;
-  width: min(100%, 32rem);
-  min-height: 2.75rem;
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background-color: var(--surface);
-  text-align: center;
+/* The line under the stage: the status text on the left and the numbers on the right. See "StatusRow.tsx".
+   On a small screen, the numbers go under the text. */
+.statusRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.25rem;
+  padding-inline: 0.25rem;
 }
 
-/* When the puzzle is solved, the box has the accent colour. */
-.status[data-solved="true"] {
-  border-color: var(--accent-border);
-  background-color: var(--accent-bg);
+/* The status text. It has a minimum height, so the page does not move when the text changes. */
+.status {
+  flex: 1 1 17.5rem;
+  min-height: 1.45em;
   color: var(--text-h);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+/* After the solve, the text is bold. */
+.status[data-solved="true"] {
   font-weight: 600;
+}
+
+.metrics {
+  display: flex;
+  gap: 1rem;
+}
+
+/* One number, for example "Misses 2": a short label and the value in the mono font. */
+.metric {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+}
+
+.metricLabel {
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+}
+
+.metricValue {
+  color: var(--text-h);
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The buttons under the status row, in one centred row, for example "Undo" and "Hint". */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 /* A secondary button has a soft fill and no border. */
@@ -152,6 +208,7 @@
   border-radius: 12px;
   background-color: var(--surface-muted);
   color: var(--text-h);
+  font-size: 0.9375rem;
   font-weight: 600;
   transition:
     background-color 150ms ease,
@@ -169,6 +226,17 @@
 .button[aria-disabled="true"] {
   cursor: default;
   opacity: 0.6;
+}
+
+/* The main action of a board, for example "Fire the laser". It has the accent colour, as in the design.
+   Use it with "button". */
+.primary {
+  background-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.primary:hover:enabled:where(:not([aria-disabled="true"])) {
+  background-color: var(--accent-hover);
 }
 
 /* A secondary button with a box, for example the Hint button. The board uses both "button" and "boxed".

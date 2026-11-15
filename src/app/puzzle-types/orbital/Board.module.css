@@ -1,4 +1,4 @@
-/* The base of the board, the status box and the buttons are in "src/shared/Board.module.css".
+/* The base of the board, the status line and the buttons are in "src/shared/Board.module.css".
    This file sets what is special to Orbital: the drawing of the board, the sliders and the Launch button.
    The drawing uses the units of the board: one unit is 1/100 of the width of the board. */
 
@@ -9,13 +9,15 @@
   overflow: clip;
 }
 
-/* The board is a square on the stage. It grows with the page to a maximum width, as the grids of the other
-   puzzle types. The stage gives its background. See ".stage" in "src/shared/Board.module.css". */
+/* The board is a square with a soft fill and round corners, in the middle of the stage, as in the design.
+   It grows with the page to a maximum width. See ".stage" in "src/shared/Board.module.css". */
 .scene {
   display: block;
   overflow: visible;
-  width: min(100%, 32rem);
+  width: min(100%, 24rem);
   aspect-ratio: 1;
+  border-radius: 18px;
+  background-color: var(--surface-muted);
   margin-inline: auto;
   /* A drag on the board aims the probe, thus the page does not scroll or zoom during a touch on the board. */
   touch-action: none;
@@ -90,17 +92,22 @@
   stroke-width: 0.6;
 }
 
-/* The two sliders are side by side when the page has space. The misses and the Launch button are under them.
+/* The two sliders are side by side across the width when the page has space. The Launch button is under them.
    The controls are in a fieldset, thus the first lines remove its default styles. */
 .controls {
   min-inline-size: 0;
-  padding: 0;
+  margin: 0;
+  padding: 0.25rem;
   border: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
-  gap: 0.75rem 1.5rem;
-  inline-size: min(100%, 32rem);
-  margin-inline: auto;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem 1.75rem;
+}
+
+@media (min-width: 30rem) {
+  .controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 /* The name of a slider and its value are on one line. The slider is under them. */
@@ -108,21 +115,58 @@
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
-  gap: 0.25rem 0.5rem;
-  color: var(--text-h);
-  font-weight: 600;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
 }
 
 .value {
+  color: var(--text-h);
+  font-family: var(--mono);
   font-variant-numeric: tabular-nums;
 }
 
+/* A thin track: the accent colour on the left of the thumb, and a line colour on the right.
+   The thumb is a circle with an accent edge. The track and the thumb have a rule for each browser engine. */
 .slider > input {
   grid-column: 1 / -1;
   inline-size: 100%;
-  min-block-size: 2rem;
-  accent-color: var(--accent);
+  block-size: 1.5rem;
+  margin: 0;
+  background: transparent;
   cursor: pointer;
+  appearance: none;
+}
+
+.slider > input::-webkit-slider-runnable-track {
+  block-size: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--accent) var(--fill), var(--line) var(--fill));
+}
+
+.slider > input::-moz-range-track {
+  block-size: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--accent) var(--fill), var(--line) var(--fill));
+}
+
+.slider > input::-webkit-slider-thumb {
+  box-sizing: border-box;
+  inline-size: 18px;
+  block-size: 18px;
+  margin-top: -7px;
+  border: 3px solid var(--accent);
+  border-radius: 50%;
+  background-color: var(--text-h);
+  appearance: none;
+}
+
+.slider > input::-moz-range-thumb {
+  inline-size: 12px;
+  block-size: 12px;
+  border: 3px solid var(--accent);
+  border-radius: 50%;
+  background-color: var(--text-h);
 }
 
 .slider > input:focus-visible {
@@ -136,7 +180,7 @@
   opacity: 0.6;
 }
 
-/* The misses and the Launch button are on one line, under the sliders. */
+/* The Launch button is in the middle, under the sliders. */
 .launchRow {
   grid-column: 1 / -1;
   display: flex;
@@ -146,15 +190,9 @@
   gap: 0.75rem 1.5rem;
 }
 
-.misses {
-  color: var(--text-h);
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
 /* The ".launchRow >" part makes this rule stronger than the shared "button" rule, in any order of the files. */
 .launchRow > .launch {
-  min-inline-size: 10rem;
+  min-inline-size: 6rem;
 }
 
 .launch:focus-visible {

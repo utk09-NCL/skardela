@@ -54,7 +54,8 @@ function KeyButton({ letter, count, hint, onPut }: KeyProps) {
 // Before the first move, the player selects a mode with these buttons. The buttons then go away,
 // thus the focus goes to the first open square, which the machine selects with the mode.
 // "flushSync" shows the selected square before the focus moves.
-function ModeButtons({ game }: { game: Game }) {
+// The board shows them right under the grid, above the status text, so a player on a phone sees them.
+export function ModeButtons({ game }: { game: Game }) {
   return (
     <fieldset className={styles.modes}>
       <legend className="visually-hidden">{words.modeLabel}</legend>
@@ -78,10 +79,10 @@ function ModeButtons({ game }: { game: Game }) {
   );
 }
 
-// Before the first move, the player selects a mode. Then the player gets letter keys.
+// After the player selects a mode, the player gets letter keys. Before that, the board shows "ModeButtons".
 // With the bank, the keys are the letters that are not green yet. Without the bank, the keys are A to Z.
 export function Controls({ game }: { game: Game }) {
-  if (game.mode === null) return <ModeButtons game={game} />;
+  if (game.mode === null) return null;
 
   const keys = game.mode === "bank" ? bankLetters(game.answer, game.guesses) : alphabet;
   return (

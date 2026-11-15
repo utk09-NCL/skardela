@@ -1,0 +1,110 @@
+/* The burst covers the stage. It does not catch clicks, so the board stays usable.
+   It clips the pieces at the edge of the stage. The stage gives the position (see "Board.module.css"). */
+.burst {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  animation: fade-out 1.9s ease-in forwards;
+}
+
+/* All parts are in the middle of the stage. */
+.burst > * {
+  grid-area: 1 / 1;
+}
+
+/* Two rings grow from the check mark and go away. The second ring starts a little later. */
+.ring {
+  width: 150px;
+  height: 150px;
+  border: 2px solid var(--success);
+  border-radius: 50%;
+  animation: ripple 1.1s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+.ring[data-late="true"] {
+  animation-delay: 0.18s;
+}
+
+.piece {
+  width: var(--size);
+  height: var(--size);
+  border-radius: 2px;
+  background-color: var(--colour);
+  animation: fly 1s cubic-bezier(0.15, 0.7, 0.3, 1) var(--delay) both;
+}
+
+.piece:nth-child(3n) {
+  border-radius: 50%;
+}
+
+/* The check mark has the page colour on the success colour, so it is clear in both themes. */
+.check {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background-color: var(--success);
+  color: var(--bg);
+  font-size: 2.125rem;
+  font-weight: 700;
+  animation: pop 0.5s cubic-bezier(0.2, 0.9, 0.25, 1.4) 0.08s both;
+}
+
+@keyframes ripple {
+  from {
+    opacity: 0.9;
+    transform: scale(0.3);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+
+@keyframes fly {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0) scale(0.4);
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) rotate(var(--spin)) scale(1);
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+}
+
+@keyframes fade-out {
+  0%,
+  72% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+/* No burst for a player who wants less motion. The green stage edge and the status line show the solve. */
+@media (prefers-reduced-motion: reduce) {
+  .burst {
+    display: none;
+  }
+}
