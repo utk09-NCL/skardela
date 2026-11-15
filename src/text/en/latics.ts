@@ -25,7 +25,8 @@ const blueMark = { symbol: blue, colour: "blue" } as const;
 export const latics = {
   name: "Latics",
   summary: "Turn the mirrors and send the laser beam to the monster.",
-  // The three short rules show at all times. The rules key shows the monster and the materials: water, prisms and filters.
+  // The three short rules show at all times. The rules key shows the monster, the materials (water, prisms and
+  // filters) and a wall.
   // The other rules are under "More rules". It is open only on the first visit.
   rules: [
     "Hit each monster with a laser beam.",
@@ -40,6 +41,7 @@ export const latics = {
       sample: { fill: "empty", symbol: symbols.latics.prism },
     },
     { text: "a filter lets only its colour through", sample: { fill: "red", symbol: red } },
+    { text: "a wall stops the beam", sample: { fill: "wall", symbol: "" } },
   ] satisfies KeyItem[],
   moreRules: {
     label: "More rules: levels, the tray, water, prisms and filters",

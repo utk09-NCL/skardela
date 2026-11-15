@@ -1,5 +1,5 @@
 import { useLoaderData } from "react-router";
-import { currentStreak, longestStreak, solvesPerDay } from "../../../shared/state/progress";
+import { currentStreak, longestStreak, puzzlesPerDay } from "../../../shared/state/progress";
 import { useAppStore } from "../../../shared/state/store";
 import { useToday } from "../../../shared/useNow";
 import { text } from "../../../text/en";
@@ -31,7 +31,7 @@ export function StatsPage() {
     { label: words.kpis.streak, value: currentStreak(results, today), isMain: true },
     { label: words.kpis.longest, value: longestStreak(results), isMain: false },
     { label: words.kpis.solved, value: solved.length, isMain: false },
-    { label: words.kpis.days, value: solvesPerDay(results).size, isMain: false },
+    { label: words.kpis.days, value: puzzlesPerDay(results).size, isMain: false },
   ];
   return (
     <>

@@ -53,7 +53,7 @@ function DataButtons({ onExport, onImport, clearRef, onClear }: DataButtonsProps
 // "Clear my data" asks one time. The question takes the place of the three buttons, so the panel keeps its size.
 export function DataActions() {
   const { message, exportData, importFile } = useDataTransfer();
-  const { isOpen, buttonRef, yesRef, open, close } = useConfirm();
+  const { isOpen, buttonRef, noRef, open, close } = useConfirm();
   return (
     <section className={`${styles.panel} ${styles.data}`} aria-labelledby="data-heading">
       <div className={styles.dataText}>
@@ -66,7 +66,7 @@ export function DataActions() {
       </div>
       <div className={styles.dataButtons}>
         {isOpen ? (
-          <ClearQuestion yesRef={yesRef} onNo={close} />
+          <ClearQuestion noRef={noRef} onNo={close} />
         ) : (
           <DataButtons
             onExport={exportData}

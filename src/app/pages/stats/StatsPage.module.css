@@ -153,24 +153,34 @@
   list-style: none;
 }
 
+/* A day with puzzles shows its number in the middle. */
 .day {
-  display: block;
+  display: grid;
+  place-items: center;
   aspect-ratio: 1;
   border-radius: var(--radius-sm);
   background-color: var(--surface-muted);
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 
-/* The colour steps of the calendar: more solves give a stronger orange. */
+/* The colour steps of the calendar: more puzzles give a stronger orange. See "--calendar-1" in "src/index.css". */
 .day[data-step="1"] {
-  background-color: color-mix(in srgb, var(--brand) 40%, var(--surface));
+  background-color: var(--calendar-1);
+  color: var(--text-h);
 }
 
 .day[data-step="2"] {
-  background-color: color-mix(in srgb, var(--brand) 70%, var(--surface));
+  background-color: var(--calendar-2);
+  color: var(--bg);
 }
 
 .day[data-step="3"] {
-  background-color: var(--brand);
+  background-color: var(--calendar-3);
+  color: var(--bg);
 }
 
 .day[data-today="true"] {

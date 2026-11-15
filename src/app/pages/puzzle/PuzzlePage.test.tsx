@@ -50,6 +50,10 @@ function yesButton() {
   return screen.getByRole("button", { name: page.restartYes.label });
 }
 
+function noButton() {
+  return screen.getByRole("button", { name: page.restartNo.label });
+}
+
 function restartButton() {
   return screen.getByRole("button", { name: page.restart });
 }
@@ -80,9 +84,11 @@ describe("puzzle page restart", () => {
   it("asks first, and restarts the board after Yes", async () => {
     const user = await openAndMove();
     await user.click(restartButton());
-    // The question does not change the board. The focus goes to Yes.
+    // The question does not change the board. The focus goes to No, the safe answer.
+    // A screen reader reads the question with the answer.
     expect(await square(1, 2, "red")).toBeInTheDocument();
-    expect(yesButton()).toHaveFocus();
+    expect(noButton()).toHaveFocus();
+    expect(noButton()).toHaveAccessibleDescription(page.restartQuestion);
 
     await user.click(yesButton());
     expect(await square(1, 2, "empty")).toBeInTheDocument();
@@ -92,10 +98,19 @@ describe("puzzle page restart", () => {
   it("keeps the moves after No, and gives the focus back to Restart", async () => {
     const user = await openAndMove();
     await user.click(restartButton());
-    await user.click(screen.getByRole("button", { name: page.restartNo.label }));
+    await user.click(noButton());
     expect(await square(1, 2, "red")).toBeInTheDocument();
     expect(restartButton()).toHaveFocus();
     expect(screen.queryByRole("button", { name: page.restartYes.label })).toBeNull();
+  });
+
+  // A second press of Enter selects No, because the focus is on No. Thus two fast presses do not restart.
+  it("keeps the moves after two presses of Enter on Restart", async () => {
+    const user = await openAndMove();
+    restartButton().focus();
+    await user.keyboard("{Enter}{Enter}");
+    expect(await square(1, 2, "red")).toBeInTheDocument();
+    expect(restartButton()).toHaveFocus();
   });
 
   it("keeps the moves after the Escape key", async () => {
@@ -203,5 +218,12 @@ describe("puzzle page rules", () => {
     // The key of Latics shows the materials.
     const key = within(rules).getByRole("list", { name: page.keyLabel });
     expect(within(key).getAllByRole("listitem")).toHaveLength(text.latics.rulesKey.length);
+  });
+
+  // The Latics and the Tilt boards have walls, thus their keys show a wall sample too.
+  it.each(["latics-0001", "tilt-0001"])("shows a wall in the key of %s", async (id) => {
+    renderAt(`/puzzles/${id}`);
+    const key = await screen.findByRole("list", { name: page.keyLabel });
+    expect(key.querySelector('[data-fill="wall"]')).not.toBeNull();
   });
 });

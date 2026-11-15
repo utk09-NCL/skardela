@@ -98,13 +98,33 @@ describe("stats page", () => {
   });
 });
 
+describe("stats page calendar", () => {
+  // A puzzle that the player solved again today counts one time, as in "puzzles solved".
+  // The day shows the number too, so the colour is not the only signal.
+  it("shows the number of different puzzles of today in the calendar", async () => {
+    const today = solveOnDays();
+    useAppStore.getState().recordSolve({
+      puzzleId: "guzzle-0001",
+      type: "guzzle",
+      difficulty: "easy",
+      seconds: 20,
+      day: today,
+    });
+    await renderStats();
+    const calendar = screen.getByRole("list", { name: stats.calendar.heading });
+    const day = within(calendar).getByText(stats.calendar.day(today, 2)).parentElement;
+    expect(day?.textContent).toBe(`2${stats.calendar.day(today, 2)}`);
+  });
+});
+
 describe("stats page clear data", () => {
   it("asks first, then deletes all saved data and loads the page again", async () => {
     solveOnDays();
     const user = userEvent.setup();
     await renderStats();
     await user.click(screen.getByRole("button", { name: stats.clear.button }));
-    expect(screen.getByRole("button", { name: stats.clear.yes.label })).toHaveFocus();
+    // The focus goes to "Keep it", the safe answer.
+    expect(screen.getByRole("button", { name: stats.clear.no.label })).toHaveFocus();
     expect(useAppStore.getState().results).toHaveLength(4);
 
     await user.click(screen.getByRole("button", { name: stats.clear.yes.label }));
@@ -120,6 +140,18 @@ describe("stats page clear data", () => {
     await user.click(screen.getByRole("button", { name: stats.clear.button }));
     await user.click(screen.getByRole("button", { name: stats.clear.no.label }));
     expect(useAppStore.getState().results).toHaveLength(4);
+    expect(screen.getByRole("button", { name: stats.clear.button })).toHaveFocus();
+  });
+
+  // A second press of Enter selects "Keep it", because the focus is on it. Thus two fast presses do not delete.
+  it("keeps the data after two presses of Enter on Clear my data", async () => {
+    solveOnDays();
+    const user = userEvent.setup();
+    await renderStats();
+    screen.getByRole("button", { name: stats.clear.button }).focus();
+    await user.keyboard("{Enter}{Enter}");
+    expect(useAppStore.getState().results).toHaveLength(4);
+    expect(reloadPage).not.toHaveBeenCalled();
     expect(screen.getByRole("button", { name: stats.clear.button })).toHaveFocus();
   });
 

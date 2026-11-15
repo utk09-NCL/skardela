@@ -83,6 +83,13 @@
      on "--stage". The halo around a planet is a soft circle of the same colour. It shows the pull. */
   --planet: var(--blue);
   --moon: light-dark(#7a7269, #8d857c);
+  /* The colour steps of the stats calendar: 1–3, 4–6 and 7 or more puzzles on a day. More puzzles give a darker
+     colour in the light theme and a brighter colour in the dark theme. Each step has 3.1:1 or more on "--surface",
+     and 1.8:1 or more on the step before it (measured). The day shows its number too, so the colour is not
+     the only signal. The number has 4.9:1 or more: "--text-h" on step 1, and "--bg" on steps 2 and 3. */
+  --calendar-1: light-dark(#ed6638, #b54407);
+  --calendar-2: light-dark(#b23c0b, #e97443);
+  --calendar-3: light-dark(#722303, #febda4);
 
   /* The fonts are in the app (see "src/main.tsx"), so the page sends no request to a font service. */
   --sans: "Funnel Display Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;

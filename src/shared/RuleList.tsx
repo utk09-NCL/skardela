@@ -2,8 +2,8 @@ import board from "./Board.module.css";
 import styles from "./RuleList.module.css";
 
 // The fill of a small sample square. "empty" is an outline only. "water" is the water of Latics.
-// "monster" is an empty square with the Latics monster, as on the board.
-type SampleFill = "green" | "yellow" | "red" | "blue" | "empty" | "water" | "monster";
+// "monster" is an empty square with the Latics monster, as on the board. "wall" is a Latics or a Tilt wall.
+type SampleFill = "green" | "yellow" | "red" | "blue" | "empty" | "water" | "monster" | "wall";
 
 // A sample shows the colour and the symbol of a game square. "isGiven" adds the dot of a given square.
 type Sample = { fill: SampleFill; symbol: string; isGiven?: boolean };

@@ -62,6 +62,14 @@
   width: 76%;
 }
 
+/* A wall has the pattern of fine lines of a Latics and a Tilt wall. The edge is the edge of a Latics wall,
+   so the sample shows clearly on the pill. */
+.sample[data-fill="wall"] {
+  background-color: var(--surface);
+  background-image: repeating-linear-gradient(45deg, var(--line) 0 1px, transparent 1px 6px);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
 /* An empty square is an outline, as an empty square on the board. */
 .sample[data-fill="empty"] {
   box-shadow: inset 0 0 0 1.5px var(--line);

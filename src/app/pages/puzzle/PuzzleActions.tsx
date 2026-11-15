@@ -32,7 +32,7 @@ export function PuzzleActions({ loaded, onRestart }: PuzzleActionsProps) {
   const navigate = useNavigate();
   const { puzzle, others } = loaded;
   // The question belongs to one puzzle. A different puzzle, for example after the Back button, closes it.
-  const { isOpen, buttonRef, yesRef, open, close } = useConfirm(puzzle.id);
+  const { isOpen, buttonRef, noRef, open, close } = useConfirm(puzzle.id);
 
   const restart = () => {
     logRestart(loaded);
@@ -53,7 +53,7 @@ export function PuzzleActions({ loaded, onRestart }: PuzzleActionsProps) {
           question={page.restartQuestion}
           yes={page.restartYes}
           no={page.restartNo}
-          yesRef={yesRef}
+          noRef={noRef}
           onYes={restart}
           onNo={close}
         />

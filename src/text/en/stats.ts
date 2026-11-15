@@ -22,8 +22,8 @@ export const stats = {
     // The first and the last day of the calendar, for example "13 Oct – 16 Nov". The CSS shows it in capitals.
     range: (first: string, last: string) => `${shortDay(first)} – ${shortDay(last)}`,
     weekdays: ["M", "T", "W", "T", "F", "S", "S"],
-    day: (day: string, solves: number) =>
-      `${longDate(new Date(`${day}T00:00:00Z`), "UTC")}: ${puzzleCount(solves)} solved`,
+    day: (day: string, puzzles: number) =>
+      `${longDate(new Date(`${day}T00:00:00Z`), "UTC")}: ${puzzleCount(puzzles)} solved`,
     legend: { none: "none", low: "1–3", mid: "4–6", high: "7+" },
   },
   // One row for each puzzle type and one column for each level. A cell shows the best time.

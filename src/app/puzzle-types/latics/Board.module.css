@@ -147,11 +147,20 @@
   color: var(--blue);
 }
 
+/* The ✓ of a hit monster is in a small green disc, as the ✓ of the solve. The disc is above the beam.
+   Thus a beam that comes from this corner goes under the disc and does not cross the ✓. */
 .hit {
   position: absolute;
   top: 0.1em;
-  right: 0.15em;
-  font-size: 0.6em;
+  right: 0.1em;
+  display: grid;
+  place-items: center;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  background-color: var(--success);
+  color: var(--bg);
+  font-size: 0.5em;
   line-height: 1;
 }
 

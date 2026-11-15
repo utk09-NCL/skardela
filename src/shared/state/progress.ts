@@ -20,11 +20,14 @@ export function addDays(day: string, count: number): string {
   return moment.toISOString().slice(0, 10);
 }
 
-// The number of solves on each day.
-export function solvesPerDay(results: readonly SolveResult[]): Map<string, number> {
-  const counts = new Map<string, number>();
-  for (const { day } of results) counts.set(day, (counts.get(day) ?? 0) + 1);
-  return counts;
+// The number of different puzzles that the player solved on each day. A puzzle that the player solved
+// again on the same day counts one time, as in "puzzles solved" on the stats page.
+export function puzzlesPerDay(results: readonly SolveResult[]): Map<string, number> {
+  const puzzles = new Map<string, Set<string>>();
+  for (const { day, puzzleId } of results) {
+    puzzles.set(day, (puzzles.get(day) ?? new Set<string>()).add(puzzleId));
+  }
+  return new Map([...puzzles].map(([day, ids]) => [day, ids.size]));
 }
 
 // The solves of one day. The daily puzzles repeat after some days, thus today's progress uses only
@@ -36,7 +39,7 @@ export function solvesOnDay(results: readonly SolveResult[], day: string): Solve
 // The days in a row with at least one solve, up to today. A streak that ends yesterday continues,
 // because the player can still solve a puzzle today.
 export function currentStreak(results: readonly SolveResult[], today: string): number {
-  const counts = solvesPerDay(results);
+  const counts = puzzlesPerDay(results);
   let day = counts.has(today) ? today : addDays(today, -1);
   let streak = 0;
   while (counts.has(day)) {
@@ -48,7 +51,7 @@ export function currentStreak(results: readonly SolveResult[], today: string): n
 
 // The most days in a row with at least one solve.
 export function longestStreak(results: readonly SolveResult[]): number {
-  const days = [...solvesPerDay(results).keys()].toSorted();
+  const days = [...puzzlesPerDay(results).keys()].toSorted();
   let longest = 0;
   let streak = 0;
   for (const [index, day] of days.entries()) {
@@ -61,25 +64,26 @@ export function longestStreak(results: readonly SolveResult[]): number {
 
 export type CalendarDay = {
   readonly day: string;
-  readonly solves: number;
+  // The number of different puzzles that the player solved on the day.
+  readonly puzzles: number;
   readonly isToday: boolean;
   // A day after today has no data yet.
   readonly isFuture: boolean;
 };
 
-// The days of the last weeks, Monday first, up to the end of this week. The calendar on the home page shows them.
+// The days of the last weeks, Monday first, up to the end of this week. The calendar on the stats page shows them.
 export function calendarDays(
   results: readonly SolveResult[],
   today: string,
   weeks: number,
 ): CalendarDay[] {
-  const counts = solvesPerDay(results);
+  const counts = puzzlesPerDay(results);
   // The day of the week of "today": 0 is Monday, 6 is Sunday.
   const weekday = (new Date(`${today}T00:00:00Z`).getUTCDay() + 6) % 7;
   const first = addDays(today, -weekday - (weeks - 1) * 7);
   return Array.from({ length: weeks * 7 }, (_, index) => {
     const day = addDays(first, index);
-    return { day, solves: counts.get(day) ?? 0, isToday: day === today, isFuture: day > today };
+    return { day, puzzles: counts.get(day) ?? 0, isToday: day === today, isFuture: day > today };
   });
 }
 

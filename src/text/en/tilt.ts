@@ -17,7 +17,7 @@ const squareCount = (count: number) => `${count} ${count === 1 ? "square" : "squ
 export const tilt = {
   name: "Tilt",
   summary: "Tilt the board to roll each ball into the hole of its colour.",
-  // The three short rules show at all times. The rules key shows the icon of each colour.
+  // The three short rules show at all times. The rules key shows the icon of each colour and a wall.
   // The other rules are under "More rules".
   rules: [
     "Tilt the board up, down, left or right. All balls roll until something stops them.",
@@ -29,6 +29,7 @@ export const tilt = {
     { text: "blue ball and hole", sample: { fill: "blue", symbol: blue } },
     { text: "yellow ball and hole", sample: { fill: "yellow", symbol: yellow } },
     { text: "ball in its hole", sample: { fill: "empty", symbol: symbols.tilt.full } },
+    { text: "wall", sample: { fill: "wall", symbol: "" } },
   ] satisfies KeyItem[],
   moreRules: {
     label: "More rules: walls, holes and the grey ball",
