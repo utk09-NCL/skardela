@@ -5,7 +5,7 @@ import { useAppStore } from "../../../shared/state/store";
 import { useNow } from "../../../shared/useNow";
 import { text } from "../../../text/en";
 import { isPuzzleType } from "../../puzzle-types/registry";
-import type { TodayCard } from "../../puzzles";
+import { isPuzzleId, type TodayCard } from "../../puzzles";
 import styles from "./HomePage.module.css";
 import { TodayProgress } from "./TodayProgress";
 
@@ -38,8 +38,11 @@ export function DailyHero({ cards }: { cards: readonly TodayCard[] }) {
   const solvedToday = todayIds.filter((id) =>
     todays.some(({ puzzleId }) => puzzleId === id),
   ).length;
+  // A puzzle from before the daily numbers has an ID of the old form. Its page does not exist now.
   const toContinue =
-    lastOpened !== null && !solved.includes(lastOpened.puzzleId) ? lastOpened : null;
+    lastOpened !== null && !solved.includes(lastOpened.puzzleId) && isPuzzleId(lastOpened.puzzleId)
+      ? lastOpened
+      : null;
 
   return (
     <section className={styles.hero} aria-labelledby="home-title">

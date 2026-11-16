@@ -14,12 +14,8 @@ type PuzzleHeaderProps = { loaded: LoadedPuzzle; onRestart: () => void };
 // The top of the page: the link back to all puzzles, then the name and the details on the left,
 // and the level tabs, the timer and the actions on the right.
 export function PuzzleHeader({ loaded, onRestart }: PuzzleHeaderProps) {
-  const { type, puzzle } = loaded;
-  const details = page.details(
-    text.levels[puzzle.difficulty],
-    puzzleNumber(puzzle.id),
-    puzzle.author,
-  );
+  const { type, id, difficulty, author } = loaded;
+  const details = page.details(text.levels[difficulty], puzzleNumber(id), author);
   return (
     <header className={styles.header}>
       <div className={styles.heading}>
@@ -36,7 +32,7 @@ export function PuzzleHeader({ loaded, onRestart }: PuzzleHeaderProps) {
       </div>
       <div className={styles.toolbar}>
         <LevelTabs loaded={loaded} />
-        <PlayTimer puzzleId={puzzle.id} />
+        <PlayTimer puzzleId={id} />
         <PuzzleActions loaded={loaded} onRestart={onRestart} />
       </div>
     </header>

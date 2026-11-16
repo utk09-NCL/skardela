@@ -46,7 +46,7 @@ function solveToday(
 
 describe("home page card results", () => {
   it("shows the time of a solved level, and tells the mistakes to a screen reader", async () => {
-    const cards = await homeLoader();
+    const cards = homeLoader();
     solveToday(cards, 102, "easy", 1);
     await renderHome();
     const link = screen.getByRole("link", {
@@ -57,7 +57,7 @@ describe("home page card results", () => {
   });
 
   it("has a Share button only after a solve, and copies today's results", async () => {
-    const cards = await homeLoader();
+    const cards = homeLoader();
     const user = userEvent.setup();
     const shareName = home.today.shareLabel(text.guzzle.name);
     await renderHome();
@@ -78,10 +78,10 @@ describe("home page card results", () => {
 });
 
 describe("home page card levels", () => {
-  // The daily puzzles repeat. A solve of the same puzzle on an earlier day does not count today.
+  // A player can solve the puzzle of tomorrow one day early. That solve does not count on the next day.
   it("does not mark a level as solved when the player solved its puzzle on an earlier day", async () => {
-    const cards = await homeLoader();
-    solveToday(cards, 42, "medium", 0, addDays(dayKey(new Date()), -2));
+    const cards = homeLoader();
+    solveToday(cards, 42, "medium", 0, addDays(dayKey(new Date()), -1));
     await renderHome();
     const nav = screen.getByRole("navigation", { name: home.today.levelsLabel(text.guzzle.name) });
     const medium = within(nav).getByRole("link", {
@@ -95,7 +95,7 @@ describe("home page card levels", () => {
 
   // The time and the square of a level come from the solves of today, not from a faster solve on an earlier day.
   it("shows the time of today's solve when an earlier day has a faster solve", async () => {
-    const cards = await homeLoader();
+    const cards = homeLoader();
     solveToday(cards, 50, "easy", 0, addDays(dayKey(new Date()), -14));
     solveToday(cards, 150, "easy", 2);
     await renderHome();
@@ -106,7 +106,7 @@ describe("home page card levels", () => {
   });
 
   it("marks the next level to play, and shows a dash on the other levels", async () => {
-    const cards = await homeLoader();
+    const cards = homeLoader();
     solveToday(cards, 42, "easy");
     await renderHome();
     const nav = screen.getByRole("navigation", { name: home.today.levelsLabel(text.guzzle.name) });

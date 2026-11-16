@@ -19,6 +19,18 @@ The letter keys show what you know about the selected square. ✗: the letter is
 
 - Score: each wrong letter. A letter that you already know is wrong does not count. 0 is a perfect solve.
 
+## Puzzles
+
+- `generator.ts` makes the puzzle of an ID, for example `guzzle-hard-1049`: the type, the level and a number. The number is the day number of a daily puzzle, or the number of a random puzzle.
+- The same ID always gives the same puzzle, in each browser. Each day has one new puzzle for each level.
+- `words.txt` is the word bank. Each line has a word in capital letters, a space, then its clue. Easy uses the words of 3 letters, medium the words of 5 letters and hard the words of 7 letters.
+- The build ciphers the bank, so the browser does not get readable words.
+- A puzzle has four words of the bank with the same middle letter, because the four words cross at the centre square. Each word gets one line at random.
+- From 16 November 2026, a word of a daily puzzle comes back only after a gap: 92 days on easy, 270 days on medium and 360 days on hard. Each day, the generator selects four words that the last days of the gap did not use.
+- A gap of G days needs 4 × (G − 1) + 79 words of one length. The easy gap is the largest gap that the 3-letter words permit.
+- A random puzzle, and a daily puzzle before 16 November 2026, select from all words of the level.
+- A change to the list of words gives the days after 16 November 2026 different words: a new line, a deleted line or a different order of the lines. A change to the text of a clue is safe.
+
 ## Example
 
 ```text

@@ -1,6 +1,10 @@
-// The generator of new Orbital puzzles. It makes random boards from a seed and keeps only the boards that pass
+// The generator of Orbital puzzles. It makes random boards from a seed and keeps the first board that passes
 // all data checks: "findPuzzleProblems" in "puzzle.ts" and "findSolutionProblems" in "solver.ts".
-// It is pure: it does not read or write files. "generate-orbital.gen.ts" adds its puzzles to "puzzles/orbital.json".
+// It is pure: no React, no DOM and no side effects. The worker runs it. See "src/app/generator.ts".
+// It uses only maths that gives the same result in each browser. See "trig.ts".
+import { firstGoodPuzzle } from "../../../shared/generate";
+import type { PuzzleBase } from "../../../shared/puzzle";
+import { makeRandom, pickOne } from "../../../shared/random";
 import {
   boardSize,
   findPuzzleProblems,
@@ -10,11 +14,8 @@ import {
   type OrbitalPuzzle,
   type Planet,
   type Point,
-} from "../src/app/puzzle-types/orbital/puzzle";
-import { findSolutionProblems } from "../src/app/puzzle-types/orbital/solver";
-import type { Difficulty } from "../src/shared/difficulty";
-import { makeRandom, pickOne } from "../src/shared/random";
-import { generatePuzzles, type GenerateOptions, type LevelPlanItem } from "./generator-script";
+} from "./puzzle";
+import { findSolutionProblems } from "./solver";
 
 // ---------- A random board ----------
 
@@ -58,11 +59,13 @@ function planetNearLine(random: () => number, launch: Point, ring: Point): Plane
   const size = pickOne(planetSizes, random) ?? "big";
   const { radius } = sizeRules[size];
   const along = between(random, 30, 70) / 100;
-  const length = Math.hypot(ring.x - launch.x, ring.y - launch.y);
+  const dx = ring.x - launch.x;
+  const dy = ring.y - launch.y;
+  const length = Math.sqrt(dx * dx + dy * dy);
   // The offset is at a right angle to the line. It is never more than the radius of the planet.
   const offset = between(random, -radius, radius);
-  const x = launch.x + (ring.x - launch.x) * along - ((ring.y - launch.y) / length) * offset;
-  const y = launch.y + (ring.y - launch.y) * along + ((ring.x - launch.x) / length) * offset;
+  const x = launch.x + dx * along - (dy / length) * offset;
+  const y = launch.y + dy * along + (dx / length) * offset;
   return {
     x: clamp(x, radius, boardSize - radius),
     y: clamp(y, radius, boardSize - radius),
@@ -81,11 +84,11 @@ function randomPlanet(random: () => number): Planet {
   };
 }
 
-// One random board for a seed. The same seed always gives the same board. The ID is a placeholder.
+// One random board for a seed. The same seed always gives the same board.
 // See "## Puzzles" in "rules.md": the launch point is near a random edge, and the ring is near the opposite edge.
 // The first planet is near the straight line to the ring. The other planets are at random places.
-export function candidate(seed: number, level: Difficulty): OrbitalPuzzle {
-  const rules = levelRules[level];
+export function candidate(seed: number, base: PuzzleBase): OrbitalPuzzle {
+  const rules = levelRules[base.difficulty];
   const random = makeRandom(seed);
   const edge = pickOne(edges, random) ?? "bottom";
   const launch = nearEdge(edge, between(random, 10, 90), between(random, 4, 14));
@@ -93,16 +96,7 @@ export function candidate(seed: number, level: Difficulty): OrbitalPuzzle {
   const ring = nearEdge(opposite[edge], between(random, 10, 90), ringDepth);
   const planets = [planetNearLine(random, launch, ring)];
   while (planets.length < rules.planets) planets.push(randomPlanet(random));
-  return {
-    id: "orbital-0000",
-    type: "orbital",
-    difficulty: level,
-    author: "skardela",
-    license: "CC-BY-4.0",
-    launch,
-    ring,
-    planets,
-  };
+  return { ...base, type: "orbital", launch, ring, planets };
 }
 
 // A good puzzle passes all data checks. The flight checks run only when the board has no other problem,
@@ -111,25 +105,10 @@ export function isGoodPuzzle(puzzle: OrbitalPuzzle): boolean {
   return findPuzzleProblems(puzzle).length === 0 && findSolutionProblems(puzzle).length === 0;
 }
 
-// ---------- The plan ----------
+// About 1 board in 2 is good. Thus the search always ends long before this limit.
+const maxTries = 1000;
 
-// A key of a board, so two puzzles with the same board are the same puzzle.
-export function boardKey(puzzle: Pick<OrbitalPuzzle, "launch" | "ring" | "planets">): string {
-  return JSON.stringify([puzzle.launch, puzzle.ring, puzzle.planets]);
-}
-
-// This makes the puzzles of the plan. See "generatePuzzles" in "generator-script.ts".
-export function generate(plan: readonly LevelPlanItem[], options: GenerateOptions) {
-  return generatePuzzles(plan, options, {
-    candidate: (seed, item) => candidate(seed, item.level),
-    isGoodPuzzle,
-    boardKey,
-  });
-}
-
-// The text of the puzzle file, with each point and each planet on one line, as in the example.
-// A point has no "}" in it, thus each point ends at the first "}". Run "npm run fix" after a change.
-export function puzzleFileText(puzzles: readonly OrbitalPuzzle[]): string {
-  const text = JSON.stringify(puzzles, null, 2);
-  return `${text.replaceAll(/\{\n\s*("x"[^}]*?)\n\s*\}/gu, (_, fields: string) => `{ ${fields.split(/,\n\s*/u).join(", ")} }`)}\n`;
+// The puzzle of an ID: the first good board from the seed of the ID.
+export function generate(base: PuzzleBase): OrbitalPuzzle {
+  return firstGoodPuzzle(base.id, maxTries, (seed) => candidate(seed, base), isGoodPuzzle);
 }

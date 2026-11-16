@@ -41,9 +41,10 @@ If you cannot show the bug, stop. Tell the author what you tried. Ask for more f
 | A wrong status text or name                 | `status.ts` of the type, `src/text/en/`                                                            |
 | A wrong move, score or solve                | `machine.ts`, `rules-check.ts`                                                                     |
 | A click, a tap or a key does nothing        | `Board.tsx`, `Grid.tsx`, `Controls.tsx`, `keys.ts`, `useGame.ts`                                   |
-| A puzzle has no solution or a wrong answer  | `puzzles/<type>.json`, `findPuzzleProblems` in `puzzle.ts`, `npm run validate`                     |
+| A puzzle has no solution or a wrong answer  | `generator.ts` of the type, `findPuzzleProblems` in `puzzle.ts`, `npm run validate`                |
+| The board does not load                     | `src/app/generator.ts`, `src/app/generator.worker.ts`, `generator.ts` of the type                  |
 | Stats, streaks, the timer or the saved data | `src/shared/state/store.ts`, `progress.ts`, `playSession.ts`, `saved-data.ts`, `storage-format.ts` |
-| The puzzles of the day                      | `src/app/daily.ts`                                                                                 |
+| The puzzles of the day, or a puzzle ID      | `src/app/daily.ts`, `src/app/puzzles.ts`, `src/shared/puzzle.ts`                                   |
 | A page, a link or a URL                     | `src/app/routes.tsx`, `src/app/puzzles.ts`                                                         |
 | The look or the layout                      | the `.module.css` file of the component, `src/index.css`                                           |
 

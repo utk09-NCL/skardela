@@ -48,14 +48,14 @@ See src/app/puzzle-types/tilt/rules.md for a complete example.
 
 ## Puzzle data
 
-- <How `puzzles/<type>.json` keeps one puzzle, for example one character for each square.>
+- <The data of one puzzle, for example one character for each square.>
 - <If each puzzle has an `answer` field, or if the game checks each move with the rules.>
 - <Each problem that the data check refuses.>
 
 ## Puzzles
 
-- <How many puzzles each level gets. The app shows one puzzle of each level each day.>
-- <Who makes them: the author, the coder or a generator in `tools/`.>
+- <How `generator.ts` makes a random puzzle of each level. The browser makes one new puzzle of each level each day.>
+- <The puzzles that the generator refuses, for example a puzzle with no solution or with two answers.>
 
 ## Example
 

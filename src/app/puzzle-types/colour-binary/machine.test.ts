@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { deepFreeze } from "../../../test/deep-freeze";
 import { makeRandom } from "../../../shared/random";
-import { puzzleTypes } from "../registry";
+import { levels } from "../../../shared/difficulty";
+import { makePuzzle } from "../registry";
 import example from "./examples/colour-binary-0000.json";
 import { findHint } from "./hint";
 import {
@@ -21,10 +22,14 @@ import {
 import { toSquares, type ColourBinaryPuzzle } from "./puzzle";
 import { nextSquare, obeysRules } from "./rules-check";
 
-// The puzzle file has ciphered answers, thus the tests load it as the app does.
+// The example, and three puzzles of each level that the generator makes, as the app does.
 const puzzles: readonly ColourBinaryPuzzle[] = [
   example as ColourBinaryPuzzle,
-  ...(await puzzleTypes["colour-binary"].loadPuzzles()),
+  ...(await Promise.all(
+    levels.flatMap((level) =>
+      [1, 2, 3].map((number) => makePuzzle("colour-binary", level, number)),
+    ),
+  )),
 ];
 const start = initialState(example);
 const fixed = start.start.findIndex((square) => square !== ".");

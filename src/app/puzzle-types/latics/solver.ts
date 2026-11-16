@@ -149,6 +149,20 @@ function afterEffect(
   return followAll(search, [...rays, ...rest]);
 }
 
+// "true" when the board has light of the colour of each monster with a colour: a laser of that colour,
+// or a white laser with a prism or with a filter of that colour. The player cannot move these pieces.
+// Without this light, no beam can hit the monster, thus the board has no solution. This needs no search.
+function hasLightForEachMonster({ squares, lasers }: BoardLayout): boolean {
+  const hasWhite = lasers.some(({ colour }) => colour === "white");
+  const hasLight = (colour: "red" | "blue", filter: Square) =>
+    lasers.some((laser) => laser.colour === colour) ||
+    (hasWhite && (squares.includes("^") || squares.includes(filter)));
+  return (
+    (!squares.includes("R") || hasLight("red", "r")) &&
+    (!squares.includes("B") || hasLight("blue", "b"))
+  );
+}
+
 // This function finds a solution that uses "options.tray" tray mirrors or fewer. It returns "null" only when
 // no such solution exists. Thus the result does not depend on the order of the search.
 //
@@ -162,6 +176,7 @@ function afterEffect(
 // Each solution has its own paths, and the search tries each choice on each path. Thus the search is complete.
 // The tests compare it with a search that tries each possible board.
 export function solve(board: BoardLayout, options: Options): Solution | null {
+  if (!hasLightForEachMonster(board)) return null;
   const squares = [...board.squares];
   const search: Search = {
     squares,

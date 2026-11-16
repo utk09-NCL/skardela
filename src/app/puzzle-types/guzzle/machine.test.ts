@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { deepFreeze } from "../../../test/deep-freeze";
 import { makeRandom } from "../../../shared/random";
-import { puzzleTypes } from "../registry";
+import { levels } from "../../../shared/difficulty";
+import { makePuzzle } from "../registry";
 import example from "./examples/guzzle-0000.json";
 import {
   canChooseMode,
@@ -25,10 +26,12 @@ import { checkLetter, isPlayable } from "./rules-check";
 const start = initialState(example);
 const modes: readonly Mode[] = ["bank", "noBank"];
 
-// The puzzle file has ciphered answers, thus the tests load it as the app does.
+// The example, and three puzzles of each level that the generator makes, as the app does.
 const puzzles: readonly GuzzlePuzzle[] = [
   example as GuzzlePuzzle,
-  ...(await puzzleTypes.guzzle.loadPuzzles()),
+  ...(await Promise.all(
+    levels.flatMap((level) => [1, 2, 3].map((number) => makePuzzle("guzzle", level, number))),
+  )),
 ];
 
 // This helper applies the events one after the other, as "useReducer" does.

@@ -11,6 +11,15 @@ export function makeRandom(seed: number): () => number {
   };
 }
 
+// FNV-1a hash. It changes a text into a 32-bit number, so a puzzle ID or a key can be a seed.
+export function seedOf(text: string): number {
+  let hash = 0x81_1c_9d_c5;
+  for (const byte of new TextEncoder().encode(text)) {
+    hash = Math.imul(hash ^ byte, 0x01_00_01_93);
+  }
+  return hash >>> 0;
+}
+
 // This helper selects one item of a list. It gives undefined for an empty list.
 // The default random source is "Math.random". A test can give a source from "makeRandom".
 export function pickOne<Item>(

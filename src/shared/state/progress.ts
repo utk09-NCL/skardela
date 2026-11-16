@@ -30,8 +30,9 @@ export function puzzlesPerDay(results: readonly SolveResult[]): Map<string, numb
   return new Map([...puzzles].map(([day, ids]) => [day, ids.size]));
 }
 
-// The solves of one day. The daily puzzles repeat after some days, thus today's progress uses only
-// the solves of today, not a solve of the same puzzle on an earlier day. Use it with "bestResult".
+// The solves of one day. A player can open the puzzles of tomorrow, for example from a link of a different
+// time zone. Thus today's progress uses only the solves of today, not a solve of the same puzzle on an earlier day.
+// Use it with "bestResult".
 export function solvesOnDay(results: readonly SolveResult[], day: string): SolveResult[] {
   return results.filter((result) => result.day === day);
 }

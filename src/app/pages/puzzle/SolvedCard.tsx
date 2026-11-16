@@ -14,17 +14,17 @@ const words = text.puzzlePage.result;
 // The solve comes from the saved data: it is the last solve of this puzzle. The play session tells
 // that the player solved the puzzle on this visit.
 export function SolvedCard({ loaded }: { loaded: LoadedPuzzle }) {
-  const { type, puzzle } = loaded;
+  const { type, id, difficulty } = loaded;
   const current = usePlaySession((session) => session.puzzleId);
   const solvedAt = usePlaySession((session) => session.solvedAt);
   const results = useAppStore((state) => state.results);
   // The clock changes each minute, so the date in the share text is correct after midnight.
   const day = useToday();
-  if (current !== puzzle.id || solvedAt === null) return null;
-  const solve = results.findLast((result) => result.puzzleId === puzzle.id);
+  if (current !== id || solvedAt === null) return null;
+  const solve = results.findLast((result) => result.puzzleId === id);
   if (solve === undefined) return null;
-  const level = text.levels[puzzle.difficulty];
-  const number = puzzleNumber(puzzle.id);
+  const level = text.levels[difficulty];
+  const number = puzzleNumber(id);
 
   return (
     <section className={styles.solved} aria-labelledby="solved-heading">

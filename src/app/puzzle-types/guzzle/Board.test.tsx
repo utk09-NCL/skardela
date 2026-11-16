@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { usePlaySession } from "../../../shared/state/playSession";
 import { useAppStore } from "../../../shared/state/store";
 import { text } from "../../../text/en";
-import { puzzleTypes } from "../registry";
+import { makePuzzle } from "../registry";
 import { Board } from "./Board";
 import example from "./examples/guzzle-0000.json";
 import type { GuzzlePuzzle } from "./puzzle";
@@ -270,11 +270,9 @@ describe("guzzle board focus after a letter", () => {
 
   // rules.md: "The arrow keys move between the squares and go past the gaps."
   it("goes past the gaps of a 5 by 5 board with the arrow keys", async () => {
-    const all = await puzzleTypes.guzzle.loadPuzzles();
-    const medium = all.find((item) => item.difficulty === "medium");
-    expect(medium).toBeDefined();
+    const medium = await makePuzzle("guzzle", "medium", 1);
     const user = userEvent.setup();
-    render(<Board puzzle={medium as GuzzlePuzzle} />);
+    render(<Board puzzle={medium} />);
     await user.tab();
     expect(square(1, 1)).toHaveFocus();
     // Row 1, column 2 is a gap. The right arrow key goes to row 1, column 3.

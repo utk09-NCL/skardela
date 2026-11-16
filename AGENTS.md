@@ -32,7 +32,7 @@ Use the npm scripts. Do not use `npx`. To run a script on some files only, put t
 | `npm run typecheck`             | Checks the types of all files.                                                                    |
 | `npm run lint:check -- <files>` | Finds the lint problems in some files.                                                            |
 | `npm run format:fix -- <files>` | Formats some files.                                                                               |
-| `npm run validate`              | Checks all puzzle files in `puzzles/` and runs the tests in `tools/`.                             |
+| `npm run validate`              | Makes 90 days of puzzles with each generator, checks them, and runs the other tests in `tools/`.  |
 
 ## Project rules
 
@@ -40,12 +40,14 @@ Use the npm scripts. Do not use `npx`. To run a script on some files only, put t
 - Put all UI text in `src/text/en/`. Put all emoji symbols in `src/text/symbols.ts`. Do not put words in CSS `content`.
 - Keep UI text short, simple and accessible.
 - Use the shared code in `src/shared/` before you write new code.
-- Keep the puzzle logic pure. `rules-check.ts`, `machine.ts` and `solver.ts` have no React, no DOM and no side effects.
+- Keep the puzzle logic pure. `rules-check.ts`, `machine.ts`, `solver.ts` and `generator.ts` have no React, no DOM and no side effects.
 - Make each control work with a keyboard and a screen reader. Do not use colour as the only signal.
 - Use strict TypeScript. Do not use `any` or `@ts-ignore`. The lint check refuses `any`.
 - To turn off a lint rule, turn it off for one line and give the reason: `// oxlint-disable-next-line <rule> -- <reason>`. Turn off a rule for a full file only when the rule is about the full file, for example `max-lines`.
 - Use the logger in `src/shared/logger.ts`. The lint check refuses `console`.
-- The files in `puzzles/` keep each answer as readable rows. The build ciphers the answers. Do not cipher them yourself.
+- The browser makes each puzzle from its ID, with `generator.ts` of the puzzle type. The same ID must give the same puzzle in each browser. Obey the generator rules in "Add a new puzzle type" in `CONTRIBUTING.md`.
+- A change to a generator, or to a rule that a generator uses, changes the puzzles of each day. The fixed boards in `generator.test.ts` then fail. Ask the author before you change them.
+- `guzzle/words.txt` keeps the word bank as readable text. The build ciphers it. Do not cipher it yourself. Do not add, delete or move a line without the approval of the author.
 - Use British spelling, as the project does: "colour", "behaviour" and "grey". Code keeps the spelling of its API, for example the CSS property `color`.
 
 ## Simple code

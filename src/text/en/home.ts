@@ -48,9 +48,8 @@ export const home = {
     filtersLabel: "Show the puzzle types",
     filters: { all: "All", new: "New" },
     // The details under the name of a card, for example "by skardela" and "added 7 Nov".
-    // "by" and the names of the authors of today's puzzles. The names have the text colour.
+    // "by" and the name of the author of the puzzle type. The name has the text colour.
     by: "by",
-    authors: (names: readonly string[]) => names.join(", "),
     added: (day: string) =>
       `added ${new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${day}T00:00:00Z`))}`,
     newTag: "New",

@@ -13,34 +13,31 @@ Before you open a pull request, run `npm run fix && npm run check`. CI runs the 
 
 ## Scripts
 
-| Script                           | What it does                                                                                                              |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `npm run dev`                    | Starts the app on your computer.                                                                                          |
-| `npm run fix`                    | Formats the code and fixes lint problems that a tool can fix.                                                             |
-| `npm run check`                  | Runs the format, lint, type, build, unit test and data checks.                                                            |
-| `npm run test`                   | Runs the unit tests in `src/`.                                                                                            |
-| `npm run validate`               | Checks all puzzle files in `puzzles/`, the tools in `tools/` and the two skill folders. See `tools/puzzles.test.ts`.      |
-| `npm run generate:colour-binary` | Makes new Colour Binary puzzles and adds them to `puzzles/colour-binary.json`. See `tools/generate-colour-binary.gen.ts`. |
-| `npm run generate:latics`        | Makes new Latics puzzles and adds them to `puzzles/latics.json`. See `tools/generate-latics.gen.ts`.                      |
-| `npm run generate:orbital`       | Makes new Orbital puzzles and adds them to `puzzles/orbital.json`. See `tools/generate-orbital.gen.ts`.                   |
-| `npm run generate:tilt`          | Makes new Tilt puzzles and adds them to `puzzles/tilt.json`. See `tools/generate-tilt.gen.ts`.                            |
+| Script             | What it does                                                                                                                                                                 |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run dev`      | Starts the app on your computer.                                                                                                                                             |
+| `npm run fix`      | Formats the code and fixes lint problems that a tool can fix.                                                                                                                |
+| `npm run check`    | Runs the format, lint, type, build, unit test and data checks.                                                                                                               |
+| `npm run test`     | Runs the unit tests in `src/`.                                                                                                                                               |
+| `npm run validate` | Makes 90 days of puzzles with each generator and checks them. Also checks the built word bank, the tools in `tools/` and the two skill folders. See `tools/puzzles.test.ts`. |
 
 ## Project structure
 
 ```text
-puzzles/                     Puzzle data. One JSON file for each puzzle type. The build ciphers the answers.
-tools/puzzles.test.ts        Checks all puzzle data.
-tools/react-compiler.test.ts Fails when React Compiler cannot compile a component or a hook in src/.
-tools/agent-skills.test.ts   Fails when ".claude/skills" and ".agents/skills" do not have the same files.
-tools/generator-script.ts    The parts that each puzzle generator shares: the plan, the search and the puzzle file.
-tools/<type>-generator.ts    Makes new puzzles of one type. "npm run generate:<type>" runs it.
+tools/puzzles.test.ts         Makes 90 days of puzzles of each type and level, and checks their data.
+tools/word-bank-build.test.ts Builds the site. Fails when the built files do not have the word bank as ciphered text.
+tools/react-compiler.test.ts  Fails when React Compiler cannot compile a component or a hook in src/.
+tools/agent-skills.test.ts    Fails when ".claude/skills" and ".agents/skills" do not have the same files.
+vite.config.ts                The build and the tests. Its plugin ciphers the word bank of Guzzle.
 src/
   main.tsx                   Starts the app.
   index.css                  Global styles and colour values.
   app/
     routes.tsx               All pages and their URLs.
-    puzzles.ts               Loads puzzles for the home page, the stats page and the puzzle page.
-    daily.ts                 Selects the puzzles of the day.
+    puzzles.ts               The page data of the home page, the stats page and the puzzle page, from a puzzle ID.
+    daily.ts                 The day number, and the numbers that a puzzle ID can have.
+    generator.ts             Asks the worker for the puzzle of an ID. Keeps the puzzles of the session.
+    generator.worker.ts      The worker. It makes each puzzle with the generator of its puzzle type.
     shell/                   The frame of each page: the header, the notices, the footer and the route error.
       AnalyticsNotice.tsx    The notice for new players. Analytics loads only after the OK.
       useReloadAtMidnight.ts Loads the puzzles of the new day after midnight, on each page.
@@ -50,7 +47,7 @@ src/
       stats/                 The stats page: the streaks, the calendar, the personal bests and your data.
       puzzle/                The puzzle page, with the level tabs, the timer, Restart and Random puzzle.
     puzzle-types/
-      registry.ts            The list of puzzle types and their puzzle files.
+      registry.ts            The list of puzzle types, with the author and the generator of each type.
       boards.ts              The board component of each puzzle type.
       <type>/                One folder for each puzzle type. See below.
   shared/                    Code that more than one page or puzzle type uses.
@@ -60,6 +57,10 @@ src/
       storage-format.ts      The stored text and the export file. The lists of solves are compressed.
       playSession.ts         The game that the player plays now: the timer and the saving of a solve.
       progress.ts            Pure functions for the stats: streaks, the calendar and personal bests.
+    puzzle.ts                The fields of each puzzle, and the form of a puzzle ID, for example "tilt-hard-1049".
+    generate.ts              The search for the first good puzzle from the seed of an ID. Each generator uses it.
+    random.ts                Random numbers from a seed, so the same ID gives the same puzzle.
+    cipher.ts                The cipher of the word bank of Guzzle.
     share.ts                 The squares of a share text, and the copy or the share menu. See ShareButton.tsx.
     usePuzzleTracking.ts     The logs, the timer and the saved solve of each puzzle type. "useGame" calls it.
     useTabStop.ts            One Tab stop for a board of squares, and the arrow keys. See also "useFocusWhen.ts".
@@ -69,7 +70,7 @@ src/
     es/                      Spanish text, with the same structure. The app does not use it yet. It has only a part
                              of the text. A type check makes sure that each field has the same type as in "en".
     symbols.ts               All emoji symbols.
-  test/                      The test setup, and "deepFreeze" for the machine tests.
+  test/                      The test setup, "deepFreeze" for the machine tests and "baseOf" for the generator tests.
 ```
 
 ### A puzzle type folder
@@ -84,6 +85,7 @@ src/app/puzzle-types/<type>/
                              "isSolved", "scoreOf" (the number to keep low) and the queries. The state keeps its moves,
                              for example "moves", or "flights" in Orbital.
   solver.ts                  The search, for example for the fewest moves. Only when the type needs a search.
+  generator.ts               "generate(base, number)": makes the puzzle of an ID. Pure. The worker runs it.
   useGame.ts                 "useGame(puzzle)": the hook that connects the state machine to React, to the move log and
                              to "usePuzzleTracking". It has no rules of its own.
   status.ts                  The status text for each state of the game.
@@ -96,7 +98,7 @@ src/app/puzzle-types/<type>/
 ```
 
 A type can have more files, each with one job. For example `motion.ts` for an animation, `input.ts` for a drag or
-a swipe, and `hint.ts` for the hint of Colour Binary.
+a swipe, `hint.ts` for the hint of Colour Binary, and `words.txt` for the word bank of Guzzle.
 
 Put pure logic in `.ts` files and keep React components small. When a component file gets long, move
 parts into their own files. See `guzzle/` for an example: `useGame.ts`, `Grid.tsx`, `Controls.tsx`, `status.ts`.
@@ -105,21 +107,34 @@ parts into their own files. See `guzzle/` for an example: `useGame.ts`, `Grid.ts
 
 1. Make the folder `src/app/puzzle-types/<type>/` with the files above. Start with `rules.md`.
 2. In `puzzle.ts`, make the puzzle type with `PuzzleBase & { readonly type: "<type>"; ... }`.
-3. Add your puzzles to `puzzles/<type>.json`. Add at least one puzzle for each level.
-   Put the answer in the field `answer` as readable rows. A Vite plugin in `vite.config.ts` ciphers `answer`, so the browser does not get a readable answer. In `registry.ts`, use `decipherPuzzles` to load the file. A puzzle type that checks the moves with its rules can have no `answer`, for example `latics`. Then the plugin does not change the file, and the type does not need `decipherPuzzles`.
+3. Write `generator.ts`. The browser has no puzzle files: it makes each puzzle from its ID, in a worker.
+   `generate(base, number)` gives the puzzle of one ID. `base` has the ID, the level, the author and the license.
+   `number` is the number in the ID: the day number of a daily puzzle, or the number of a random puzzle.
+   Use `tilt/generator.ts` as the model, and obey these rules:
+   - The same ID must always give the same puzzle, in each browser. Use `firstGoodPuzzle` from `src/shared/generate.ts`
+     and `makeRandom` from `src/shared/random.ts`. Do not use `Math.random`, the date or the time.
+   - Do not use maths that a browser can approximate: `Math.sin`, `Math.cos`, `Math.atan2`, `Math.hypot`, `Math.pow`
+     and `**`. Use + − × ÷ and `Math.sqrt`. This rule is also for each function that the generator calls. See `orbital/trig.ts`.
+   - Keep only a puzzle that passes all data checks. Stop the search after a count of tries, not after a time.
+   - Keep the generator pure and fast, because the player waits for the board. The slowest level of Latics takes
+     about 200 ms on a fast computer.
+   - If a level has only some thousand different puzzles, make sure that a daily puzzle does not come back soon.
+     See `dailyEquations` in `numpuz/generator.ts`.
+   - In `generator.test.ts`, test that fixed IDs give fixed puzzles. A change to these puzzles changes the puzzles of each day.
 4. In `src/app/puzzle-types/registry.ts`, add your type to `PuzzleMap` and to `puzzleTypes`. Give it `added`, the date of the
-   first commit of its puzzle file, for example `"2026-11-21"`. The home page marks a type of the last two weeks as new.
+   first commit of the type, for example `"2026-11-21"`. The home page marks a type of the last two weeks as new.
+   Give it `author`, the credit that the pages show, and `generator`, the import of your `generator.ts`.
 5. Run `npm run typecheck`. TypeScript then shows each place that needs your type:
    - `src/app/puzzle-types/boards.ts`: your board component.
    - `src/text/en/index.ts`: your UI text. Put it in a new file `src/text/en/<type>.ts`, with `name`,
      `summary`, `rules`, `rulesKey`, `moreRules`, `score` and `scoreWord`. Then add it to `index.ts` with the name of your type. `rules` has three short rules. `rulesKey` is a list of sample squares and their meaning, or an empty list. `moreRules` has a label and three groups: `rules`, `controls` (mouse, touch and keyboard) and `scoreRule`, one line in the form "Score: <what counts>. 0 is a perfect solve." `score` gives the score of a solve as text, for example "2 mistakes".
    - `src/app/pages/home/PuzzleIcon.tsx`: the small icon of your type on the home page. Draw it on a grid of
      24 × 24 with `currentColor`, and give each shape a colour class from `PuzzleIcon.module.css`.
-   - `tools/puzzles.test.ts`: your example and your data check.
+   - `tools/puzzles.test.ts`: your example and your data check. The test makes 90 days of puzzles with your generator.
 6. Put emoji symbols in `src/text/symbols.ts`, not in other files.
 7. In `useGame.ts`, call `usePuzzleTracking` from `src/shared/`. Give it `isSolved` and `scoreOf` of your machine,
    the moves of the state, and `createMoveLog` from your `log.ts`.
-   It logs each move, the start and the solve. It starts the timer and saves each solve, for the stats and for "Random puzzle".
+   It logs each move, the start and the solve. It starts the timer and saves each solve, for the stats.
    `scoreOf` gives the score to keep low, for example the misses of Latics. The solve saves it as `mistakes`. The result card and the share text show it. See `latics/useGame.ts`.
    For a board of squares, use one Tab stop and the arrow keys: `useTabStop` and `useFocusWhen` from `src/shared/`. See `latics/Grid.tsx`.
 8. Add tests for your rule logic and your board.

@@ -126,7 +126,7 @@ Launch the probe into the ring. Make the fewest misses.
 
 ## Puzzle data
 
-A puzzle in `puzzles/orbital.json` has these fields, after the fields of each puzzle (`id`, `difficulty`, `author` and `license`):
+A puzzle has these fields, after the fields of each puzzle (`id`, `difficulty`, `author` and `license`):
 
 - `launch`: the launch point, for example `{ "x": 12, "y": 40 }`.
 - `ring`: the centre of the ring, for example `{ "x": 82, "y": 30 }`. The level gives the radius.
@@ -229,11 +229,11 @@ Thus only the flight checks can find a problem in them. A different order of the
 
 ## Puzzles
 
-- A generator in `tools/` makes random boards from a seed. It keeps only the boards that pass the data checks.
-  It adds them to `puzzles/orbital.json` with the next free IDs.
+- `generator.ts` makes the puzzle of an ID, for example `orbital-hard-1049`: the type, the level and a number. The number is the day number of a daily puzzle, or the number of a random puzzle.
+- The same ID always gives the same puzzle, in each browser. Each day has one new puzzle for each level.
+- The generator makes random boards from the seed of the ID. It keeps the first board that passes the data checks.
 - The generator puts the launch point near a random edge of the board, and the ring near the opposite edge.
-- The first `puzzles/orbital.json` has 30 puzzles for each level. Run the generator again for more.
-- The app selects one puzzle for each level each day, as for the other puzzle types.
+- The flight and the generator use only maths that gives the same result in each browser: + − × ÷, the square root, and the sine and the cosine of `trig.ts`. Thus a launch has the same path in each browser.
 
 ## Example
 

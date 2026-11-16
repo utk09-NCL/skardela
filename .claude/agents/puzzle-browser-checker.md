@@ -17,9 +17,11 @@ You do not change files. You do not fix problems. You only report.
 
 1. `<dir>/rules.md`. It is the source of truth.
 2. `src/text/en/<type>.ts`. It has the text that the board must show.
-3. `puzzles/<type>.json`. It has the puzzles and their answers. Select the first puzzle of each level: "easy", "medium" and "hard".
+3. The puzzles. The browser makes each puzzle from its ID. Use the puzzles with the number 1: `<type>-easy-1`, `<type>-medium-1` and `<type>-hard-1`.
 
-If a puzzle has no `answer` field, get the steps of a solution from the solver of the type. The dev server can load a source file in the page. Run the solver with `evaluate_script`, for example: `async () => (await import("/src/app/puzzle-types/<type>/solver.ts")).<function>(<puzzle>)`. Find the function name in `<dir>/solver.ts`. Put the puzzle object from `puzzles/<type>.json` in place of `<puzzle>`. If there is no solver, solve the puzzle with the rules.
+The dev server can load a source file in the page. To get the data of a puzzle, run this script with `evaluate_script`: `async () => (await import("/src/app/puzzle-types/registry.ts")).makePuzzle("<type>", "easy", 1)`. If the puzzle has an `answer` field, it has the answer.
+
+If a puzzle has no `answer` field, get the steps of a solution from the solver of the type. Run the solver with `evaluate_script`, for example: `async () => (await import("/src/app/puzzle-types/<type>/solver.ts")).<function>(<puzzle>)`. Find the function name in `<dir>/solver.ts`. Put the puzzle object of `makePuzzle` in place of `<puzzle>`. If there is no solver, solve the puzzle with the rules.
 
 ## Start
 

@@ -21,27 +21,27 @@ In this file, `<type>` is the type name and `<dir>` is `src/app/puzzle-types/<ty
 2. All of `CONTRIBUTING.md`. The most important section is "Add a new puzzle type".
 3. `<dir>/rules.md`, `<dir>/examples/` and the contract files.
 4. `src/app/puzzle-types/numpuz/`. It is the reference puzzle type. Use the same structure and the same patterns.
-5. If the type has a solver or a generator, read `src/app/puzzle-types/tilt/` too.
+5. `src/app/puzzle-types/tilt/`. It has a solver and a simple generator.
 6. Before you write CSS, read `.claude/skills/modern-css/SKILL.md`.
 
 ## Do
 
 1. Replace each `export declare function` with a function that has a body. Keep the name, the parameters, the result type and the doc comment.
-2. Do steps 2 to 7 of "Add a new puzzle type" in `CONTRIBUTING.md`. These steps include the puzzle data in `puzzles/<type>.json`, the registry, the board, the text, the icon and the data check.
-3. Make the number of puzzles that "## Puzzles" in `rules.md` gives. Make sure that each puzzle in `puzzles/<type>.json` obeys `rules.md` and has a solution. If the rules permit only one answer, make sure that each puzzle has only one answer.
-4. For step 8 of "Add a new puzzle type", write only the tests that are not rule tests: `Board.test.tsx`, `useGame.test.ts` and, if you make one, `keys.test.ts`.
+2. Do steps 2 to 7 of "Add a new puzzle type" in `CONTRIBUTING.md`. These steps include the generator, the registry, the board, the text, the icon and the data check.
+3. Write the generator. See "Generator" below.
+4. For step 8 of "Add a new puzzle type", write only the tests that are not rule tests: `Board.test.tsx`, `useGame.test.ts`, `generator.test.ts` and, if you make one, `keys.test.ts`.
 5. Make the board work with only the keyboard. Give each control an accessible name. Do not use colour as the only sign of a state. For a board of squares, use one Tab stop and the arrow keys: `useTabStop` and `useFocusWhen` in `src/shared/`. See `latics/Grid.tsx`.
 6. Write comments in Simplified Technical English.
 
 ## Generator
 
-Do this part only if `rules.md` asks for a generator tool.
+The browser makes each puzzle from its ID, in a worker. Each puzzle type has a `<dir>/generator.ts`.
 
-1. Use the Tilt generator as the model: `tools/tilt-generator.ts`, `tools/tilt-generator.test.ts` and `tools/generate-tilt.gen.ts`. Use the shared parts in `tools/generator-script.ts`: the plan, the search and `addPuzzles`.
-2. Use `makeRandom` from `src/shared/random.ts`. Then the same seed always gives the same puzzles.
+1. Use the Tilt generator as the model: `tilt/generator.ts` and `tilt/generator.test.ts`. Obey the generator rules in step 3 of "Add a new puzzle type" in `CONTRIBUTING.md`.
+2. Make the puzzles as "## Puzzles" in `rules.md` tells. Make sure that each puzzle obeys `rules.md` and has a solution. If the rules permit only one answer, make sure that each puzzle has only one answer.
 3. Keep only the boards that pass all data checks: `findPuzzleProblems` and, if it exists, `findSolutionProblems`.
-4. Add the script `"generate:<type>": "vitest run --project generate tools/generate-<type>.gen.ts"` to `package.json`. Add the script and the generator to "Scripts" and "Project structure" in `CONTRIBUTING.md`.
-5. Use your generator to make the puzzles in `puzzles/<type>.json`.
+4. In `generator.test.ts`, test that the same ID gives the same puzzle, and that fixed IDs give fixed puzzles for each level.
+5. Measure the generator: make the puzzles of 100 different numbers for each level. Write the median time and the longest time in your report. If a level takes more than 250 ms, tell this in your report.
 
 ## Do not
 

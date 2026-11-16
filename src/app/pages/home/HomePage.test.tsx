@@ -54,15 +54,24 @@ describe("home page hero", () => {
   it("links to the last puzzle that the player opened and did not solve", async () => {
     useAppStore
       .getState()
-      .openPuzzle({ puzzleId: "latics-0012", type: "latics", difficulty: "medium" });
+      .openPuzzle({ puzzleId: "latics-medium-1049", type: "latics", difficulty: "medium" });
     await renderHome();
     const link = screen.getByRole("link", { name: /^Continue/u });
-    expect(link).toHaveAttribute("href", "/puzzles/latics-0012");
+    expect(link).toHaveAttribute("href", "/puzzles/latics-medium-1049");
     expect(link).toHaveTextContent(home.hero.puzzleName(text.latics.name, text.levels.medium));
   });
 
+  // The page of a puzzle from before the daily numbers does not exist now.
+  it("does not link to a puzzle with an ID of the old form", async () => {
+    useAppStore
+      .getState()
+      .openPuzzle({ puzzleId: "latics-0012", type: "latics", difficulty: "medium" });
+    await renderHome();
+    expect(screen.queryByRole("link", { name: /^Continue/u })).toBeNull();
+  });
+
   it("counts the solved puzzles of today, and does not link to a solved puzzle", async () => {
-    const cards = await homeLoader();
+    const cards = homeLoader();
     solveToday(cards, 42);
     const id = todayId(cards, "guzzle", "easy");
     useAppStore.getState().openPuzzle({ puzzleId: id, type: "guzzle", difficulty: "easy" });
@@ -84,14 +93,16 @@ describe("home page cards", () => {
           home.today.levelLink(text.levels[level], undefined, index === 0),
         ),
       );
-      for (const link of links) {
-        expect(link.getAttribute("href")).toMatch(new RegExp(`^/puzzles/${type}-\\d{4}$`, "u"));
-      }
+      expect(links.map((link) => link.getAttribute("href"))).toEqual(
+        levels.map((level) =>
+          expect.stringMatching(new RegExp(`^/puzzles/${type}-${level}-\\d+$`, "u")),
+        ),
+      );
     }
   });
 
   it("shows the best time of a solved level, and links to the next level", async () => {
-    const cards = await homeLoader();
+    const cards = homeLoader();
     solveToday(cards, 42);
     await renderHome();
     expect(

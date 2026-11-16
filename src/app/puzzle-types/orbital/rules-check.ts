@@ -6,6 +6,7 @@ import {
   type Planet,
   type Point,
 } from "./puzzle";
+import { cosineOf, sineOf } from "./trig";
 
 // The pure rules of Orbital: read a board, fly a launch, and aim with a drag. No React and no side effects.
 // All points are in units, with y up. See "Point" in "puzzle.ts".
@@ -96,9 +97,11 @@ export function isAim(aim: Aim): boolean {
   );
 }
 
-// The distance between two points, in units.
+// The distance between two points, in units. "Math.sqrt" gives the same result in each browser. See "trig.ts".
 function distance(from: Point, to: Point): number {
-  return Math.hypot(to.x - from.x, to.y - from.y);
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  return Math.sqrt(dx * dx + dy * dy);
 }
 
 // A planet as "fly" uses it: the numbers of its size are read one time for each flight, not in each step.
@@ -145,20 +148,20 @@ function endAt(board: Board, bodies: readonly Body[], x: number, y: number, toRi
 //      ("ring"), the distance to the centre of a planet is its radius or less ("planet"),
 //      x or y is less than 0 or more than 100 ("edge").
 // - After step "maxSteps", the flight stops with "time".
-// It does not check the positions between two steps. The same board and the same aim always give the same flight.
+// It does not check the positions between two steps. The same board and the same aim always give the same flight,
+// in each browser: the flight uses only + − × ÷, "Math.sqrt", and the sine and the cosine of "trig.ts".
 // Use it only for an aim that "isAim" allows.
 export function fly(board: Board, aim: Aim): Flight {
   const time = 1 / stepsPerSecond;
   const speed = speedPerPower * aim.power;
-  const radians = toRadians(aim.angle);
   const { ring } = board;
   const bodies = board.planets.map((planet) => bodyOf(planet));
-  let vx = speed * Math.cos(radians);
-  let vy = speed * Math.sin(radians);
+  let vx = speed * cosineOf(aim.angle);
+  let vy = speed * sineOf(aim.angle);
   let { x, y } = board.launch;
   const path: Point[] = [board.launch];
   // The smallest squared distance from a point of the path to the centre of the ring. See "closest" in "Flight".
-  let nearest = (ring.x - x) ** 2 + (ring.y - y) ** 2;
+  let nearest = (ring.x - x) * (ring.x - x) + (ring.y - y) * (ring.y - y);
   let end: FlightEnd | null = null;
   for (let step = 1; step <= maxSteps && end === null; step += 1) {
     // 1. Each planet pulls the probe to its centre. All planets use the position before the step.
@@ -193,19 +196,27 @@ export function fly(board: Board, aim: Aim): Flight {
   return { aim, path, end, closest };
 }
 
-function toRadians(degrees: number): number {
-  return (degrees * Math.PI) / 180;
-}
-
-// The angle of the line from "from" to "to", rounded to a whole degree. A half rounds up. 360° is 0°.
-// "atan2" gives an angle from -180° to 180°. The first "% 360" makes it 0° to 359.9…°.
+// The angle of the line from "from" to "to", rounded to a whole degree. 360° is 0°.
+// It is the whole degree whose direction is nearest to the line: the direction (cos, sin) with the largest part
+// along the line. Thus it needs no "Math.atan2", and it gives the same angle in each browser. See "trig.ts".
+// Two points at the same place give 0°.
 function angleOf(from: Point, to: Point): number {
-  const degrees = (Math.atan2(to.y - from.y, to.x - from.x) * 180) / Math.PI;
-  return Math.round((degrees + 360) % 360) % 360;
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  let nearest = 0;
+  let largest = dx;
+  for (let angle = 1; angle <= maxAngle; angle += 1) {
+    const along = dx * cosineOf(angle) + dy * sineOf(angle);
+    if (along > largest) {
+      nearest = angle;
+      largest = along;
+    }
+  }
+  return nearest;
 }
 
 // The angle of the line from the launch point to the centre of the ring, rounded to a whole degree.
-// A half rounds up, as "Math.round" does. 360° is 0°. Thus the result is a whole number from 0 to 359.
+// 360° is 0°. Thus the result is a whole number from 0 to 359.
 // The data check uses it: a launch at this angle must not reach the ring at any power.
 export function straightAngle(board: Board): number {
   return angleOf(board.launch, board.ring);
@@ -218,7 +229,7 @@ export function canStartDrag(launch: Point, pointer: Point): boolean {
 }
 
 // The aim of a drag that ends at "pointer". See "### Sliders and drag" in "## Edge cases":
-// - The angle is the angle from "pointer" to "launch", rounded to a whole degree. A half rounds up. 360° is 0°.
+// - The angle is the angle from "pointer" to "launch", rounded to a whole degree. 360° is 0°.
 // - The power is the distance from "launch" to "pointer" ÷ "dragUnitsPerPower", rounded to a whole number.
 //   A half rounds up. A power more than "maxPower" is "maxPower".
 // The result is "null" when the power is 0, thus for a drag shorter than 2 units. Its release does nothing.

@@ -1,6 +1,9 @@
-// The generator of new Tilt puzzles. It makes random boards from a seed and keeps only the boards that pass
+// The generator of Tilt puzzles. It makes random boards from a seed and keeps the first board that passes
 // all data checks: "findPuzzleProblems" in "puzzle.ts" and "findSolutionProblems" in "solver.ts".
-// It is pure: it does not read or write files. "generate-tilt.gen.ts" adds its puzzles to "puzzles/tilt.json".
+// It is pure: no React, no DOM and no side effects. The worker runs it. See "src/app/generator.ts".
+import { firstGoodPuzzle } from "../../../shared/generate";
+import type { PuzzleBase } from "../../../shared/puzzle";
+import { makeRandom, pickOne } from "../../../shared/random";
 import {
   ballSquares,
   findPuzzleProblems,
@@ -8,16 +11,8 @@ import {
   levelRules,
   type Square,
   type TiltPuzzle,
-} from "../src/app/puzzle-types/tilt/puzzle";
-import { findSolutionProblems } from "../src/app/puzzle-types/tilt/solver";
-import type { Difficulty } from "../src/shared/difficulty";
-import { makeRandom, pickOne } from "../src/shared/random";
-import {
-  generatePuzzles,
-  jsonWithRows,
-  type GenerateOptions,
-  type LevelPlanItem,
-} from "./generator-script";
+} from "./puzzle";
+import { findSolutionProblems } from "./solver";
 
 // ---------- A random board ----------
 
@@ -40,10 +35,10 @@ function rowsOf(size: number, cells: readonly Square[]): string[] {
   );
 }
 
-// One random board for a seed. The same seed always gives the same board. The ID is a placeholder.
+// One random board for a seed. The same seed always gives the same board.
 // It has the walls of "## Puzzles" in "rules.md", and the balls and the holes of the level.
-export function candidate(seed: number, level: Difficulty): TiltPuzzle {
-  const rules = levelRules[level];
+export function candidate(seed: number, base: PuzzleBase): TiltPuzzle {
+  const rules = levelRules[base.difficulty];
   const random = makeRandom(seed);
   const cells: Square[] = Array.from({ length: rules.size * rules.size }, () => ".");
   for (let count = between(random, rules.walls.min, rules.walls.max); count > 0; count -= 1) {
@@ -54,14 +49,7 @@ export function candidate(seed: number, level: Difficulty): TiltPuzzle {
     place(cells, holeSquares[colour], random);
   }
   if (rules.hasGrey) place(cells, ballSquares.grey, random);
-  return {
-    id: "tilt-0000",
-    type: "tilt",
-    difficulty: level,
-    author: "skardela",
-    license: "CC-BY-4.0",
-    board: rowsOf(rules.size, cells),
-  };
+  return { ...base, type: "tilt", board: rowsOf(rules.size, cells) };
 }
 
 // A good puzzle passes all data checks. The search checks run only when the board has no other problem,
@@ -70,23 +58,10 @@ export function isGoodPuzzle(puzzle: TiltPuzzle): boolean {
   return findPuzzleProblems(puzzle).length === 0 && findSolutionProblems(puzzle).length === 0;
 }
 
-// ---------- The plan ----------
+// About 1 easy board in 25 is good, and more on the other levels. Thus the search always ends long before this limit.
+const maxTries = 10_000;
 
-// A key of a board, so two puzzles with the same board are the same puzzle.
-export function boardKey(puzzle: Pick<TiltPuzzle, "board">): string {
-  return puzzle.board.join("/");
-}
-
-// This makes the puzzles of the plan. See "generatePuzzles" in "generator-script.ts".
-export function generate(plan: readonly LevelPlanItem[], options: GenerateOptions) {
-  return generatePuzzles(plan, options, {
-    candidate: (seed, item) => candidate(seed, item.level),
-    isGoodPuzzle,
-    boardKey,
-  });
-}
-
-// The text of the puzzle file, with each board on one line, as in the example.
-export function puzzleFileText(puzzles: readonly TiltPuzzle[]): string {
-  return jsonWithRows(puzzles, ["board"]);
+// The puzzle of an ID: the first good board from the seed of the ID.
+export function generate(base: PuzzleBase): TiltPuzzle {
+  return firstGoodPuzzle(base.id, maxTries, (seed) => candidate(seed, base), isGoodPuzzle);
 }

@@ -98,7 +98,7 @@ export function findPuzzleProblems(puzzle: OrbitalPuzzle): string[] {
       "The ring and each planet must be fully on the board.",
     ],
     [
-      squaredDistance(puzzle.launch, puzzle.ring) < minRingDistance ** 2,
+      squaredDistance(puzzle.launch, puzzle.ring) < minRingDistance * minRingDistance,
       `The centre of the ring must be ${minRingDistance} units or more from the launch point.`,
     ],
     [
@@ -171,13 +171,16 @@ function isOnBoard(circle: Circle): boolean {
 // The checks below compare squared distances. With whole numbers, a squared distance is exact,
 // thus a distance that is exactly on a limit gives the correct result.
 function squaredDistance(from: Point, to: Point): number {
-  return (to.x - from.x) ** 2 + (to.y - from.y) ** 2;
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  return dx * dx + dy * dy;
 }
 
 // "true" when the edges of the two circles are less than "gap" units apart.
 // A circle with the radius 0 is a point, for example the launch point.
 function isCloser(first: Circle, second: Circle, gap: number): boolean {
-  return squaredDistance(first, second) < (first.radius + second.radius + gap) ** 2;
+  const reach = first.radius + second.radius + gap;
+  return squaredDistance(first, second) < reach * reach;
 }
 
 // "true" when the planet touches the straight line from "start" to "end": the distance from the centre of the planet
@@ -189,7 +192,7 @@ function touchesLine(planet: Circle, start: Point, end: Point): boolean {
   const toY = planet.y - start.y;
   const squaredLength = lineX * lineX + lineY * lineY;
   const along = toX * lineX + toY * lineY;
-  const radius = planet.radius ** 2;
+  const radius = planet.radius * planet.radius;
   // The nearest point of the line is "start" or "end", or a point between them.
   if (squaredLength === 0 || along <= 0) return squaredDistance(planet, start) <= radius;
   if (along >= squaredLength) return squaredDistance(planet, end) <= radius;

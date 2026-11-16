@@ -35,7 +35,7 @@ describe("days", () => {
 });
 
 describe("solvesOnDay", () => {
-  // The daily puzzles repeat. A solve of the same puzzle on an earlier day is not a solve of today.
+  // A player can solve the puzzle of tomorrow one day early. That solve is not a solve of the next day.
   it("gives only the solves of the day", () => {
     const earlier = solveOn("2026-11-12", 30, "numpuz-0001");
     const today = solveOn("2026-11-14", 90, "numpuz-0001");

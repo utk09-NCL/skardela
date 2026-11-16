@@ -19,7 +19,8 @@ Each puzzle type has its rules in `rules.md` in its folder.
 | Orbital       | [src/app/puzzle-types/orbital/rules.md](src/app/puzzle-types/orbital/rules.md)             |
 | Tilt          | [src/app/puzzle-types/tilt/rules.md](src/app/puzzle-types/tilt/rules.md)                   |
 
-The puzzles are in `puzzles/`, one JSON file for each puzzle type. Each puzzle has the license CC-BY-4.0.
+The browser makes the puzzles of each day from the date, with the generator of each puzzle type. Thus each day has
+new puzzles, and the site needs no puzzle files. Each puzzle has the license CC-BY-4.0.
 
 ## How to run
 

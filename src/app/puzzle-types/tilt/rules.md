@@ -156,11 +156,10 @@ Thus only the search checks can find a problem in them.
 
 ## Puzzles
 
-- A generator in `tools/` makes random boards from a seed. It keeps only the boards that pass the data checks.
-  It adds them to `puzzles/tilt.json` with the next free IDs.
+- `generator.ts` makes the puzzle of an ID, for example `tilt-hard-1049`: the type, the level and a number. The number is the day number of a daily puzzle, or the number of a random puzzle.
+- The same ID always gives the same puzzle, in each browser. Each day has one new puzzle for each level.
+- The generator makes random boards from the seed of the ID. It keeps the first board that passes the data checks.
 - Random walls: easy 3 to 6, medium 4 to 8, hard 6 to 10.
-- The first `puzzles/tilt.json` has 30 puzzles for each level. Run the generator again for more.
-- The app selects one puzzle for each level each day, as for the other puzzle types.
 
 ## Example
 

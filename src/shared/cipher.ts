@@ -1,65 +1,29 @@
 // "vite.config.ts" also imports this file. Vite loads the config with native imports,
 // and native imports need the file extension.
-import { makeRandom } from "./random.ts";
+import LZString from "lz-string";
+import { makeRandom, seedOf } from "./random.ts";
 
-// The puzzle files go to the browser over the network, and the browser tools can show them.
-// This cipher hides the answers, so a player does not see an answer by accident.
-// It is not security. The browser must decode the answer to check the moves of the player.
+// The word bank of Guzzle goes to the browser over the network, and the browser tools can show it.
+// This cipher hides the words and the clues, so a player does not see an answer by accident.
+// It is not security. The browser must decode the bank to make a puzzle.
 //
-// The cipher is a stream cipher. The puzzle ID gives the seed, so each puzzle gets a different key.
-// Each byte of the text gets XOR with one random byte of the key. Base64 then makes the bytes into text.
-// The same function encodes and decodes, because (byte XOR key) XOR key gives the byte again.
+// lz-string compresses the text first, because ciphered text does not compress.
+// Then a stream cipher changes each byte: the byte gets XOR with one random byte of a fixed key.
+// Base64 then makes the bytes into text. The same XOR decodes, because (byte XOR key) XOR key gives the byte again.
 
-// FNV-1a hash. It changes a text into a 32-bit number, so a puzzle ID can be a seed.
-function seedOf(text: string): number {
-  let hash = 0x81_1c_9d_c5;
-  for (const byte of new TextEncoder().encode(text)) {
-    hash = Math.imul(hash ^ byte, 0x01_00_01_93);
-  }
-  return hash >>> 0;
-}
-
-function xorWithKey(bytes: Uint8Array, id: string): Uint8Array {
-  const random = makeRandom(seedOf(id));
+function xorWithKey(bytes: Uint8Array): Uint8Array {
+  const random = makeRandom(seedOf("skardela"));
   return bytes.map((byte) => byte ^ Math.floor(random() * 256));
 }
 
-export function encodeText(text: string, id: string): string {
-  const bytes = xorWithKey(new TextEncoder().encode(text), id);
-  return btoa(String.fromCodePoint(...bytes));
+// The Vite plugin in "vite.config.ts" uses this function when it loads the word bank.
+export function cipherText(text: string): string {
+  const bytes = xorWithKey(LZString.compressToUint8Array(text));
+  // One character for each byte. A spread of all bytes into one call can be too long for a browser.
+  return btoa(Array.from(bytes, (byte) => String.fromCodePoint(byte)).join(""));
 }
 
-export function decodeText(code: string, id: string): string {
+export function decipherText(code: string): string {
   const bytes = Uint8Array.from(atob(code), (character) => character.codePointAt(0) ?? 0);
-  return new TextDecoder().decode(xorWithKey(bytes, id));
-}
-
-// The answer rows have only letters, "." and the Numpuz operators (+ - × ÷), thus "/" can join them into one text.
-const rowBreak = "/";
-
-type WithAnswer = { readonly id: string; readonly answer: readonly string[] };
-
-// A puzzle as the browser gets it: the field "code" has the ciphered answer.
-export type Ciphered<Puzzle extends WithAnswer> = Omit<Puzzle, "answer"> & {
-  readonly id: string;
-  readonly code: string;
-};
-
-// The Vite plugin in "vite.config.ts" uses this function when it loads a file in "puzzles/".
-export function cipherAnswer<Puzzle extends WithAnswer>(puzzle: Puzzle): Ciphered<Puzzle> {
-  const { answer, ...rest } = puzzle;
-  return { ...rest, code: encodeText(answer.join(rowBreak), puzzle.id) };
-}
-
-export function decipherAnswer<Puzzle extends WithAnswer>(puzzle: Ciphered<Puzzle>): Puzzle {
-  const { code, ...rest } = puzzle;
-  const answer = decodeText(code, puzzle.id).split(rowBreak);
-  // TypeScript cannot see that "rest" and "answer" together make a full puzzle, thus the cast.
-  return { ...rest, answer } as unknown as Puzzle;
-}
-
-// TypeScript reads the type of a puzzle file from the readable file in "puzzles/".
-// But the Vite plugin ciphers the file before the app gets it. Thus the data comes in as "unknown".
-export function decipherPuzzles<Puzzle extends WithAnswer>(file: unknown): Puzzle[] {
-  return (file as readonly Ciphered<Puzzle>[]).map((puzzle) => decipherAnswer(puzzle));
+  return LZString.decompressFromUint8Array(xorWithKey(bytes));
 }

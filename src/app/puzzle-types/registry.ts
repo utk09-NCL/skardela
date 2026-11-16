@@ -1,16 +1,17 @@
+import type { Difficulty } from "../../shared/difficulty";
+import { puzzleIdOf, type PuzzleBase } from "../../shared/puzzle";
 import type { ColourBinaryPuzzle } from "./colour-binary/puzzle";
 import type { GuzzlePuzzle } from "./guzzle/puzzle";
 import type { LaticsPuzzle } from "./latics/puzzle";
-import { decipherPuzzles } from "../../shared/cipher";
 import type { NumpuzPuzzle } from "./numpuz/puzzle";
 import type { OrbitalPuzzle } from "./orbital/puzzle";
 import type { TiltPuzzle } from "./tilt/puzzle";
 
-// This file is the list of all puzzle types and their puzzle files.
+// This file is the list of all puzzle types and their generators.
 // To add a puzzle type, add its puzzle type to "PuzzleMap" and add one entry to "puzzleTypes".
 // TypeScript then shows an error in each place that needs more work:
 // the board in "boards.ts", the text in "src/text/en/index.ts" and the data check in "tools/puzzles.test.ts".
-// This file has no React code, so the data checks in "tools/" can use it too.
+// This file has no React code, so the worker and the data checks in "tools/" can use it too.
 
 // Each puzzle type name, with the type of one puzzle of that type.
 export type PuzzleMap = {
@@ -24,50 +25,61 @@ export type PuzzleMap = {
 
 export type PuzzleType = keyof PuzzleMap;
 
-// This loads all puzzles of the type. The file loads only when the app needs it.
-// The answers in the file are ciphered by the Vite plugin in "vite.config.ts". "decipherPuzzles" decodes them.
-// A puzzle type without an "answer" field, such as Latics, does not need "decipherPuzzles".
 // "added" is the date when the puzzle type came to the site, as a day key. It is the date of the first commit
-// of its puzzle file. The home page shows it, and marks a puzzle type of the last two weeks as new.
-type PuzzleTypeEntry<Puzzle> = { added: string; loadPuzzles: () => Promise<readonly Puzzle[]> };
+// of the puzzle type. The home page shows it, and marks a puzzle type of the last two weeks as new.
+// "author" is the credit for all puzzles of the type: the person who made the puzzle type.
+// "generator" loads "generator.ts" of the type. Its "generate" makes the puzzle of an ID. "base" has the ID,
+// the level and the credit of the puzzle, and "number" is the number in the ID.
+// The file loads only in the worker, when a player opens a puzzle of the type. See "src/app/generator.ts".
+type PuzzleTypeEntry<Puzzle> = {
+  added: string;
+  author: string;
+  generator: () => Promise<{ generate: (base: PuzzleBase, number: number) => Puzzle }>;
+};
 
 export const puzzleTypes: { [Type in PuzzleType]: PuzzleTypeEntry<PuzzleMap[Type]> } = {
   "colour-binary": {
     added: "2026-10-11",
-    loadPuzzles: async () =>
-      decipherPuzzles<ColourBinaryPuzzle>(
-        (await import("../../../puzzles/colour-binary.json")).default,
-      ),
+    author: "skardela",
+    generator: () => import("./colour-binary/generator"),
   },
   guzzle: {
     added: "2026-10-11",
-    loadPuzzles: async () =>
-      decipherPuzzles<GuzzlePuzzle>((await import("../../../puzzles/guzzle.json")).default),
+    author: "skardela",
+    generator: () => import("./guzzle/generator"),
   },
   latics: {
     added: "2026-10-24",
-    loadPuzzles: async () =>
-      (await import("../../../puzzles/latics.json")).default as LaticsPuzzle[],
+    author: "skardela",
+    generator: () => import("./latics/generator"),
   },
   numpuz: {
     added: "2026-10-27",
-    loadPuzzles: async () =>
-      decipherPuzzles<NumpuzPuzzle>((await import("../../../puzzles/numpuz.json")).default),
+    author: "Wisdom Usiwoma",
+    generator: () => import("./numpuz/generator"),
   },
-  // An Orbital puzzle has no "answer": the game checks each launch with the rules. Thus it does not need "decipherPuzzles".
   orbital: {
     added: "2026-11-08",
-    loadPuzzles: async () =>
-      (await import("../../../puzzles/orbital.json")).default as OrbitalPuzzle[],
+    author: "skardela",
+    generator: () => import("./orbital/generator"),
   },
-  // A Tilt puzzle has no "answer": the game checks each tilt with the rules. Thus it does not need "decipherPuzzles".
-  tilt: {
-    added: "2026-11-07",
-    loadPuzzles: async () => (await import("../../../puzzles/tilt.json")).default as TiltPuzzle[],
-  },
+  tilt: { added: "2026-11-07", author: "skardela", generator: () => import("./tilt/generator") },
 };
 
 // This guard keeps the app safe when a string is not a known puzzle type, for example in a URL.
 export function isPuzzleType(type: string): type is PuzzleType {
   return Object.hasOwn(puzzleTypes, type);
+}
+
+// The puzzle of a type, a level and a number. The same values always give the same puzzle, in each browser.
+// A generator can take some time, thus the app calls this function only in the worker.
+export async function makePuzzle<Type extends PuzzleType>(
+  type: Type,
+  level: Difficulty,
+  number: number,
+): Promise<PuzzleMap[Type]> {
+  const { author, generator } = puzzleTypes[type];
+  const { generate } = await generator();
+  const id = puzzleIdOf(type, level, number);
+  return generate({ id, difficulty: level, author, license: "CC-BY-4.0" }, number);
 }

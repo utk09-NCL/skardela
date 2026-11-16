@@ -33,7 +33,7 @@ export type SavedData = {
   readonly theme: Theme;
   // True after the player selected OK on the analytics notice. Then the notice does not show again.
   readonly cookieBanner: boolean;
-  // The IDs of the puzzles that the player solved. "Random puzzle" skips them.
+  // The IDs of the puzzles that the player solved.
   readonly solved: readonly string[];
   // Each solve, the oldest first. The stats on the home page come from this list.
   readonly results: readonly SolveResult[];

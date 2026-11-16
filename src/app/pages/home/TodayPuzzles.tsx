@@ -20,11 +20,11 @@ function isNew(card: TodayCard, today: string): boolean {
 
 // One card for each puzzle type: the icon, the name, the details, the summary and a link to each level.
 // A level is solved when the player solved its puzzle today. Its time is the best solve of today.
-// A solve of the same puzzle on an earlier day does not count, because the daily puzzles repeat.
+// A solve of the same puzzle on an earlier day does not count. See "solvesOnDay".
 // The next level to play is the first level that is not solved.
 function Card({ card, today }: { card: TodayCard; today: string }) {
   const results = useAppStore((state) => state.results);
-  const { type, levels, authors, added } = card;
+  const { type, levels, author, added } = card;
   const { name, summary } = text[type];
   const todays = solvesOnDay(results, today);
   const bests = levels.map(({ id }) => bestResult(todays, id));
@@ -36,11 +36,9 @@ function Card({ card, today }: { card: TodayCard; today: string }) {
         <div className={styles.cardText}>
           <h2 className={styles.cardTitle}>{name}</h2>
           <p className={styles.cardDetails}>
-            {authors.length > 0 && (
-              <span>
-                {words.by} <span className={styles.author}>{words.authors(authors)}</span>
-              </span>
-            )}
+            <span>
+              {words.by} <span className={styles.author}>{author}</span>
+            </span>
             <span>{words.added(added)}</span>
             {isNew(card, today) && <span className={styles.newTag}>{words.newTag}</span>}
           </p>

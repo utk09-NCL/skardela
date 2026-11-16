@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { deepFreeze } from "../../../test/deep-freeze";
-import puzzleFile from "../../../../puzzles/latics.json";
 import { makeRandom } from "../../../shared/random";
+import { makePuzzle } from "../registry";
 import example from "./examples/latics-0000.json";
 import {
   canFire,
@@ -32,7 +32,15 @@ const medium: LaticsPuzzle = {
   tray: 1,
 };
 
-const puzzles = [easy, ...(puzzleFile as LaticsPuzzle[])];
+// The example, and four puzzles of each level that the generator makes. Four numbers give each material of a level.
+const puzzles = [
+  easy,
+  ...(await Promise.all(
+    (["easy", "medium", "hard"] as const).flatMap((level) =>
+      [1, 2, 3, 4].map((number) => makePuzzle("latics", level, number)),
+    ),
+  )),
+];
 
 // This helper applies the events one after the other, as "useReducer" does.
 function play(state: GameState, events: readonly GameEvent[]): GameState {

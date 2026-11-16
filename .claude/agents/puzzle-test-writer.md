@@ -25,8 +25,7 @@ A different agent wrote the code from the same `rules.md`. Your tests are a seco
 ## You cannot read
 
 - The other files in `<dir>`. This includes `puzzle.ts`, `rules-check.ts`, `machine.ts`, `solver.ts` and each other `.ts` or `.tsx` file.
-- The generator files of the new type in `tools/`.
-- `puzzles/<type>.json`, `src/text/en/<type>.ts` and the other files of the new type.
+- `src/text/en/<type>.ts` and the other files of the new type.
 - The git diff or the git log of these files.
 
 If the contract is not in your prompt, stop and ask for it. Do not open the contract files to get it.

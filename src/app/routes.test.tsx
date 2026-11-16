@@ -4,7 +4,10 @@ import { routes } from "./routes";
 import { render, screen } from "@testing-library/react";
 import { RouterProvider } from "react-router/dom";
 import { text } from "../text/en";
+import { dayNumber, localDate } from "./daily";
 import { puzzleTypes, type PuzzleType } from "./puzzle-types/registry";
+
+const today = dayNumber(localDate(new Date()));
 
 function renderAt(path: string) {
   const router = createMemoryRouter(routes, { initialEntries: [path] });
@@ -26,27 +29,47 @@ describe("routes", () => {
 
   // Each puzzle type in the registry has a page. A new puzzle type gets this test with no change here.
   it.each(Object.keys(puzzleTypes) as PuzzleType[])("shows the %s puzzle page", async (type) => {
-    renderAt(`/puzzles/${type}-0001`);
+    renderAt(`/puzzles/${type}-easy-1`);
     expect(
       await screen.findByRole("heading", { level: 1, name: text[type].name }),
     ).toBeInTheDocument();
   });
 
   it("shows the board of the guzzle puzzle page", async () => {
-    renderAt("/puzzles/guzzle-0001");
+    renderAt("/puzzles/guzzle-easy-1");
     expect(await screen.findByRole("button", { name: text.guzzle.modes.bank })).toBeInTheDocument();
   });
 
   it("shows the board of the latics puzzle page", async () => {
-    renderAt("/puzzles/latics-0001");
+    renderAt("/puzzles/latics-easy-1");
     expect(await screen.findByRole("grid", { name: text.latics.boardLabel })).toBeInTheDocument();
   });
+});
 
-  it.each(["/puzzles/guzzle-9999", "/puzzles/unknown-0001", "/puzzles/guzzle"])(
-    "shows the not found page for the puzzle path %s",
+describe("routes of puzzles of other days and of old links", () => {
+  // The local date is different across time zones, thus the puzzles of tomorrow have a page too.
+  it("shows the page of a puzzle of tomorrow", async () => {
+    renderAt(`/puzzles/tilt-easy-${today + 1}`);
+    expect(
+      await screen.findByRole("heading", { level: 1, name: text.tilt.name }),
+    ).toBeInTheDocument();
+  });
+
+  // "tilt-0029" is a link from before the daily numbers. The last path is the day after tomorrow.
+  it.each([
+    "/puzzles/tilt-0029",
+    "/puzzles/unknown-easy-1",
+    "/puzzles/guzzle",
+    `/puzzles/tilt-easy-${today + 2}`,
+  ])(
+    "shows the not found page, with a link to the home page, for the puzzle path %s",
     async (path) => {
       renderAt(path);
       expect(await screen.findByTestId("not-found-page-title")).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: text.notFound.homeLink })).toHaveAttribute(
+        "href",
+        "/",
+      );
     },
   );
 

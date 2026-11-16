@@ -66,7 +66,15 @@ Each row of `board` has one character for each square:
 
 The data checks make sure that the beam does not hit all monsters at the start, that the puzzle has a solution, that each solution needs all the mirrors in the tray, and that the puzzle needs each of its materials: without its water, its prisms or its filters, it has no solution.
 
-To make new puzzles, run for example `LATICS_PLAN="water:easy:3,prism:hard:2" npm run generate:latics`. The generator makes random boards and keeps only boards that pass the data checks and need 2 changes or more (3 on hard). It adds them to `puzzles/latics.json` with the next free IDs. `LATICS_SEED` gives different puzzles. Play some of the new puzzles before you add them. See `tools/generate-latics.gen.ts`.
+## Puzzles
+
+- `generator.ts` makes the puzzle of an ID, for example `latics-hard-1049`: the type, the level and a number. The number is the day number of a daily puzzle, or the number of a random puzzle.
+- The same ID always gives the same puzzle, in each browser. Each day has one new puzzle for each level.
+- The number of the puzzle selects the material: water, prism or filter, and on hard also the critical angle. Thus the material changes each day.
+- The generator builds each board from a solution. It puts the lasers, the mirrors, the material and the monsters on the path of the beam. A prism board has a red monster on the red beam and a blue monster on the blue beam. A filter board has a monster with the colour of the filter.
+- Then it adds walls and other mirrors on squares that are not on the path.
+- For the start of the puzzle, it turns each mirror on the path to a wrong angle and takes the tray mirrors back to the tray. On hard, it also turns each laser.
+- It keeps the first board that passes the data checks and needs 2 changes or more (3 on hard). The solution of a critical angle board must reflect at the edge of the water.
 
 ## Example
 

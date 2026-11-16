@@ -200,6 +200,21 @@ describe("latics solver with the lasers, the water and the prism", () => {
     });
   });
 
+  // A red monster needs red light: a red laser, or a white laser with a prism or a red filter.
+  it("finds no solution for a monster with a colour when the board has no light of that colour", () => {
+    const board = plain(["L...R", ".....", ".....", ".....", "....."]);
+    expect(solve(board, { tray: 2, canAim: true })).toBeNull();
+    const blue: LaserData[] = [{ direction: "E", colour: "blue" }];
+    expect(solve({ ...board, lasers: blue }, { tray: 2, canAim: true })).toBeNull();
+    const withFilter = plain(["L.b.R", ".....", ".....", ".....", "....."]);
+    expect(solve(withFilter, { tray: 2, canAim: true })).toBeNull();
+    // With red light, the search finds the solution.
+    const red: LaserData[] = [{ direction: "E", colour: "red" }];
+    expect(solve({ ...board, lasers: red }, { tray: 0, canAim: false })).not.toBeNull();
+    const redFilter = plain(["L.r.R", ".....", ".....", ".....", "....."]);
+    expect(solve(redFilter, { tray: 0, canAim: false })).not.toBeNull();
+  });
+
   it("hits each monster with the parts of a split beam", () => {
     // The prism splits the beam: red goes up and right, blue goes up and left.
     // The mirror at row 4, column 3 must turn to send the beam up to the prism.

@@ -7,26 +7,32 @@ import { addDays, dayKey } from "../../../shared/state/progress";
 import { useAppStore } from "../../../shared/state/store";
 import { text } from "../../../text/en";
 import { symbols } from "../../../text/symbols";
+import example from "../../puzzle-types/guzzle/examples/guzzle-0000.json";
+import type { GuzzlePuzzle } from "../../puzzle-types/guzzle/puzzle";
 import type { LoadedPuzzle } from "../../puzzles";
-import { puzzleTypes } from "../../puzzle-types/registry";
 import { SolvedCard } from "./SolvedCard";
 
-type Level = LoadedPuzzle["puzzle"]["difficulty"];
+type Level = LoadedPuzzle["difficulty"];
 
 const words = text.puzzlePage.result;
-const [guzzle] = await puzzleTypes.guzzle.loadPuzzles();
 
-// Today's Guzzle puzzles in these tests: #0023 easy, #0024 medium and #0025 hard.
+// Today's Guzzle puzzles in these tests: #1049 of each level.
 const today = [
-  { id: "guzzle-0023", difficulty: "easy" },
-  { id: "guzzle-0024", difficulty: "medium" },
-  { id: "guzzle-0025", difficulty: "hard" },
+  { id: "guzzle-easy-1049", difficulty: "easy" },
+  { id: "guzzle-medium-1049", difficulty: "medium" },
+  { id: "guzzle-hard-1049", difficulty: "hard" },
 ] as const;
 
-// The page data of one Guzzle puzzle. The board data is from a real puzzle. The card uses only the ID and the level.
+// The page data of one Guzzle puzzle. The card uses only the type, the ID, the level and today's puzzles.
 function loadedAs(id: string, difficulty: Level): LoadedPuzzle {
-  if (guzzle === undefined) throw new Error("The Guzzle file has no puzzle.");
-  return { type: "guzzle", puzzle: { ...guzzle, id, difficulty }, others: [], today };
+  return {
+    type: "guzzle",
+    id,
+    difficulty,
+    author: "skardela",
+    today,
+    puzzle: Promise.resolve(example as GuzzlePuzzle),
+  };
 }
 
 // A saved solve of a Guzzle puzzle, today or on an earlier "day". The card counts only the levels solved today.
@@ -49,7 +55,7 @@ function solve(
 
 // The card of a puzzle that the player solved on this visit.
 function renderSolved(loaded: LoadedPuzzle) {
-  usePlaySession.setState({ puzzleId: loaded.puzzle.id, startedAt: 1000, solvedAt: 135_000 });
+  usePlaySession.setState({ puzzleId: loaded.id, startedAt: 1000, solvedAt: 135_000 });
   render(
     <MemoryRouter>
       <SolvedCard loaded={loaded} />
@@ -77,22 +83,22 @@ function shownShareText(): string {
 
 describe("result card numbers", () => {
   it("does not show before a solve on this visit", () => {
-    solve("guzzle-0024", "medium", 134, 1);
+    solve("guzzle-medium-1049", "medium", 134, 1);
     render(
       <MemoryRouter>
-        <SolvedCard loaded={loadedAs("guzzle-0024", "medium")} />
+        <SolvedCard loaded={loadedAs("guzzle-medium-1049", "medium")} />
       </MemoryRouter>,
     );
     expect(screen.queryByRole("region", { name: words.title })).toBeNull();
   });
 
   it("shows the time, the mistakes and the time against the average", () => {
-    solve("guzzle-0001", "medium", 150);
-    solve("guzzle-0002", "medium", 180);
-    solve("guzzle-0024", "medium", 134, 1);
-    renderSolved(loadedAs("guzzle-0024", "medium"));
+    solve("guzzle-medium-1047", "medium", 150);
+    solve("guzzle-medium-1048", "medium", 180);
+    solve("guzzle-medium-1049", "medium", 134, 1);
+    renderSolved(loadedAs("guzzle-medium-1049", "medium"));
     const card = screen.getByRole("region", { name: words.title });
-    expect(within(card).getByText(words.puzzle("Guzzle", "Medium", "0024"))).toBeInTheDocument();
+    expect(within(card).getByText(words.puzzle("Guzzle", "Medium", "1049"))).toBeInTheDocument();
     expect(numberOf(words.time)).toBe("2:14");
     expect(numberOf(text.guzzle.scoreWord(1))).toBe("1");
     // The average of the other medium solves is 2:45. Thus this solve is 0:31 faster.
@@ -100,8 +106,8 @@ describe("result card numbers", () => {
   });
 
   it("shows First for the first solve of a level", () => {
-    solve("guzzle-0024", "medium", 134, 1);
-    renderSolved(loadedAs("guzzle-0024", "medium"));
+    solve("guzzle-medium-1049", "medium", 134, 1);
+    renderSolved(loadedAs("guzzle-medium-1049", "medium"));
     expect(numberOf(words.firstLabel("Medium"))).toBe(words.first);
   });
 });
@@ -110,13 +116,13 @@ describe("result card share", () => {
   it("shows the share text with today's levels, copies it, and links to the next level", async () => {
     const writeText = vi.fn<(value: string) => Promise<void>>().mockResolvedValue();
     Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
-    solve("guzzle-0023", "easy", 102, 0);
-    solve("guzzle-0024", "medium", 134, 1);
-    renderSolved(loadedAs("guzzle-0024", "medium"));
+    solve("guzzle-easy-1049", "easy", 102, 0);
+    solve("guzzle-medium-1049", "medium", 134, 1);
+    renderSolved(loadedAs("guzzle-medium-1049", "medium"));
     const shareText = shownShareText();
     expect(shareText.split("\n")[0]).toMatch(/^Skardela · \d{1,2} [A-Z][a-z]+$/u);
     expect(shareText.split("\n").slice(1)).toEqual([
-      "Guzzle #0024, Medium",
+      "Guzzle #1049, Medium",
       `${symbols.share.clean}${symbols.share.mistakes}${symbols.share.unsolved}`,
       "Solved in 2:14 with 1 mistake",
       text.share.site,
@@ -128,39 +134,39 @@ describe("result card share", () => {
     expect(writeText).toHaveBeenCalledWith(shareText);
     expect(screen.getByRole("link", { name: words.next("Hard") })).toHaveAttribute(
       "href",
-      "/puzzles/guzzle-0025",
+      "/puzzles/guzzle-hard-1049",
     );
   });
 });
 
 describe("result card share of today's levels", () => {
-  // The daily puzzles repeat. A solve of today's easy puzzle on an earlier day does not count today.
+  // A player can solve the puzzle of tomorrow one day early. That solve does not count on the next day.
   it("does not count a level that the player solved on an earlier day", () => {
-    solve("guzzle-0023", "easy", 102, 0, addDays(dayKey(new Date()), -3));
-    solve("guzzle-0024", "medium", 134, 1);
-    renderSolved(loadedAs("guzzle-0024", "medium"));
+    solve("guzzle-easy-1049", "easy", 102, 0, addDays(dayKey(new Date()), -1));
+    solve("guzzle-medium-1049", "medium", 134, 1);
+    renderSolved(loadedAs("guzzle-medium-1049", "medium"));
     expect(shownShareText().split("\n")[2]).toBe(
       `${symbols.share.unsolved}${symbols.share.mistakes}${symbols.share.unsolved}`,
     );
     expect(screen.getByRole("link", { name: words.next("Easy") })).toHaveAttribute(
       "href",
-      "/puzzles/guzzle-0023",
+      "/puzzles/guzzle-easy-1049",
     );
   });
 
   it("shares only its own level for a puzzle that is not one of today's puzzles", () => {
-    solve("guzzle-0099", "hard", 75, 0);
-    renderSolved(loadedAs("guzzle-0099", "hard"));
+    solve("guzzle-hard-123456", "hard", 75, 0);
+    renderSolved(loadedAs("guzzle-hard-123456", "hard"));
     // The text has no date.
     expect(shownShareText().split("\n").slice(0, 3)).toEqual([
       "Skardela",
-      "Guzzle #0099, Hard",
+      "Guzzle #123456, Hard",
       symbols.share.clean,
     ]);
     // The next level is today's first level that the player did not solve.
     expect(screen.getByRole("link", { name: words.next("Easy") })).toHaveAttribute(
       "href",
-      "/puzzles/guzzle-0023",
+      "/puzzles/guzzle-easy-1049",
     );
   });
 });

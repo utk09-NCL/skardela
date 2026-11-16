@@ -34,7 +34,7 @@ body:
     attributes:
       label: Page or puzzle link
       description: Copy the address of the page where the problem occurs.
-      placeholder: https://skardela.netlify.app/puzzles/tilt-0031
+      placeholder: https://skardela.netlify.app/puzzles/tilt-hard-1049
   - type: textarea
     id: expected
     attributes:

@@ -1,22 +1,23 @@
 import { describe, expect, it } from "vitest";
-import { cipherAnswer, decipherAnswer, decodeText, encodeText } from "./cipher";
+import { cipherText, decipherText } from "./cipher";
 
-describe("answer cipher", () => {
-  it("decodes the text that it encodes", () => {
-    const code = encodeText("RBP/CAT/MGN", "guzzle-0001");
-    expect(code).not.toContain("CAT");
-    expect(decodeText(code, "guzzle-0001")).toBe("RBP/CAT/MGN");
+describe("word bank cipher", () => {
+  const bank = "CAT A small pet that says meow\nBAG You carry things in it\n";
+
+  it("gives back the text that it ciphers", () => {
+    expect(decipherText(cipherText(bank))).toBe(bank);
   });
 
-  it("gives a different code for a different puzzle ID", () => {
-    expect(encodeText("CAT", "guzzle-0001")).not.toBe(encodeText("CAT", "guzzle-0002"));
+  it("hides the words and the clues", () => {
+    const code = cipherText(bank);
+    expect(code).toMatch(/^[A-Za-z0-9+/]+=*$/u);
+    expect(atob(code)).not.toContain("CAT");
+    expect(atob(code)).not.toContain("meow");
   });
 
-  it("removes the readable answer from a puzzle and puts it back", () => {
-    const puzzle = { id: "colour-binary-0001", difficulty: "easy", answer: ["RB", "BR"] };
-    const ciphered = cipherAnswer(puzzle);
-    expect(ciphered).not.toHaveProperty("answer");
-    expect(JSON.stringify(ciphered)).not.toContain('["RB","BR"]');
-    expect(decipherAnswer<typeof puzzle>(ciphered)).toEqual(puzzle);
+  // The bank of Guzzle is long. The cipher must not put all its bytes into one function call.
+  it("ciphers a long text", () => {
+    const long = bank.repeat(20_000);
+    expect(decipherText(cipherText(long))).toBe(long);
   });
 });

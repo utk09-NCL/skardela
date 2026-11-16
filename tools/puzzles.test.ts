@@ -11,8 +11,15 @@ import { findPuzzleProblems as findGuzzleProblems } from "../src/app/puzzle-type
 import laticsExample from "../src/app/puzzle-types/latics/examples/latics-0000.json";
 import { findPuzzleProblems as findLaticsProblems } from "../src/app/puzzle-types/latics/puzzle";
 import { findSolutionProblems as findLaticsSolutionProblems } from "../src/app/puzzle-types/latics/solver";
-import { puzzleTypes, type PuzzleMap, type PuzzleType } from "../src/app/puzzle-types/registry";
-import { levels } from "../src/shared/difficulty";
+import {
+  makePuzzle,
+  puzzleTypes,
+  type PuzzleMap,
+  type PuzzleType,
+} from "../src/app/puzzle-types/registry";
+import { firstDay } from "../src/app/daily";
+import { levels, type Difficulty } from "../src/shared/difficulty";
+import { puzzleIdOf } from "../src/shared/puzzle";
 import numpuzExample from "../src/app/puzzle-types/numpuz/examples/numpuz-0000.json";
 import { findPuzzleProblems as findNumpuzProblems } from "../src/app/puzzle-types/numpuz/puzzle";
 import orbitalExample from "../src/app/puzzle-types/orbital/examples/orbital-0000.json";
@@ -22,8 +29,8 @@ import tiltExample from "../src/app/puzzle-types/tilt/examples/tilt-0000.json";
 import { findPuzzleProblems as findTiltProblems } from "../src/app/puzzle-types/tilt/puzzle";
 import { findSolutionProblems as findTiltSolutionProblems } from "../src/app/puzzle-types/tilt/solver";
 
-// These checks run on each puzzle file in CI.
-// They stop broken puzzle data before it gets to a player.
+// These checks run in CI. They make the daily puzzles of each puzzle type with its generator,
+// and they stop a broken generator before a broken puzzle gets to a player.
 
 type AnyPuzzle = PuzzleMap[PuzzleType];
 
@@ -74,13 +81,13 @@ const checks: {
   },
 };
 
+// The first days of the daily schedules. The days are fixed, thus the test gives the same result each day.
+const days = Array.from({ length: 90 }, (_, index) => firstDay + index);
+
 // This check finds problems that are the same for all puzzle types.
 function findCommonProblems(puzzle: AnyPuzzle, type: PuzzleType): string[] {
   const problems: string[] = [];
   if (puzzle.type !== type) problems.push(`"type" must be "${type}".`);
-  if (!new RegExp(`^${type}-\\d{4}$`, "u").test(puzzle.id)) {
-    problems.push(`"id" must be "${type}-" and 4 digits.`);
-  }
   if (!levels.includes(puzzle.difficulty)) {
     problems.push(`"difficulty" must be one of: ${levels.join(", ")}.`);
   }
@@ -89,36 +96,64 @@ function findCommonProblems(puzzle: AnyPuzzle, type: PuzzleType): string[] {
   return problems;
 }
 
-describe.each(Object.keys(puzzleTypes) as PuzzleType[])("%s puzzle file", (type) => {
-  // The example is the same as the puzzles in the file, so it gets the same checks.
+// What the player sees of a puzzle at the start: the puzzle without its ID and its answer.
+// Two puzzles with the same text are the same puzzle for the player.
+function shownOf(puzzle: AnyPuzzle): string {
+  return JSON.stringify({ ...puzzle, id: undefined, answer: undefined });
+}
+
+// The IDs of the puzzles that show the same as an earlier puzzle of the list.
+function shownAgain(puzzles: readonly AnyPuzzle[]): string[] {
+  const seen = new Set<string>();
+  return puzzles.flatMap((puzzle) => {
+    const isAgain = seen.has(shownOf(puzzle));
+    seen.add(shownOf(puzzle));
+    return isAgain ? [puzzle.id] : [];
+  });
+}
+
+// The problems of the puzzle of one day: the fields of its ID, and the data check of its type.
+function findDayProblems(puzzle: AnyPuzzle, type: PuzzleType, level: Difficulty, day: number) {
   const findProblems = checks[type].findProblems as (puzzle: AnyPuzzle) => string[];
-  const load = async () => [...(await puzzleTypes[type].loadPuzzles())] as AnyPuzzle[];
+  const fields: [boolean, string][] = [
+    [puzzle.id === puzzleIdOf(type, level, day), '"id" is not the ID of the day.'],
+    [puzzle.difficulty === level, '"difficulty" is not the level of the ID.'],
+    [puzzle.author === puzzleTypes[type].author, '"author" is not the author of the type.'],
+  ];
+  return [
+    ...fields.filter(([isCorrect]) => !isCorrect).map(([, problem]) => problem),
+    ...findCommonProblems(puzzle, type),
+    ...findProblems(puzzle),
+  ];
+}
+
+describe.each(Object.keys(puzzleTypes) as PuzzleType[])("%s puzzles", (type) => {
+  // The example of "rules.md" gets the same checks as the puzzles of the generator.
+  it("has an example with no problems", () => {
+    const example = checks[type].example as AnyPuzzle;
+    const findProblems = checks[type].findProblems as (puzzle: AnyPuzzle) => string[];
+    expect([...findCommonProblems(example, type), ...findProblems(example)]).toEqual([]);
+  });
 
   // The data check of some types searches or flies each puzzle, for example 3,600 launches for each Orbital puzzle.
-  // On a slow computer, this can take more time than the default limit of 5 s.
-  it("has no broken puzzles", { timeout: 30_000 }, async () => {
-    for (const puzzle of [checks[type].example as AnyPuzzle, ...(await load())]) {
-      const problems = [...findCommonProblems(puzzle, type), ...findProblems(puzzle)];
-      expect({ id: puzzle.id, problems }).toEqual({ id: puzzle.id, problems: [] });
-    }
-  });
+  // Thus 90 days of one level can take more time than the default limit of 5 s.
+  describe.each(levels)("of the level %s", (level) => {
+    it("makes 90 days of puzzles with no problems", { timeout: 120_000 }, async () => {
+      const puzzles: AnyPuzzle[] = await Promise.all(
+        days.map((day) => makePuzzle(type, level, day)),
+      );
+      const problems = puzzles.map((puzzle, index) => ({
+        id: puzzle.id,
+        problems: findDayProblems(puzzle, type, level, firstDay + index),
+      }));
+      expect(problems.filter((item) => item.problems.length > 0)).toEqual([]);
+    });
 
-  it("has a different ID for each puzzle", async () => {
-    const ids = (await load()).map((puzzle) => puzzle.id);
-    expect(ids.filter((id, index) => ids.indexOf(id) !== index)).toEqual([]);
-  });
-
-  // A copy of a puzzle with a different ID gives the player the same puzzle two times.
-  it("has different content for each puzzle", async () => {
-    const contents = (await load()).map((puzzle) => JSON.stringify({ ...puzzle, id: undefined }));
-    expect(contents.filter((content, index) => contents.indexOf(content) !== index)).toEqual([]);
-  });
-
-  it("has at least one puzzle for each level", async () => {
-    const puzzles = await load();
-    const missing = levels.filter(
-      (level) => !puzzles.some((puzzle) => puzzle.difficulty === level),
-    );
-    expect(missing).toEqual([]);
+    it("makes a different puzzle for each of 90 days", { timeout: 120_000 }, async () => {
+      const puzzles: AnyPuzzle[] = await Promise.all(
+        days.map((day) => makePuzzle(type, level, day)),
+      );
+      expect(shownAgain(puzzles)).toEqual([]);
+    });
   });
 });

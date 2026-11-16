@@ -94,7 +94,7 @@ describe("stats page", () => {
     const link = screen.getByRole("link", {
       name: stats.bests.play(text["colour-binary"].name, text.levels.easy),
     });
-    expect(link.getAttribute("href")).toMatch(/^\/puzzles\/colour-binary-\d{4}$/u);
+    expect(link.getAttribute("href")).toMatch(/^\/puzzles\/colour-binary-easy-\d+$/u);
   });
 });
 

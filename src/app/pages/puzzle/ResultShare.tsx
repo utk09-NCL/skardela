@@ -22,19 +22,19 @@ type ResultShareProps = {
 // The share text of the solve, and its line of squares. A puzzle of today shows the date and the squares
 // of all levels of today. A different puzzle shows only its own square.
 function shareTextOf({ loaded, solve, results, day }: ResultShareProps) {
-  const { type, puzzle, today } = loaded;
-  const isToday = today.some(({ id }) => id === puzzle.id);
+  const { type, today } = loaded;
+  const isToday = today.some(({ id }) => id === loaded.id);
   // The other levels show the best solve of today. A solve on an earlier day does not count.
   const todays = solvesOnDay(results, day);
   const levelResults: (SolveResult | undefined)[] = isToday
-    ? today.map(({ id }) => (id === puzzle.id ? solve : bestResult(todays, id)))
+    ? today.map(({ id }) => (id === loaded.id ? solve : bestResult(todays, id)))
     : [solve];
   const marks = marksText(levelResults);
   const shareText = text.share.puzzle({
     day: isToday ? day : undefined,
     typeName: text[type].name,
-    number: puzzleNumber(puzzle.id),
-    level: text.levels[puzzle.difficulty],
+    number: puzzleNumber(loaded.id),
+    level: text.levels[loaded.difficulty],
     marks,
     time: formatDuration(solve.seconds),
     score: solve.mistakes === undefined ? undefined : text[type].score(solve.mistakes),
@@ -81,7 +81,7 @@ export function ResultShare(props: ResultShareProps) {
   // The next level is the first level of today that the player did not solve today.
   const todays = solvesOnDay(results, day);
   const next = loaded.today.find(
-    ({ id }) => id !== loaded.puzzle.id && !todays.some(({ puzzleId }) => puzzleId === id),
+    ({ id }) => id !== loaded.id && !todays.some(({ puzzleId }) => puzzleId === id),
   );
   return (
     <>

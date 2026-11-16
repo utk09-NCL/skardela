@@ -21,6 +21,13 @@ Make each square red or blue. Each row and each column has the same number of re
 
 - Score: each hint that shows a square. A hint that finds no square does not count. 0 is a perfect solve.
 
+## Puzzles
+
+- `generator.ts` makes the puzzle of an ID, for example `colour-binary-hard-1049`: the type, the level and a number. The number is the day number of a daily puzzle, or the number of a random puzzle.
+- The same ID always gives the same puzzle, in each browser. Each day has one new puzzle for each level.
+- The generator makes a random answer that obeys the rules. Then it empties squares in a random order. It empties a square only when the start still has exactly one answer.
+- It stops when the start has this part of the squares: 50% on easy, 45% on medium and 40% on hard. It also stops when no other square can be empty.
+
 ## Example
 
 ```text

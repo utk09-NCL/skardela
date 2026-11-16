@@ -14,11 +14,11 @@ describe("puzzle page timer", () => {
     const user = userEvent.setup();
     render(
       <RouterProvider
-        router={createMemoryRouter(routes, { initialEntries: ["/puzzles/guzzle-0001"] })}
+        router={createMemoryRouter(routes, { initialEntries: ["/puzzles/guzzle-easy-1"] })}
       />,
     );
     const mode = await screen.findByRole("button", { name: text.guzzle.modes.bank });
-    expect(usePlaySession.getState()).toMatchObject({ puzzleId: "guzzle-0001", startedAt: null });
+    expect(usePlaySession.getState()).toMatchObject({ puzzleId: "guzzle-easy-1", startedAt: null });
     expect(screen.getByRole("timer")).toHaveTextContent("0:00");
     await user.click(mode);
     expect(usePlaySession.getState().startedAt).not.toBeNull();
@@ -28,11 +28,11 @@ describe("puzzle page timer", () => {
     useAppStore.getState().acknowledgeNotice();
     render(
       <RouterProvider
-        router={createMemoryRouter(routes, { initialEntries: ["/puzzles/latics-0001"] })}
+        router={createMemoryRouter(routes, { initialEntries: ["/puzzles/latics-easy-1"] })}
       />,
     );
     await screen.findByRole("grid", { name: text.latics.boardLabel });
-    expect(usePlaySession.getState()).toMatchObject({ puzzleId: "latics-0001" });
+    expect(usePlaySession.getState()).toMatchObject({ puzzleId: "latics-easy-1" });
     expect(usePlaySession.getState().startedAt).not.toBeNull();
   });
 });

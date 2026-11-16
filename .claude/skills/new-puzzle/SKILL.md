@@ -44,9 +44,9 @@ Write `rules.md` in ASD-STE100 Simplified Technical English. Keep each rule shor
 - Look: Can the player see the difference between each kind of item without colour? For example, a ball and its hole. What does the board show when two items are on one square?
 - Accessibility: Can the player play with only the keyboard? What does a screen reader say for each item, and after each move?
 - Edge cases: An empty input, the same action two times, an action that is not possible, Restart.
-- Puzzle data: How does `puzzles/<type>.json` keep one puzzle? For example, one character for each square. Does each puzzle have an `answer`, or does the game check each move with the rules?
+- Puzzle data: Which data does one puzzle have? For example, one character for each square. Does each puzzle have an `answer`, or does the game check each move with the rules?
 - Data check: Which puzzle data does the check refuse? For example, unknown characters, rows of different lengths, extra items and items without their pair.
-- Puzzles: How many puzzles does each level get? Does the author, the coder or a generator make them? The app shows one puzzle of each level each day, so a small number repeats soon.
+- Puzzles: The browser makes one new puzzle of each level each day, with `generator.ts`. How does the generator make a random puzzle of each level? Which puzzles does it refuse? How many different puzzles can a level have? A level with only some thousand puzzles repeats soon.
 - First draft: Does each sentence of the first draft still agree with the final design? Change or remove each sentence that is not true now.
 - Example: Is there a small example with all its steps? Does it have one wrong step?
 

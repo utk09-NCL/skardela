@@ -1,12 +1,16 @@
-import { pickOne } from "../../../shared/random";
+import type { Difficulty } from "../../../shared/difficulty";
+import { puzzleIdOf } from "../../../shared/puzzle";
+import { randomNumbers } from "../../daily";
+import type { PuzzleType } from "../../puzzle-types/registry";
 
-// "Random puzzle" selects from the other puzzles of the same type and level that the player did not solve.
-// When the player solved all of them, it selects from all of them, so the button always works.
+// "Random puzzle" opens the puzzle of a random number in the range of "randomNumbers", of the same type and level.
+// The range has 900,000 numbers, thus the player gets a new puzzle almost each time.
+// The ID gives the puzzle, thus a link to a random puzzle opens the same puzzle for each person.
 export function randomPuzzleId(
-  others: readonly string[],
-  solved: readonly string[],
+  type: PuzzleType,
+  level: Difficulty,
   random: () => number = Math.random,
-): string | undefined {
-  const unsolved = others.filter((id) => !solved.includes(id));
-  return pickOne(unsolved.length > 0 ? unsolved : others, random);
+): string {
+  const { min, max } = randomNumbers;
+  return puzzleIdOf(type, level, min + Math.floor(random() * (max - min + 1)));
 }
